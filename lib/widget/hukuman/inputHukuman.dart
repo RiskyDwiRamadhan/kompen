@@ -3,6 +3,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/scheduler.dart';
 import 'dart:async';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import 'package:kompen/widget/login/login.dart';
 
@@ -15,7 +17,91 @@ class InputHukumanWidget extends StatefulWidget {
 
 class _InputHukumanWidgetState extends State<InputHukumanWidget> {
   final formKey = GlobalKey<FormState>();
+  String? nip, nim, kompen, alasan, tugas;
 
+  TextEditingController nimInput = new TextEditingController();
+  TextEditingController nipInput = new TextEditingController();
+  TextEditingController kompenInput = new TextEditingController();
+  TextEditingController alasanInput = new TextEditingController();
+
+  void prosesInput() async {
+    final response = await http.post(
+        // Uri.parse("http://192.168.1.200/kompen/inputHukuman.php"),
+        Uri.parse("http://192.168.213.213/kompen/inputHukuman.php"),
+        body: {
+          "nip": "8337",
+          "nim": nimInput.text,
+          "kompen": kompenInput.text,
+          "alasan": alasanInput.text,
+        });
+
+    var dataUser = json.decode(response.body);
+    print(dataUser);
+
+    if (dataUser == "ID Dosen Salah") {
+      setState(() {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text("Konfirmasi Input Hukuman"),
+              content: Text(dataUser),
+              actions: [
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('OK'))
+              ],
+            );
+          },
+        );
+      });
+    } else if (dataUser == "ID Mahasiswa Salah") {
+      setState(() {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text("Konfirmasi Input Hukuman"),
+              content: Text(dataUser),
+              actions: [
+                ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('OK'))
+              ],
+            );
+          },
+        );
+      });
+    } else {
+      nimInput.text = "";
+      nipInput.text = "";
+      alasanInput.text = "";
+      kompenInput.text = "";
+      
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Konfirmasi Input Hukuman"),
+            content: Text("Hukuman berhasil ditambahkan!!"),
+            actions: [
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('OK'))
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  @override
   @override
   void initState() {
     // TODO: implement initState
@@ -52,7 +138,7 @@ class _InputHukumanWidgetState extends State<InputHukumanWidget> {
                   padding: EdgeInsetsDirectional.fromSTEB(20, 50, 20, 20),
                   child: Container(
                     width: double.infinity,
-                    height: 390,
+                    height: 420,
                     decoration: BoxDecoration(
                       color: Color.fromRGBO(222, 222, 231, 1),
                       borderRadius: BorderRadius.circular(10),
@@ -77,46 +163,7 @@ class _InputHukumanWidgetState extends State<InputHukumanWidget> {
                           Padding(
                             padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
                             child: TextFormField(
-                              autofocus: true,
-                              obscureText: false,
-                              decoration: InputDecoration(
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Colors.white,
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color.fromRGBO(3, 3, 3, 1),
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return "NIM Masih Kosong";
-                                }
-                                return null;
-                              },
-                            ),
-                          ),
-                          Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
-                            child: Text(
-                              'Kompen',
-                              style: TextStyle(
-                                fontFamily: 'Readex Pro',
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
-                            child: TextFormField(
+                              controller: nimInput,
                               autofocus: true,
                               obscureText: false,
                               decoration: InputDecoration(
@@ -137,9 +184,54 @@ class _InputHukumanWidgetState extends State<InputHukumanWidget> {
                                 filled: true,
                                 fillColor: Colors.white,
                               ),
+                              keyboardType: TextInputType.number,
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return "Kompen Masih Kosong";
+                                  return "NIM Masih Kosong";
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          Padding(
+                            padding:
+                                EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
+                            child: Text(
+                              'Jam Kompen',
+                              style: TextStyle(
+                                fontFamily: 'Readex Pro',
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
+                            child: TextFormField(
+                              controller: kompenInput,
+                              autofocus: true,
+                              obscureText: false,
+                              decoration: InputDecoration(
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Colors.white,
+                                    width: 2,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Color.fromRGBO(3, 3, 3, 1),
+                                    width: 2,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                filled: true,
+                                fillColor: Colors.white,
+                              ),
+                              keyboardType: TextInputType.number,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Jam Kompen Masih Kosong";
                                 }
                                 return null;
                               },
@@ -159,6 +251,7 @@ class _InputHukumanWidgetState extends State<InputHukumanWidget> {
                           Padding(
                             padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
                             child: TextFormField(
+                              controller: alasanInput,
                               autofocus: true,
                               textCapitalization: TextCapitalization.words,
                               obscureText: false,
@@ -194,8 +287,9 @@ class _InputHukumanWidgetState extends State<InputHukumanWidget> {
                             padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 0),
                             child: ElevatedButton(
                               onPressed: () {
-                              if (formKey.currentState!.validate()) {
-                              }
+                                if (formKey.currentState!.validate()) {
+                                  prosesInput();
+                                }
                               },
                               child: Text('Save'),
                             ),
