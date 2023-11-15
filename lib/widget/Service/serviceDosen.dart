@@ -3,23 +3,28 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart'
     as http; // add the http plugin in pubspec.yaml file.
 import 'package:kompen/widget/Model/modelDosen.dart';
+import 'dart:io';
+import 'package:async/async.dart';
+import 'package:path/path.dart' as path;
 
 class ServicesDosen {
-  //     .post(Uri.parse("http://192.168.1.200/kompen/registerDosen.php"),
-  //         // Uri.parse("http://192.168.213.213/kompen/registerDosen.php"),
-  static const ROOT = 'http://192.168.213.213/kompen/registerDosen.php';
+  static const ROOT = 'http://192.168.1.200/kompen/registerDosen.php';
+  // static const ROOT = 'http://192.168.213.213/kompen/registerDosen.php';
   static const _CREATE_TABLE_ACTION = 'CREATE_TABLE';
   static const _GET_ALL_ACTION = 'get_all';
   static const _GET_WHERE_ACTION = 'get_where';
   static const _ADD_ACTION = 'register';
   static const _UPDATE_ACTION = 'update';
   static const _DELETE_ACTION = 'Delete';
+
   // Menampilkan Semua Data
   static Future<List<Dosen>> getDosens() async {
     try {
       var map = Map<String, dynamic>();
       map['action'] = _GET_ALL_ACTION;
-      final response = await http.get(Uri.parse('http://192.168.213.213/kompen/dataM.php'));
+      final response = await http.post(Uri.parse(ROOT), body: map);
+      // final response = await http.get(Uri.parse('http://192.168.1.200/kompen/dataM.php'));
+      // final response = await http.get(Uri.parse('http://192.168.213.213/kompen/dataM.php'));
       print('getDosens Response: ${response.body}');
       if (response.statusCode == 200) {
         print(response.body.length);
@@ -41,49 +46,65 @@ class ServicesDosen {
 
   // Menambahkan data
   static Future<String> addDosen(String nip, String nama, String username,
-      String password, String email, String foto, String status) async {
+      String password, String email, File foto, String status) async {
     try {
-      var map = Map<String, dynamic>();
-      map['action'] = _ADD_ACTION;
-      map['nip'] = nip;
-      map['nama'] = nama;
-      map['username'] = username;
-      map['password'] = password;
-      map['email'] = email;
-      map['foto'] = foto;
-      map['status'] = status;
-      final response = await http.post(Uri.parse(ROOT), body: map);
-      print('addDosen Response: ${response.body}');
-      var dataUser = json.decode(response.body);
+      var uri = Uri.parse(ROOT);
+      final request = http.MultipartRequest("POST",uri);
+      
+      request.fields['action'] = _ADD_ACTION;
+      request.fields['nip'] = nip;
+      request.fields['nama'] = nama;
+      request.fields['username'] = username;
+      request.fields['password'] = password;
+      request.fields['email'] = email;
+      request.fields['status'] = status;
 
-      if (dataUser == "Succes") {
+      
+    if (foto != null) {
+      var stream = http.ByteStream(DelegatingStream.typed(foto.openRead()));
+      var length = await foto.length();
+      
+      request.files.add(http.MultipartFile("foto", stream, length,
+          filename: path.basename(foto.path)));
+    }
+
+      var response = await request.send();
+      if (response.statusCode > 2) {
         return "success";
       } else {
         return "error";
       }
     } catch (e) {
-      return "error";
+      return ("Error $e");
     }
   }
-
+  
   // Update Data
   static Future<String> updateDosen(String nip, String nama, String username,
-      String password, String email, String foto, String status) async {
+      String password, String email, File foto, String status) async {
     try {
-      var map = Map<String, dynamic>();
-      map['action'] = _UPDATE_ACTION;
-      map['nip'] = nip;
-      map['nama'] = nama;
-      map['username'] = username;
-      map['password'] = password;
-      map['email'] = email;
-      map['foto'] = foto;
-      map['status'] = status;
-      final response = await http.post(Uri.parse(ROOT), body: map);
-      print('updateDosen Response: ${response.body}');
-      var dataUser = json.decode(response.body);
+      var uri = Uri.parse(ROOT);
+      final request = http.MultipartRequest("POST",uri);
+      
+      request.fields['action'] = _UPDATE_ACTION;
+      request.fields['nip'] = nip;
+      request.fields['nama'] = nama;
+      request.fields['username'] = username;
+      request.fields['password'] = password;
+      request.fields['email'] = email;
+      request.fields['status'] = status;
 
-      if (dataUser == "Succes") {
+      
+    if (foto != null) {
+      var stream = http.ByteStream(DelegatingStream.typed(foto.openRead()));
+      var length = await foto.length();
+      
+      request.files.add(http.MultipartFile("foto", stream, length,
+          filename: path.basename(foto.path)));
+    }
+
+      var response = await request.send();
+      if (response.statusCode > 2) {
         return "success";
       } else {
         return "error";
@@ -110,4 +131,5 @@ class ServicesDosen {
       return "error"; // returning just an "error" string to keep this simple...
     }
   }
+
 }

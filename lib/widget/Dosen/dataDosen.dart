@@ -15,6 +15,10 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
   late List<Dosen> dosen;
   int sortIndex = 0;
   bool isAscending = true;
+  bool isLoading = false; // Track the loading state
+  String searchText = "";
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  TextEditingController cariInput = new TextEditingController();
 
   _postData(Dosen dosen) {
     Navigator.push(
@@ -64,6 +68,7 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
                     }
                   },
                 );
+                _getData();
                 Navigator.of(context).pop();
               },
               child: Text('Ya'),
@@ -113,12 +118,48 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
     setState(() {});
   }
 
-  _getData() {
-    ServicesDosen.getDosens().then((result) {
-      setState(() {
-        dosen = result;
-      });
+  _getData() async {
+    setState(() {
+      isLoading = true;
     });
+    ServicesDosen.getDosens().then(
+      (result) {
+        setState(() {
+          dosen = result;
+          isLoading = false;
+        });
+      },
+    );
+  }
+
+  void onSearchTextChanged(String value) {
+    setState(() {
+      searchText = value;
+      isLoading = false;
+    });
+  }
+
+  List<Dosen> getFilteredDosens() {
+    if (cariInput.text.isEmpty) {
+      setState(() {
+        isLoading = false;
+      });
+      return dosen;
+    }
+    setState(() {
+      isLoading = false;
+    });
+    return dosen
+        .where((dosen) =>
+            dosen.namaLengkap!
+                .toLowerCase()
+                .contains(cariInput.text.toLowerCase()) ||
+            dosen.username!
+                .toLowerCase()
+                .contains(cariInput.text.toLowerCase()) ||
+            dosen.email!.toLowerCase().contains(cariInput.text.toLowerCase()) ||
+            dosen.level!.toLowerCase().contains(cariInput.text.toLowerCase()))
+        .toList();
   }
 
   @override
@@ -131,6 +172,7 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context,
@@ -159,94 +201,142 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
         centerTitle: false,
         elevation: 2,
       ),
-      body: SizedBox(
-        width: double.infinity,
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-              sortColumnIndex: sortIndex,
-              sortAscending: isAscending,
-              columns: [
-                DataColumn(onSort: onSort, label: Text('Foto')),
-                DataColumn(onSort: onSort, label: Text('Nama')),
-                DataColumn(onSort: onSort, label: Text('Username')),
-                DataColumn(onSort: onSort, label: Text('Email')),
-                DataColumn(onSort: onSort, label: Text('Level')),
-                DataColumn(onSort: onSort, label: Text('Action')),
-              ],
-              rows: dosen
-                  .map((e) => DataRow(cells: [
-                        DataCell(Text(e.foto.toString())),
-                        DataCell(Text(e.namaLengkap.toString())),
-                        DataCell(Text(e.username.toString())),
-                        DataCell(Text(e.email.toString())),
-                        DataCell(Text(e.level.toString())),
-                        DataCell(
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding:
-                                    EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                                child: GestureDetector(
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(vertical: 0),
-                                    width: 30,
-                                    child: RaisedButton(
-                                      child: Icon(
-                                        Icons.change_circle,
-                                        color: Colors.white,
-                                        size: 30,
-                                      ),
-                                      onPressed: () {
-                                        _postData(e);
-                                      },
-                                      padding: EdgeInsets.all(15.0),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(30.0),
-                                      ),
-                                      color: Colors.orange[600],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              // Padding(
-                              //   padding:
-                              //       EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                              //   child: GestureDetector(
-                              //     child: Container(
-                              //       padding: EdgeInsets.symmetric(vertical: 0),
-                              //       width: 30,
-                              //       child: RaisedButton(
-                              //         child: Icon(
-                              //           Icons.cancel_outlined,
-                              //           color: Colors.white,
-                              //           size: 30,
-                              //         ),
-                              //         onPressed: () {
-                              //           _deleteData(e);
-                              //         },
-                              //         padding: EdgeInsets.all(15.0),
-                              //         shape: RoundedRectangleBorder(
-                              //           borderRadius:
-                              //               BorderRadius.circular(30.0),
-                              //         ),
-                              //         color: Colors.red[600],
-                              //       ),
-                              //     ),
-                              //   ),
-                              // ),
-                            ],
-                          ),
-                        ),
-                      ]))
-                  .toList(),
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(200, 0, 10, 0),
+            child: TextField(
+              controller: cariInput,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.all(5.0),
+                hintText: 'Pencarian Data',
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Color.fromARGB(255, 136, 135, 135),
+                    width: 2,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                filled: true,
+                fillColor: Colors.white,
+              ),
+              onChanged: (string) {
+                setState(() {
+                  isLoading = true;
+                });
+                getFilteredDosens();
+              },
             ),
           ),
-        ),
+          SizedBox(
+            width: double.infinity,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Column(
+                  children: [
+                    isLoading
+                        ? CircularProgressIndicator()
+                        : DataTable(
+                            sortColumnIndex: sortIndex,
+                            sortAscending: isAscending,
+                            columns: [
+                              DataColumn(onSort: onSort, label: Text('Foto')),
+                              DataColumn(onSort: onSort, label: Text('Nama')),
+                              DataColumn(
+                                  onSort: onSort, label: Text('Username')),
+                              DataColumn(onSort: onSort, label: Text('Email')),
+                              DataColumn(onSort: onSort, label: Text('Level')),
+                              DataColumn(onSort: onSort, label: Text('Action')),
+                            ],
+                            rows: getFilteredDosens()
+                                .map((e) => DataRow(cells: [
+                                      DataCell(
+                                        Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: Container(
+                                            height: 600,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              image: DecorationImage(
+                                                fit: BoxFit.cover,
+                                                image: NetworkImage(
+                                                  'http://192.168.1.200/kompen/uploads/' +
+                                                      e.foto.toString(),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      DataCell(Text(e.namaLengkap.toString())),
+                                      DataCell(Text(e.username.toString())),
+                                      DataCell(Text(e.email.toString())),
+                                      DataCell(Text(e.level.toString())),
+                                      DataCell(
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsetsDirectional
+                                                  .fromSTEB(0, 0, 0, 0),
+                                              child: GestureDetector(
+                                                child: Container(
+                                                  padding: EdgeInsets.symmetric(
+                                                      vertical: 0),
+                                                  width: 30,
+                                                  child: IconButton(
+                                                    icon: Icon(
+                                                      Icons.update,
+                                                      color: Colors.orange,
+                                                      size: 30,
+                                                    ),
+                                                    onPressed: () {
+                                                      _postData(e);
+                                                    },
+                                                    padding: EdgeInsets.all(0),
+                                                    color: Colors.orange[600],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsetsDirectional
+                                                  .fromSTEB(0, 0, 0, 0),
+                                              child: GestureDetector(
+                                                child: Container(
+                                                  padding: EdgeInsets.symmetric(
+                                                      vertical: 0),
+                                                  width: 30,
+                                                  child: IconButton(
+                                                    icon: Icon(
+                                                      Icons.delete,
+                                                      color: Colors.red,
+                                                      size: 30,
+                                                    ),
+                                                    onPressed: () {
+                                                      _deleteData(e);
+                                                    },
+                                                    padding: EdgeInsets.all(0),
+                                                    color: Colors.red[600],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ]))
+                                .toList(),
+                          ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

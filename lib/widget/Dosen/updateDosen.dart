@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:kompen/widget/Dosen/dataDosen.dart';
 import 'package:kompen/widget/Model/modelDosen.dart';
 import 'package:kompen/widget/Service/serviceDosen.dart';
+import 'package:path/path.dart' as path;
 
 class UpdateDosenWidget extends StatefulWidget {
   // String? IdUser, nama;
@@ -33,26 +37,31 @@ class _UpdateDosenWidgetState extends State<UpdateDosenWidget> {
   TextEditingController usernameInput = new TextEditingController();
   TextEditingController emailInput = new TextEditingController();
   TextEditingController fotoInput = new TextEditingController();
+  File? _image;
 
   void getData() async {
     nipInput.text = widget.nip!.toString();
     namaInput.text = widget.namaLengkap!.toString();
-    passwordInput.text =  this.widget.password!.toString();
+    passwordInput.text = this.widget.password!.toString();
     usernameInput.text = widget.username!.toString();
     emailInput.text = widget.email!.toString();
     fotoInput.text = widget.foto!.toString();
     status = widget.level!.toString();
   }
 
+  void _getImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      _image = File(pickedFile!.path);
+      fotoInput.text = path.basename(_image!.path);
+    });
+  }
+
   void prosesData() async {
-    ServicesDosen.updateDosen(
-            nipInput.text,
-            namaInput.text,
-            usernameInput.text,
-            passwordInput.text,
-            emailInput.text,
-            fotoInput.text,
-            status.toString())
+    ServicesDosen.updateDosen(nipInput.text, namaInput.text, usernameInput.text,
+            passwordInput.text, emailInput.text, _image!, status.toString())
         .then(
       (result) {
         if ("success" == result) {
@@ -140,7 +149,7 @@ class _UpdateDosenWidgetState extends State<UpdateDosenWidget> {
                 padding: EdgeInsetsDirectional.fromSTEB(20, 50, 20, 20),
                 child: Container(
                   width: double.infinity,
-                  height: 800,
+                  height: 850,
                   decoration: BoxDecoration(
                     color: Color.fromRGBO(222, 222, 231, 1),
                     borderRadius: BorderRadius.circular(10),
@@ -343,27 +352,36 @@ class _UpdateDosenWidgetState extends State<UpdateDosenWidget> {
                       ),
                       Padding(
                         padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
-                        child: TextFormField(
-                          controller: fotoInput,
-                          autofocus: true,
-                          obscureText: false,
-                          decoration: InputDecoration(
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color.fromARGB(255, 136, 135, 135),
-                                width: 2,
-                              ),
-                              borderRadius: BorderRadius.circular(10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ElevatedButton(
+                              onPressed: _getImage,
+                              child: Text('Select Image'),
                             ),
-                            filled: true,
-                            fillColor: Colors.white,
-                          ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "Foto Masih Kosong";
-                            }
-                            return null;
-                          },
+                            TextFormField(
+                              controller: fotoInput,
+                              autofocus: true,
+                              obscureText: false,
+                              decoration: InputDecoration(
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Color.fromARGB(255, 136, 135, 135),
+                                    width: 2,
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                filled: true,
+                                fillColor: Colors.white,
+                              ),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Foto Masih Kosong";
+                                }
+                                return null;
+                              },
+                            ),
+                          ],
                         ),
                       ),
                       Padding(
@@ -406,18 +424,20 @@ class _UpdateDosenWidgetState extends State<UpdateDosenWidget> {
                           child: Container(
                             padding: EdgeInsets.symmetric(vertical: 25.0),
                             width: double.infinity,
-                            child: RaisedButton(
-                              elevation: 5.0,
+                            child: ElevatedButton(
                               onPressed: () {
                                 if (formKey.currentState!.validate()) {
                                   prosesData();
                                 }
                               },
-                              padding: EdgeInsets.all(15.0),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0),
+                              style: ElevatedButton.styleFrom(
+                                elevation: 5.0,
+                                padding: EdgeInsets.all(15.0),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
+                                primary: Colors.blue[300],
                               ),
-                              color: Colors.blue[300],
                               child: Text(
                                 'Update',
                                 style: TextStyle(
