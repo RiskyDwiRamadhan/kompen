@@ -547,29 +547,31 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                             child: Container(
                               padding: EdgeInsets.symmetric(vertical: 25.0),
                               width: double.infinity,
-                              child: RaisedButton(
+                              child: ElevatedButton(
+                              onPressed: () {
+                                if (formKey.currentState!.validate()) {
+                                  prosesRegister();
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
                                 elevation: 5.0,
-                                onPressed: () {
-                                  if (formKey.currentState!.validate()) {
-                                    prosesRegister();
-                                  }
-                                },
                                 padding: EdgeInsets.all(15.0),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30.0),
                                 ),
-                                color: Colors.blue[300],
-                                child: Text(
-                                  'Sign Up',
-                                  style: TextStyle(
-                                    color: Color.fromARGB(255, 255, 255, 255),
-                                    letterSpacing: 1.5,
-                                    fontSize: 25.0,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'OpenSans',
-                                  ),
+                                primary: Colors.blue[300],
+                              ),
+                              child: Text(
+                                'SignUp',
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 255, 255, 255),
+                                  letterSpacing: 1.5,
+                                  fontSize: 25.0,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'OpenSans',
                                 ),
                               ),
+                            ),
                             ),
                           ),
                         ),
