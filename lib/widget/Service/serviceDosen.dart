@@ -8,12 +8,12 @@ import 'package:async/async.dart';
 import 'package:path/path.dart' as path;
 
 class ServicesDosen {
-  static const ROOT = 'http://192.168.1.200/kompen/registerDosen.php';
-  // static const ROOT = 'http://192.168.213.213/kompen/registerDosen.php';
+  static const ROOT = 'http://192.168.1.200/kompen/Dosen.php';
+  // static const ROOT = 'http://192.168.213.213/kompen/Dosen.php';
   static const _CREATE_TABLE_ACTION = 'CREATE_TABLE';
   static const _GET_ALL_ACTION = 'get_all';
   static const _GET_WHERE_ACTION = 'get_where';
-  static const _ADD_ACTION = 'register';
+  static const _ADD_ACTION = 'add_data';
   static const _UPDATE_ACTION = 'update';
   static const _DELETE_ACTION = 'Delete';
 

@@ -94,18 +94,46 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
               .compareTo(a.namaLengkap.toString().toLowerCase());
         }
       });
-    } else if (sortIndex == 4) {
+    } else if (sortIndex == 2) {
+      dosen.sort((a, b) {
+        if (isAscending) {
+          return a.username
+              .toString()
+              .toLowerCase()
+              .compareTo(b.username.toString().toLowerCase());
+        } else {
+          return b.username
+              .toString()
+              .toLowerCase()
+              .compareTo(a.username.toString().toLowerCase());
+        }
+      });
+    }else if (sortIndex == 3) {
+      dosen.sort((a, b) {
+        if (isAscending) {
+          return a.email
+              .toString()
+              .toLowerCase()
+              .compareTo(b.email.toString().toLowerCase());
+        } else {
+          return b.email
+              .toString()
+              .toLowerCase()
+              .compareTo(a.email.toString().toLowerCase());
+        }
+      });
+    }else if (sortIndex == 4) {
       dosen.sort((a, b) {
         if (isAscending) {
           return a.level
               .toString()
               .toLowerCase()
-              .compareTo(b.username.toString().toLowerCase());
+              .compareTo(b.level.toString().toLowerCase());
         } else {
           return b.level
               .toString()
               .toLowerCase()
-              .compareTo(a.username.toString().toLowerCase());
+              .compareTo(a.level.toString().toLowerCase());
         }
       });
     }
@@ -151,6 +179,9 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
     });
     return dosen
         .where((dosen) =>
+            dosen.nip!
+                .toLowerCase()
+                .contains(cariInput.text.toLowerCase()) ||
             dosen.namaLengkap!
                 .toLowerCase()
                 .contains(cariInput.text.toLowerCase()) ||
@@ -204,7 +235,7 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(200, 0, 10, 0),
+            padding: EdgeInsetsDirectional.fromSTEB(200, 10, 0, 0),
             child: TextField(
               controller: cariInput,
               decoration: InputDecoration(
@@ -242,13 +273,13 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
                             sortColumnIndex: sortIndex,
                             sortAscending: isAscending,
                             columns: [
-                              DataColumn(onSort: onSort, label: Text('Foto')),
+                              DataColumn( label: Text('Foto')),
                               DataColumn(onSort: onSort, label: Text('Nama')),
                               DataColumn(
                                   onSort: onSort, label: Text('Username')),
                               DataColumn(onSort: onSort, label: Text('Email')),
                               DataColumn(onSort: onSort, label: Text('Level')),
-                              DataColumn(onSort: onSort, label: Text('Action')),
+                              DataColumn(label: Text('Action')),
                             ],
                             rows: getFilteredDosens()
                                 .map((e) => DataRow(cells: [

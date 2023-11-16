@@ -149,310 +149,312 @@ class _UpdateDosenWidgetState extends State<UpdateDosenWidget> {
                 padding: EdgeInsetsDirectional.fromSTEB(20, 50, 20, 20),
                 child: Container(
                   width: double.infinity,
-                  height: 850,
+                  height: 880,
                   decoration: BoxDecoration(
                     color: Color.fromRGBO(222, 222, 231, 1),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(16, 15, 0, 5),
-                        child: Text(
-                          'NIP',
-                          style: TextStyle(
-                            fontFamily: 'Readex Pro',
-                            fontSize: 16,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(16, 15, 0, 5),
+                          child: Text(
+                            'NIP',
+                            style: TextStyle(
+                              fontFamily: 'Readex Pro',
+                              fontSize: 16,
+                            ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
-                        child: TextFormField(
-                          controller: nipInput,
-                          keyboardType: TextInputType.number,
-                          autofocus: true,
-                          obscureText: false,
-                          decoration: InputDecoration(
-                            hintText: 'Masukkan NIP anda',
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color.fromARGB(255, 136, 135, 135),
-                                width: 2,
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
+                          child: TextFormField(
+                            controller: nipInput,
+                            keyboardType: TextInputType.number,
+                            autofocus: true,
+                            obscureText: false,
+                            decoration: InputDecoration(
+                              hintText: 'Masukkan NIP anda',
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 136, 135, 135),
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              borderRadius: BorderRadius.circular(10),
+                              filled: true,
+                              fillColor: Colors.white,
                             ),
-                            filled: true,
-                            fillColor: Colors.white,
-                          ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "NIP Masih Kosong";
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
-                        child: Text(
-                          'Nama Lengkap',
-                          style: TextStyle(
-                            fontFamily: 'Readex Pro',
-                            fontSize: 16,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "NIP Masih Kosong";
+                              }
+                              return null;
+                            },
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
-                        child: TextFormField(
-                          controller: namaInput,
-                          autofocus: true,
-                          obscureText: false,
-                          decoration: InputDecoration(
-                            hintText: 'Masukkan Nama Lengkap anda',
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color.fromARGB(255, 136, 135, 135),
-                                width: 2,
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
+                          child: Text(
+                            'Nama Lengkap',
+                            style: TextStyle(
+                              fontFamily: 'Readex Pro',
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
+                          child: TextFormField(
+                            controller: namaInput,
+                            autofocus: true,
+                            obscureText: false,
+                            decoration: InputDecoration(
+                              hintText: 'Masukkan Nama Lengkap anda',
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 136, 135, 135),
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              borderRadius: BorderRadius.circular(10),
+                              filled: true,
+                              fillColor: Colors.white,
                             ),
-                            filled: true,
-                            fillColor: Colors.white,
-                          ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "Nama Lengkap Masih Kosong";
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
-                        child: Text(
-                          'Username',
-                          style: TextStyle(
-                            fontFamily: 'Readex Pro',
-                            fontSize: 16,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Nama Lengkap Masih Kosong";
+                              }
+                              return null;
+                            },
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
-                        child: TextFormField(
-                          controller: usernameInput,
-                          autofocus: true,
-                          obscureText: false,
-                          decoration: InputDecoration(
-                            hintText: 'Masukkan Username anda',
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color.fromARGB(255, 136, 135, 135),
-                                width: 2,
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
+                          child: Text(
+                            'Username',
+                            style: TextStyle(
+                              fontFamily: 'Readex Pro',
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
+                          child: TextFormField(
+                            controller: usernameInput,
+                            autofocus: true,
+                            obscureText: false,
+                            decoration: InputDecoration(
+                              hintText: 'Masukkan Username anda',
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 136, 135, 135),
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              borderRadius: BorderRadius.circular(10),
+                              filled: true,
+                              fillColor: Colors.white,
                             ),
-                            filled: true,
-                            fillColor: Colors.white,
-                          ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "Username Masih Kosong";
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
-                        child: Text(
-                          'Password',
-                          style: TextStyle(
-                            fontFamily: 'Readex Pro',
-                            fontSize: 16,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Username Masih Kosong";
+                              }
+                              return null;
+                            },
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
-                        child: TextFormField(
-                          controller: passwordInput,
-                          autofocus: true,
-                          obscureText: false,
-                          decoration: InputDecoration(
-                            hintText: 'Masukkan Password anda',
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color.fromARGB(255, 136, 135, 135),
-                                width: 2,
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
+                          child: Text(
+                            'Password',
+                            style: TextStyle(
+                              fontFamily: 'Readex Pro',
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
+                          child: TextFormField(
+                            controller: passwordInput,
+                            autofocus: true,
+                            obscureText: false,
+                            decoration: InputDecoration(
+                              hintText: 'Masukkan Password anda',
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 136, 135, 135),
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              borderRadius: BorderRadius.circular(10),
+                              filled: true,
+                              fillColor: Colors.white,
                             ),
-                            filled: true,
-                            fillColor: Colors.white,
-                          ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "Password Masih Kosong";
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
-                        child: Text(
-                          'Email',
-                          style: TextStyle(
-                            fontFamily: 'Readex Pro',
-                            fontSize: 16,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Password Masih Kosong";
+                              }
+                              return null;
+                            },
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
-                        child: TextFormField(
-                          controller: emailInput,
-                          keyboardType: TextInputType.emailAddress,
-                          autofocus: true,
-                          obscureText: false,
-                          decoration: InputDecoration(
-                            hintText: 'Masukkan Email anda',
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color.fromARGB(255, 136, 135, 135),
-                                width: 2,
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
+                          child: Text(
+                            'Email',
+                            style: TextStyle(
+                              fontFamily: 'Readex Pro',
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
+                          child: TextFormField(
+                            controller: emailInput,
+                            keyboardType: TextInputType.emailAddress,
+                            autofocus: true,
+                            obscureText: false,
+                            decoration: InputDecoration(
+                              hintText: 'Masukkan Email anda',
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 136, 135, 135),
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              borderRadius: BorderRadius.circular(10),
+                              filled: true,
+                              fillColor: Colors.white,
                             ),
-                            filled: true,
-                            fillColor: Colors.white,
-                          ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "Email Masih Kosong";
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
-                        child: Text(
-                          'Foto',
-                          style: TextStyle(
-                            fontFamily: 'Readex Pro',
-                            fontSize: 16,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return "Email Masih Kosong";
+                              }
+                              return null;
+                            },
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ElevatedButton(
-                              onPressed: _getImage,
-                              child: Text('Select Image'),
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
+                          child: Text(
+                            'Foto',
+                            style: TextStyle(
+                              fontFamily: 'Readex Pro',
+                              fontSize: 16,
                             ),
-                            TextFormField(
-                              controller: fotoInput,
-                              autofocus: true,
-                              obscureText: false,
-                              decoration: InputDecoration(
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color.fromARGB(255, 136, 135, 135),
-                                    width: 2,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ElevatedButton(
+                                onPressed: _getImage,
+                                child: Text('Select Image'),
+                              ),
+                              TextFormField(
+                                controller: fotoInput,
+                                autofocus: true,
+                                obscureText: false,
+                                decoration: InputDecoration(
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color.fromARGB(255, 136, 135, 135),
+                                      width: 2,
+                                    ),
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                  borderRadius: BorderRadius.circular(10),
+                                  filled: true,
+                                  fillColor: Colors.white,
                                 ),
-                                filled: true,
-                                fillColor: Colors.white,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return "Foto Masih Kosong";
+                                  }
+                                  return null;
+                                },
                               ),
-                              validator: (value) {
-                                if (value!.isEmpty) {
-                                  return "Foto Masih Kosong";
-                                }
-                                return null;
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
-                        child: Text(
-                          'Level',
-                          style: TextStyle(
-                            fontFamily: 'Readex Pro',
-                            fontSize: 16,
+                            ],
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
-                        child: DropdownButton<String?>(
-                          value: status,
-                          onChanged: (value) {
-                            setState(() {
-                              status = value;
-                            });
-                          },
-                          items: [
-                            "Admin",
-                            "Dosen",
-                          ]
-                              .map<DropdownMenuItem<String?>>(
-                                (e) => DropdownMenuItem(
-                                  child: Text(e.toString()),
-                                  value: e,
-                                ),
-                              )
-                              .toList(),
-                          isExpanded: true,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
-                        child: GestureDetector(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(vertical: 25.0),
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                if (formKey.currentState!.validate()) {
-                                  prosesData();
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                elevation: 5.0,
-                                padding: EdgeInsets.all(15.0),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                ),
-                                primary: Colors.blue[300],
-                              ),
-                              child: Text(
-                                'Update',
-                                style: TextStyle(
-                                  color: Color.fromARGB(255, 255, 255, 255),
-                                  letterSpacing: 1.5,
-                                  fontSize: 25.0,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'OpenSans',
-                                ),
-                              ),
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
+                          child: Text(
+                            'Level',
+                            style: TextStyle(
+                              fontFamily: 'Readex Pro',
+                              fontSize: 16,
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
+                          child: DropdownButton<String?>(
+                            value: status,
+                            onChanged: (value) {
+                              setState(() {
+                                status = value;
+                              });
+                            },
+                            items: [
+                              "Admin",
+                              "Dosen",
+                            ]
+                                .map<DropdownMenuItem<String?>>(
+                                  (e) => DropdownMenuItem(
+                                    child: Text(e.toString()),
+                                    value: e,
+                                  ),
+                                )
+                                .toList(),
+                            isExpanded: true,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
+                          child: GestureDetector(
+                            child: Container(
+                              padding: EdgeInsets.symmetric(vertical: 25.0),
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  if (formKey.currentState!.validate()) {
+                                    prosesData();
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  elevation: 5.0,
+                                  padding: EdgeInsets.all(15.0),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                  ),
+                                  primary: Colors.blue[300],
+                                ),
+                                child: Text(
+                                  'Update',
+                                  style: TextStyle(
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    letterSpacing: 1.5,
+                                    fontSize: 25.0,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'OpenSans',
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
