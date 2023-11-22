@@ -11,24 +11,40 @@ import 'dart:convert';
 
 import 'package:kompen/widget/login/login.dart';
 
-class TambahTugasWidget extends StatefulWidget {
-  const TambahTugasWidget({Key? key}) : super(key: key);
+class UpdateTugasWidget extends StatefulWidget {
+  final String? idtugas, judul_tugas, kategori, kuota, kompen, deskripsi;
+  const UpdateTugasWidget({Key? key, 
+    required this.idtugas,
+    required this.judul_tugas,
+    required this.kategori,
+    required this.kuota,
+    required this.kompen,
+    required this.deskripsi}) : super(key: key);
 
   @override
-  _TambahTugasWidgetState createState() => _TambahTugasWidgetState();
+  _UpdateTugasWidgetState createState() => _UpdateTugasWidgetState();
 }
 
-class _TambahTugasWidgetState extends State<TambahTugasWidget> {
+class _UpdateTugasWidgetState extends State<UpdateTugasWidget> {
   final formKey = GlobalKey<FormState>();
-  String? nip = '69439',kategori;
+  String? nip = '12134112',kategori, idtugas;
 
   TextEditingController judulInput = new TextEditingController();
   TextEditingController kuotaInput = new TextEditingController();
   TextEditingController kompenInput = new TextEditingController();
   TextEditingController deskripsiInput = new TextEditingController();
 
+  void _getData() async {
+    idtugas = widget.idtugas!.toString();
+    judulInput.text = widget.judul_tugas!.toString();
+    kategori = widget.kategori!.toString();
+    kuotaInput.text = widget.kuota!.toString();
+    kompenInput.text = widget.kompen!.toString();
+    deskripsiInput.text = widget.deskripsi!.toString();
+  }
+
   void prosesData() async {
-   ServicesTugas.addTugas(nip!, judulInput.text, kategori.toString(), kuotaInput.text, kompenInput.text,
+   ServicesTugas.updateTugas(idtugas!, judulInput.text, kategori.toString(), kuotaInput.text, kompenInput.text,
             deskripsiInput.text)
         .then(
       (result) {
@@ -38,7 +54,7 @@ class _TambahTugasWidgetState extends State<TambahTugasWidget> {
             builder: (context) {
               return AlertDialog(
                 title: Text("Konfirmasi Data"),
-                content: Text("Data user berhasil ditambahkan!!"),
+                content: Text("Data user berhasil diubah!!"),
                 actions: [
                   ElevatedButton(
                       onPressed: () {
@@ -84,7 +100,7 @@ class _TambahTugasWidgetState extends State<TambahTugasWidget> {
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
+    super.initState();_getData();
   }
 
   @override
