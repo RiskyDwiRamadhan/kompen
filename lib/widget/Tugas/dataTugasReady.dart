@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kompen/widget/Service/serviceNetwork.dart';
 import 'package:kompen/widget/Tugas/inputTugas.dart';
 import 'package:kompen/widget/Tugas/updateTugas.dart';
 import 'package:kompen/widget/Model/modelTugas.dart';
@@ -25,13 +26,12 @@ class _dataTugasReadyWidgetState extends State<dataTugasReadyWidget> {
       context,
       MaterialPageRoute(
         builder: (context) => UpdateTugasWidget(
-          idtugas: tugas.idTugas,
-          judul_tugas: tugas.judulTugas,
-          kategori: tugas.kategori,
-          kuota: tugas.kuota,
-          kompen: tugas.jumlahKompen,
-          deskripsi: tugas.deskripsi
-        ),
+            idtugas: tugas.idTugas,
+            judul_tugas: tugas.judulTugas,
+            kategori: tugas.kategori,
+            kuota: tugas.kuota,
+            kompen: tugas.jumlahKompen,
+            deskripsi: tugas.deskripsi),
       ),
     );
   }
@@ -194,21 +194,15 @@ class _dataTugasReadyWidgetState extends State<dataTugasReadyWidget> {
     });
     return tugas
         .where((tugas) =>
-            tugas.namad!
-                .toLowerCase()
-                .contains(cariInput.text.toLowerCase()) ||
+            tugas.namad!.toLowerCase().contains(cariInput.text.toLowerCase()) ||
             tugas.judulTugas!
                 .toLowerCase()
                 .contains(cariInput.text.toLowerCase()) ||
             tugas.kategori!
                 .toLowerCase()
                 .contains(cariInput.text.toLowerCase()) ||
-            tugas.tgl!
-                .toLowerCase()
-                .contains(cariInput.text.toLowerCase()) ||
-            tugas.kuota!
-                .toLowerCase()
-                .contains(cariInput.text.toLowerCase()) ||
+            tugas.tgl!.toLowerCase().contains(cariInput.text.toLowerCase()) ||
+            tugas.kuota!.toLowerCase().contains(cariInput.text.toLowerCase()) ||
             tugas.jumlahKompen!
                 .toLowerCase()
                 .contains(cariInput.text.toLowerCase()) ||
@@ -216,6 +210,11 @@ class _dataTugasReadyWidgetState extends State<dataTugasReadyWidget> {
                 .toLowerCase()
                 .contains(cariInput.text.toLowerCase()))
         .toList();
+  }
+
+  Future<void> _refreshData() async {
+    await _getData();
+    setState(() {});
   }
 
   @override
@@ -257,8 +256,10 @@ class _dataTugasReadyWidgetState extends State<dataTugasReadyWidget> {
         centerTitle: false,
         elevation: 2,
       ),
-      body: SingleChildScrollView(
-        child: Column(
+      body: RefreshIndicator(
+        onRefresh: _refreshData,
+        child: SingleChildScrollView(
+          child: Column(
             children: [
               Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(200, 10, 0, 0),
@@ -288,39 +289,40 @@ class _dataTugasReadyWidgetState extends State<dataTugasReadyWidget> {
               SizedBox(
                 width: double.infinity,
                 child: Column(
-                      children: [
-                        isLoading
-                            ? CircularProgressIndicator()
-                            : PaginatedDataTable(
-                                sortColumnIndex: sortIndex,
-                                sortAscending: isAscending,
-                                columns: [
-                                  DataColumn(label: Text('Foto')),
-                                  DataColumn(
-                                      onSort: onSort, label: Text('Pemberi Tugas')),
-                                  DataColumn(
-                                      onSort: onSort, label: Text('Judul Tugas')),
-                                  DataColumn(
-                                      onSort: onSort, label: Text('Kategori')),
-                                  DataColumn(onSort: onSort, label: Text('Tanggal')),
-                                  DataColumn(
-                                      onSort: onSort, label: Text('Kuota')),
-                                  DataColumn(
-                                      onSort: onSort, label: Text('Jumlah Kompen')),
-                                  DataColumn(
-                                      onSort: onSort, label: Text('Deskripsi')),
-                                ],
-                                source: TugasDataSource(
-                                  context: context,
-                                  tugas: getFilteredTugass(),
-                                ),
-                                rowsPerPage: 10,
-                              ),
-                      ],
-                    ),
-                  ),
+                  children: [
+                    isLoading
+                        ? CircularProgressIndicator()
+                        : PaginatedDataTable(
+                            sortColumnIndex: sortIndex,
+                            sortAscending: isAscending,
+                            dataRowMaxHeight:
+                                double.infinity, // Code to be changed.
+                            columns: [
+                              DataColumn(label: Text('Foto')),
+                              DataColumn(
+                                  onSort: onSort, label: Text('Pemberi Tugas')),
+                              DataColumn(
+                                  onSort: onSort, label: Text('Judul Tugas')),
+                              DataColumn(onSort: onSort, label: Text('Kategori')),
+                              DataColumn(onSort: onSort, label: Text('Tanggal')),
+                              DataColumn(onSort: onSort, label: Text('Kuota')),
+                              DataColumn(
+                                  onSort: onSort, label: Text('Jumlah Kompen')),
+                              DataColumn(
+                                  onSort: onSort, label: Text('Deskripsi')),
+                            ],
+                            source: TugasDataSource(
+                              context: context,
+                              tugas: getFilteredTugass(),
+                            ),
+                            rowsPerPage: 10,
+                          ),
+                  ],
+                ),
+              ),
             ],
           ),
+        ),
       ),
     );
   }
@@ -339,18 +341,20 @@ class TugasDataSource extends DataTableSource {
   DataRow getRow(int index) {
     final tugasData = tugas[index];
     return DataRow(cells: [
-      DataCell(Container(
-            height: 60,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: NetworkImage(
-                  'http://192.168.1.200/kompen/uploads/' + tugasData.fotod.toString(),
-                ),
+      DataCell(
+        Container(
+          height: 60,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              image: NetworkImage(
+                  serviceNetwork.foto + 
+                    tugasData.fotod.toString(),
               ),
             ),
           ),
+        ),
       ),
       DataCell(Text(tugasData.namad.toString())),
       DataCell(Text(tugasData.judulTugas.toString())),

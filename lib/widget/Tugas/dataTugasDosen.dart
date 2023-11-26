@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kompen/widget/AmbilTugas/InputAmbilTugas.dart';
+import 'package:kompen/widget/Service/serviceNetwork.dart';
 import 'package:kompen/widget/Tugas/inputTugas.dart';
 import 'package:kompen/widget/Tugas/updateTugas.dart';
 import 'package:kompen/widget/Model/modelTugas.dart';
@@ -272,6 +273,11 @@ class _dataTugasDosenWidgetState extends State<dataTugasDosenWidget> {
         .toList();
   }
 
+  Future<void> _refreshData() async {
+    await _getData();
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
@@ -311,75 +317,79 @@ class _dataTugasDosenWidgetState extends State<dataTugasDosenWidget> {
         centerTitle: false,
         elevation: 2,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(200, 10, 0, 0),
-              child: TextField(
-                controller: cariInput,
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.all(5.0),
-                  hintText: 'Pencarian Data',
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Color.fromARGB(255, 136, 135, 135),
-                      width: 2,
+      body: RefreshIndicator(
+        onRefresh: _refreshData,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(200, 10, 0, 0),
+                child: TextField(
+                  controller: cariInput,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(5.0),
+                    hintText: 'Pencarian Data',
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color.fromARGB(255, 136, 135, 135),
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    borderRadius: BorderRadius.circular(10),
+                    filled: true,
+                    fillColor: Colors.white,
                   ),
-                  filled: true,
-                  fillColor: Colors.white,
+                  onChanged: (string) {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    getFilteredTugass();
+                  },
                 ),
-                onChanged: (string) {
-                  setState(() {
-                    isLoading = true;
-                  });
-                  getFilteredTugass();
-                },
               ),
-            ),
-            SizedBox(
-              width: double.infinity,
-              child: Column(
-                children: [
-                  isLoading
-                      ? CircularProgressIndicator()
-                      : PaginatedDataTable(
-                          sortColumnIndex: sortIndex,
-                          sortAscending: isAscending,
-                          dataRowMaxHeight:
-                              double.infinity, // Code to be changed.
-                          dataRowMinHeight: 60,
-                          columns: [
-                            DataColumn(label: Text('Foto')),
-                            DataColumn(
-                                onSort: onSort, label: Text('Pemberi Tugas')),
-                            DataColumn(
-                                onSort: onSort, label: Text('Judul Tugas')),
-                            DataColumn(onSort: onSort, label: Text('Kategori')),
-                            DataColumn(onSort: onSort, label: Text('Tanggal')),
-                            DataColumn(onSort: onSort, label: Text('Kuota')),
-                            DataColumn(
-                                onSort: onSort, label: Text('Jumlah Kompen')),
-                            DataColumn(
-                                onSort: onSort, label: Text('Deskripsi')),
-                            DataColumn(label: Text('Action')),
-                          ],
-                          source: TugasDataSource(
-                            context: context,
-                            tugas: getFilteredTugass(),
-                            updateCallback: _postData,
-                            updateStatusTugasCallback: _updateStatus,
-                            deleteCallback: _deleteData,
-                            ambilTugasCallback: _ambilTugas,
+              SizedBox(
+                width: double.infinity,
+                child: Column(
+                  children: [
+                    isLoading
+                        ? CircularProgressIndicator()
+                        : PaginatedDataTable(
+                            sortColumnIndex: sortIndex,
+                            sortAscending: isAscending,
+                            dataRowMaxHeight:
+                                double.infinity, // Code to be changed.
+                            dataRowMinHeight: 60,
+                            columns: [
+                              DataColumn(label: Text('No')),
+                              DataColumn(label: Text('Foto')),
+                              DataColumn(
+                                  onSort: onSort, label: Text('Pemberi Tugas')),
+                              DataColumn(
+                                  onSort: onSort, label: Text('Judul Tugas')),
+                              DataColumn(onSort: onSort, label: Text('Kategori')),
+                              DataColumn(onSort: onSort, label: Text('Tanggal')),
+                              DataColumn(onSort: onSort, label: Text('Kuota')),
+                              DataColumn(
+                                  onSort: onSort, label: Text('Jumlah Kompen')),
+                              DataColumn(
+                                  onSort: onSort, label: Text('Deskripsi')),
+                              DataColumn(label: Text('Action')),
+                            ],
+                            source: TugasDataSource(
+                              context: context,
+                              tugas: getFilteredTugass(),
+                              updateCallback: _postData,
+                              updateStatusTugasCallback: _updateStatus,
+                              deleteCallback: _deleteData,
+                              ambilTugasCallback: _ambilTugas,
+                            ),
+                            rowsPerPage: 10,
                           ),
-                          rowsPerPage: 10,
-                        ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -405,17 +415,19 @@ class TugasDataSource extends DataTableSource {
 
   @override
   DataRow getRow(int index) {
+    final no = index + 1;
     final tugasData = tugas[index];
     return DataRow(cells: [
+      DataCell(Text(no.toString())),
       DataCell(
         Container(
-          height: 60,
+          height: 150,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             image: DecorationImage(
               fit: BoxFit.cover,
               image: NetworkImage(
-                'http://192.168.1.200/kompen/uploads/' +
+                  serviceNetwork.foto + 
                     tugasData.fotod.toString(),
               ),
             ),

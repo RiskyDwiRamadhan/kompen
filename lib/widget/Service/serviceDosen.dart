@@ -5,11 +5,11 @@ import 'package:http/http.dart'
 import 'package:kompen/widget/Model/modelDosen.dart';
 import 'dart:io';
 import 'package:async/async.dart';
+import 'package:kompen/widget/Service/serviceNetwork.dart';
 import 'package:path/path.dart' as path;
 
 class ServicesDosen {
-  static const ROOT = 'http://192.168.1.200/kompen/Dosen.php';
-  // static const ROOT = 'http://192.168.213.213/kompen/Dosen.php';
+  static const ROOT = serviceNetwork.dosen;
   static const _CREATE_TABLE_ACTION = 'CREATE_TABLE';
   static const _GET_ALL_ACTION = 'get_all';
   static const _GET_WHERE_ACTION = 'get_where';

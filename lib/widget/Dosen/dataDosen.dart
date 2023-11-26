@@ -3,6 +3,7 @@ import 'package:kompen/widget/Dosen/TambahDosen.dart';
 import 'package:kompen/widget/Dosen/updateDosen.dart';
 import 'package:kompen/widget/Model/modelDosen.dart';
 import 'package:kompen/widget/Service/serviceDosen.dart';
+import 'package:kompen/widget/Service/serviceNetwork.dart';
 
 class dataDosenWidget extends StatefulWidget {
   const dataDosenWidget({Key? key}) : super(key: key);
@@ -68,7 +69,9 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
                     }
                   },
                 );
-                _getData();
+                setState(() {
+                  _getData();
+                });
                 Navigator.of(context).pop();
               },
               child: Text('Ya'),
@@ -191,6 +194,11 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
         .toList();
   }
 
+  Future<void> _refreshData() async {
+    await _getData();
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
@@ -230,49 +238,49 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
         centerTitle: false,
         elevation: 2,
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(200, 10, 0, 0),
-            child: TextField(
-              controller: cariInput,
-              decoration: InputDecoration(
-                contentPadding: EdgeInsets.all(5.0),
-                hintText: 'Pencarian Data',
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Color.fromARGB(255, 136, 135, 135),
-                    width: 2,
+      body: RefreshIndicator(
+        onRefresh: _refreshData,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(200, 10, 0, 0),
+                child: TextField(
+                  controller: cariInput,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(5.0),
+                    hintText: 'Pencarian Data',
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color.fromARGB(255, 136, 135, 135),
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    filled: true,
+                    fillColor: Colors.white,
                   ),
-                  borderRadius: BorderRadius.circular(10),
+                  onChanged: (string) {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    getFilteredDosens();
+                  },
                 ),
-                filled: true,
-                fillColor: Colors.white,
               ),
-              onChanged: (string) {
-                setState(() {
-                  isLoading = true;
-                });
-                getFilteredDosens();
-              },
-            ),
-          ),
-          SizedBox(
-            width: double.infinity,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
+              SizedBox(
+                width: double.infinity,
                 child: Column(
                   children: [
                     isLoading
-                        ? CircularProgressIndicator()
-                        : DataTable(
+                        ? Center(child: CircularProgressIndicator())
+                        : PaginatedDataTable(
                             sortColumnIndex: sortIndex,
                             sortAscending: isAscending,
                             dataRowMaxHeight:
                                 double.infinity, // Code to be changed.
                             columns: [
+                              DataColumn(label: Text('No')),
                               DataColumn(label: Text('Foto')),
                               DataColumn(onSort: onSort, label: Text('Nama')),
                               DataColumn(
@@ -281,95 +289,124 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
                               DataColumn(onSort: onSort, label: Text('Level')),
                               DataColumn(label: Text('Action')),
                             ],
-                            rows: getFilteredDosens()
-                                .map((e) => DataRow(cells: [
-                                      DataCell(
-                                        Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: Container(
-                                            height: 100,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              image: DecorationImage(
-                                                fit: BoxFit.cover,
-                                                image: NetworkImage(
-                                                  'http://192.168.1.200/kompen/uploads/' +
-                                                      e.foto.toString(),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      DataCell(Text(e.namaLengkap.toString())),
-                                      DataCell(Text(e.username.toString())),
-                                      DataCell(Text(e.email.toString())),
-                                      DataCell(Text(e.level.toString())),
-                                      DataCell(
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Padding(
-                                              padding: EdgeInsetsDirectional
-                                                  .fromSTEB(0, 0, 0, 0),
-                                              child: GestureDetector(
-                                                child: Container(
-                                                  padding: EdgeInsets.symmetric(
-                                                      vertical: 0),
-                                                  width: 30,
-                                                  child: IconButton(
-                                                    icon: Icon(
-                                                      Icons.update,
-                                                      color: Colors.orange,
-                                                      size: 30,
-                                                    ),
-                                                    onPressed: () {
-                                                      _postData(e);
-                                                    },
-                                                    padding: EdgeInsets.all(0),
-                                                    color: Colors.orange[600],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsetsDirectional
-                                                  .fromSTEB(0, 0, 0, 0),
-                                              child: GestureDetector(
-                                                child: Container(
-                                                  padding: EdgeInsets.symmetric(
-                                                      vertical: 0),
-                                                  width: 30,
-                                                  child: IconButton(
-                                                    icon: Icon(
-                                                      Icons.delete,
-                                                      color: Colors.red,
-                                                      size: 30,
-                                                    ),
-                                                    onPressed: () {
-                                                      _deleteData(e);
-                                                    },
-                                                    padding: EdgeInsets.all(0),
-                                                    color: Colors.red[600],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ]))
-                                .toList(),
-                            dataRowMinHeight: 40,
+                            source: DataSource(
+                              context: context,
+                              dosen: getFilteredDosens(),
+                              updateCallback: _postData,
+                              deleteCallback: _deleteData,
+                            ),
+                            rowsPerPage: 10,
                           ),
                   ],
                 ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
+}
+
+class DataSource extends DataTableSource {
+  final List<Dosen> dosen;
+  final BuildContext context;
+  final Function(Dosen) updateCallback;
+  final Function(Dosen) deleteCallback;
+
+  DataSource({
+    required this.context,
+    required this.dosen,
+    required this.deleteCallback,
+    required this.updateCallback,
+  });
+
+  @override
+  DataRow getRow(int index) {
+    final no = index + 1;
+    final Data = dosen[index];
+    return DataRow(cells: [
+      DataCell(Text(no.toString())),
+      DataCell(
+        Container(
+          height: 80,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              image: NetworkImage(
+                serviceNetwork.foto + Data.foto.toString(),
+              ),
+            ),
+          ),
+        ),
+      ),
+      DataCell(Text(Data.namaLengkap.toString())),
+      DataCell(Text(Data.username.toString())),
+      DataCell(Text(Data.email.toString())),
+      DataCell(Text(Data.level.toString())),
+      DataCell(
+        Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+                  child: GestureDetector(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 0),
+                      width: 30,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.update,
+                          color: Colors.orange,
+                          size: 30,
+                        ),
+                        onPressed: () {
+                          updateCallback(Data);
+                        },
+                        padding: EdgeInsets.all(0),
+                        color: Colors.orange[600],
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+                  child: GestureDetector(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 0),
+                      width: 30,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                          size: 30,
+                        ),
+                        onPressed: () {
+                          deleteCallback(Data);
+                        },
+                        padding: EdgeInsets.all(0),
+                        color: Colors.red[600],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ]);
+  }
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => dosen.length;
+
+  @override
+  int get selectedRowCount => 0;
 }

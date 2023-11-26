@@ -5,11 +5,11 @@ import 'package:http/http.dart'
 import 'package:kompen/widget/Model/modelMahasiswa.dart';
 import 'dart:io';
 import 'package:async/async.dart';
+import 'package:kompen/widget/Service/serviceNetwork.dart';
 import 'package:path/path.dart' as path;
 
 class ServicesMahasiswa {
-  static const ROOT = 'http://192.168.1.200/kompen/Mahasiswa.php';
-  // static const ROOT = 'http://192.168.213.213/kompen/Mahasiswa.php';
+  static const ROOT = serviceNetwork.mahasiswa;
   static const _CREATE_TABLE_ACTION = 'CREATE_TABLE';
   static const _GET_ALL_ACTION = 'get_all';
   static const _GET_WHERE_ACTION = 'get_where';
@@ -22,6 +22,28 @@ class ServicesMahasiswa {
     try {
       var map = Map<String, dynamic>();
       map['action'] = _GET_ALL_ACTION;
+      final response = await http.post(Uri.parse(ROOT), body: map);
+      // final response = await http.get(Uri.parse('http://192.168.1.200/kompen/dataM.php'));
+      // final response = await http.get(Uri.parse('http://192.168.213.213/kompen/dataM.php'));
+      print('getMahasiswas Response: ${response.body}');
+      if (response.statusCode == 200) {
+        print(response.body.length);
+        print("Data ada banyak");
+      return compute(parseData, response.body);
+      } else {
+        throw Exception('Can\'t get data');
+      }
+    } catch (e) {
+      return <Mahasiswa>[]; // return an empty list on exception/error
+    }
+  }
+
+  // Menampilkan Semua Data
+  static Future<List<Mahasiswa>> getMahasiswa(int nim) async {
+    try {
+      var map = Map<String, dynamic>();
+      map['action'] = _GET_WHERE_ACTION;
+      map['nim'] = nim;
       final response = await http.post(Uri.parse(ROOT), body: map);
       // final response = await http.get(Uri.parse('http://192.168.1.200/kompen/dataM.php'));
       // final response = await http.get(Uri.parse('http://192.168.213.213/kompen/dataM.php'));

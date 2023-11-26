@@ -12,15 +12,16 @@ import 'package:kompen/widget/Tugas/updateTugas.dart';
 
 class dataAmbilTugasWidget extends StatefulWidget {
   final id_tugas;
-  const dataAmbilTugasWidget({Key? key, required this.id_tugas}) : super(key: key);
+  const dataAmbilTugasWidget({Key? key, required this.id_tugas})
+      : super(key: key);
 
   @override
   State<dataAmbilTugasWidget> createState() => _dataAmbilTugasWidgetState();
 }
 
 class _dataAmbilTugasWidgetState extends State<dataAmbilTugasWidget> {
-  List<AmbilTugas> tugas=[];
-  String idtugas="";
+  List<AmbilTugas> tugas = [];
+  String idtugas = "";
   int sortIndex = 0;
   bool isAscending = true;
   bool isLoading = false; // Track the loading state
@@ -44,7 +45,8 @@ class _dataAmbilTugasWidgetState extends State<dataAmbilTugasWidget> {
             ),
             ElevatedButton(
               onPressed: () {
-                ServicesAmbilTugas.updateTugas(ambilTugas.idTselesai.toString()).then(
+                ServicesAmbilTugas.updateTugas(ambilTugas.idTselesai.toString())
+                    .then(
                   (result) {
                     if ('success' == result) {
                       showDialog(
@@ -52,7 +54,8 @@ class _dataAmbilTugasWidgetState extends State<dataAmbilTugasWidget> {
                         builder: (context) {
                           return AlertDialog(
                             title: Text("Konfirmasi Data"),
-                            content: Text("Mahasiswa Telah Menyelesaikan Kompen!!"),
+                            content:
+                                Text("Mahasiswa Telah Menyelesaikan Kompen!!"),
                           );
                         },
                       );
@@ -88,7 +91,8 @@ class _dataAmbilTugasWidgetState extends State<dataAmbilTugasWidget> {
             ),
             ElevatedButton(
               onPressed: () {
-                ServicesAmbilTugas.deleteTugas(ambilTugas.idTselesai.toString()).then(
+                ServicesAmbilTugas.deleteTugas(ambilTugas.idTselesai.toString())
+                    .then(
                   (result) {
                     if ('success' == result) {
                       showDialog(
@@ -131,7 +135,7 @@ class _dataAmbilTugasWidgetState extends State<dataAmbilTugasWidget> {
               .compareTo(a.namam.toString().toLowerCase());
         }
       });
-    }  else if (sortIndex == 3) {
+    } else if (sortIndex == 3) {
       tugas.sort((a, b) {
         if (isAscending) {
           return a.tglSelesai
@@ -159,7 +163,7 @@ class _dataAmbilTugasWidgetState extends State<dataAmbilTugasWidget> {
               .compareTo(a.status.toString().toLowerCase());
         }
       });
-    } 
+    }
   }
 
   void onSort(columnIndex, ascending) {
@@ -172,7 +176,7 @@ class _dataAmbilTugasWidgetState extends State<dataAmbilTugasWidget> {
   _getData() async {
     setState(() {
       isLoading = true;
-    idtugas = widget.id_tugas!.toString();
+      idtugas = widget.id_tugas!.toString();
     });
     ServicesAmbilTugas.getAmbilTugass(idtugas).then(
       (result) {
@@ -204,86 +208,98 @@ class _dataAmbilTugasWidgetState extends State<dataAmbilTugasWidget> {
     return tugas
         .where((tugas) =>
             tugas.namam!.toLowerCase().contains(cariInput.text.toLowerCase()) ||
-            tugas.tglSelesai!.toLowerCase().contains(cariInput.text.toLowerCase()) ||
-            tugas.status!.toLowerCase().contains(cariInput.text.toLowerCase()) ||
+            tugas.tglSelesai!
+                .toLowerCase()
+                .contains(cariInput.text.toLowerCase()) ||
+            tugas.status!
+                .toLowerCase()
+                .contains(cariInput.text.toLowerCase()) ||
             tugas.jumlahKompen!
                 .toLowerCase()
                 .contains(cariInput.text.toLowerCase()))
         .toList();
   }
 
+  Future<void> _refreshData() async {
+    await _getData();
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
     tugas = [];
-    _getData();    
+    _getData();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      body: Column(
-            children: [
-              Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(200, 10, 0, 0),
-                child: TextField(
-                  controller: cariInput,
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.all(5.0),
-                    hintText: 'Pencarian Data',
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color.fromARGB(255, 136, 135, 135),
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
+      body: RefreshIndicator(
+        onRefresh: _refreshData,
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(200, 10, 0, 0),
+              child: TextField(
+                controller: cariInput,
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(5.0),
+                  hintText: 'Pencarian Data',
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color.fromARGB(255, 136, 135, 135),
+                      width: 2,
                     ),
-                    filled: true,
-                    fillColor: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  onChanged: (string) {
-                    setState(() {
-                      isLoading = true;
-                    });
-                    getFilteredTugass();
-                  },
+                  filled: true,
+                  fillColor: Colors.white,
                 ),
+                onChanged: (string) {
+                  setState(() {
+                    isLoading = true;
+                  });
+                  getFilteredTugass();
+                },
               ),
-              SizedBox(
-                child: Column(
-                  children: [
-                    isLoading
-                        ? CircularProgressIndicator()
-                        : PaginatedDataTable(
-                            sortColumnIndex: sortIndex,
-                            sortAscending: isAscending,
-                            dataRowMaxHeight:
-                                double.infinity, // Code to be changed.
-                            dataRowMinHeight: 60,
-                            columns: [
-                              DataColumn(label: Text('No')),
-                              DataColumn(
-                                  onSort: onSort, label: Text('Mahasiswa')),
-                              DataColumn(label: Text('Kompen')),
-                              DataColumn(onSort: onSort, label: Text('Tanggal')),
-                              DataColumn(onSort: onSort, label: Text('Status')),
-                              DataColumn(onSort: onSort, label: Text('Kuota')),
-                              DataColumn(label: Text('Action')),
-                            ],
-                            source: TugasDataSource(
-                              context: context,
-                              tugas: getFilteredTugass(),
-                              updateCallback: _postData,
-                              deleteCallback: _deleteData,
-                            ),
-                            rowsPerPage: 10,
+            ),
+            SizedBox(
+              child: Column(
+                children: [
+                  isLoading
+                      ? CircularProgressIndicator()
+                      : PaginatedDataTable(
+                          sortColumnIndex: sortIndex,
+                          sortAscending: isAscending,
+                          dataRowMaxHeight:
+                              double.infinity, // Code to be changed.
+                          dataRowMinHeight: 60,
+                          columns: [
+                            DataColumn(label: Text('No')),
+                            DataColumn(
+                                onSort: onSort, label: Text('Mahasiswa')),
+                            DataColumn(label: Text('Kompen')),
+                            DataColumn(onSort: onSort, label: Text('Tanggal')),
+                            DataColumn(onSort: onSort, label: Text('Status')),
+                            DataColumn(onSort: onSort, label: Text('Kuota')),
+                            DataColumn(label: Text('Action')),
+                          ],
+                          source: TugasDataSource(
+                            context: context,
+                            tugas: getFilteredTugass(),
+                            updateCallback: _postData,
+                            deleteCallback: _deleteData,
                           ),
-                  ],
-                ),
+                          rowsPerPage: 10,
+                        ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -303,7 +319,7 @@ class TugasDataSource extends DataTableSource {
 
   @override
   DataRow getRow(int index) {
-    final no = index+1;
+    final no = index + 1;
     final tugasData = tugas[index];
     return DataRow(cells: [
       DataCell(Text(no.toString())),

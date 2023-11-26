@@ -3,6 +3,7 @@ import 'package:kompen/widget/Mahasiswa/TambahMahasiswa.dart';
 import 'package:kompen/widget/Mahasiswa/updateMahasiswa.dart';
 import 'package:kompen/widget/Model/modelMahasiswa.dart';
 import 'package:kompen/widget/Service/serviceMahasiswa.dart';
+import 'package:kompen/widget/Service/serviceNetwork.dart';
 
 class dataMahasiswaWidget extends StatefulWidget {
   const dataMahasiswaWidget({Key? key}) : super(key: key);
@@ -71,7 +72,9 @@ class _dataMahasiswaWidgetState extends State<dataMahasiswaWidget> {
                     }
                   },
                 );
-                _getData();
+                setState(() {
+                  _getData();
+                });
                 Navigator.of(context).pop();
               },
               child: Text('Ya'),
@@ -111,7 +114,7 @@ class _dataMahasiswaWidgetState extends State<dataMahasiswaWidget> {
               .compareTo(a.thMasuk.toString().toLowerCase());
         }
       });
-    }else if (sortIndex == 3) {
+    } else if (sortIndex == 3) {
       mahasiswa.sort((a, b) {
         if (isAscending) {
           return a.prodi
@@ -139,7 +142,7 @@ class _dataMahasiswaWidgetState extends State<dataMahasiswaWidget> {
               .compareTo(a.email.toString().toLowerCase());
         }
       });
-    }else if (sortIndex == 5) {
+    } else if (sortIndex == 5) {
       mahasiswa.sort((a, b) {
         if (isAscending) {
           return a.noTelp
@@ -210,7 +213,7 @@ class _dataMahasiswaWidgetState extends State<dataMahasiswaWidget> {
     });
     return mahasiswa
         .where((mahasiswa) =>
-            mahasiswa.email!
+            mahasiswa.nim!
                 .toLowerCase()
                 .contains(cariInput.text.toLowerCase()) ||
             mahasiswa.namaLengkap!
@@ -232,6 +235,11 @@ class _dataMahasiswaWidgetState extends State<dataMahasiswaWidget> {
                 .toLowerCase()
                 .contains(cariInput.text.toLowerCase()))
         .toList();
+  }
+
+  Future<void> _refreshData() async {
+    await _getData();
+    setState(() {});
   }
 
   @override
@@ -273,47 +281,49 @@ class _dataMahasiswaWidgetState extends State<dataMahasiswaWidget> {
         centerTitle: false,
         elevation: 2,
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(200, 10, 0, 0),
-            child: TextField(
-              controller: cariInput,
-              decoration: InputDecoration(
-                contentPadding: EdgeInsets.all(5.0),
-                hintText: 'Pencarian Data',
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Color.fromARGB(255, 136, 135, 135),
-                    width: 2,
+      body: RefreshIndicator(
+        onRefresh: _refreshData,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(200, 10, 0, 0),
+                child: TextField(
+                  controller: cariInput,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(5.0),
+                    hintText: 'Pencarian Data',
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color.fromARGB(255, 136, 135, 135),
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    filled: true,
+                    fillColor: Colors.white,
                   ),
-                  borderRadius: BorderRadius.circular(10),
+                  onChanged: (string) {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    getFilteredMahasiswas();
+                  },
                 ),
-                filled: true,
-                fillColor: Colors.white,
               ),
-              onChanged: (string) {
-                setState(() {
-                  isLoading = true;
-                });
-                getFilteredMahasiswas();
-              },
-            ),
-          ),
-          SizedBox(
-            width: double.infinity,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
+              SizedBox(
+                width: double.infinity,
                 child: Column(
                   children: [
                     isLoading
-                        ? CircularProgressIndicator()
-                        : DataTable(
+                        ? Center(child: CircularProgressIndicator())
+                        : PaginatedDataTable(
                             sortColumnIndex: sortIndex,
                             sortAscending: isAscending,
+                            dataRowMaxHeight:
+                                double.infinity, // Code to be changed.
                             columns: [
+                              DataColumn(label: Text('No')),
                               DataColumn(label: Text('Foto')),
                               DataColumn(onSort: onSort, label: Text('Nama')),
                               DataColumn(
@@ -327,96 +337,125 @@ class _dataMahasiswaWidgetState extends State<dataMahasiswaWidget> {
                                   onSort: onSort, label: Text('Username')),
                               DataColumn(label: Text('Action')),
                             ],
-                            rows: getFilteredMahasiswas()
-                                .map((e) => DataRow(cells: [
-                                      DataCell(
-                                        Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: Container(
-                                            height: 600,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              image: DecorationImage(
-                                                fit: BoxFit.cover,
-                                                image: NetworkImage(
-                                                  'http://192.168.1.200/kompen/uploads/' +
-                                                      e.foto.toString(),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      DataCell(Text(e.namaLengkap.toString())),
-                                      DataCell(Text(e.thMasuk.toString())),
-                                      DataCell(Text(e.prodi.toString())),
-                                      DataCell(Text(e.email.toString())),
-                                      DataCell(Text(e.noTelp.toString())),
-                                      DataCell(Text(e.username.toString())),
-                                      DataCell(
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Padding(
-                                              padding: EdgeInsetsDirectional
-                                                  .fromSTEB(0, 0, 0, 0),
-                                              child: GestureDetector(
-                                                child: Container(
-                                                  padding: EdgeInsets.symmetric(
-                                                      vertical: 0),
-                                                  width: 30,
-                                                  child: IconButton(
-                                                    icon: Icon(
-                                                      Icons.update,
-                                                      color: Colors.orange,
-                                                      size: 30,
-                                                    ),
-                                                    onPressed: () {
-                                                      _postData(e);
-                                                    },
-                                                    padding: EdgeInsets.all(0),
-                                                    color: Colors.orange[600],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsetsDirectional
-                                                  .fromSTEB(0, 0, 0, 0),
-                                              child: GestureDetector(
-                                                child: Container(
-                                                  padding: EdgeInsets.symmetric(
-                                                      vertical: 0),
-                                                  width: 30,
-                                                  child: IconButton(
-                                                    icon: Icon(
-                                                      Icons.delete,
-                                                      color: Colors.red,
-                                                      size: 30,
-                                                    ),
-                                                    onPressed: () {
-                                                      _deleteData(e);
-                                                    },
-                                                    padding: EdgeInsets.all(0),
-                                                    color: Colors.red[600],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ]))
-                                .toList(),
+                            source: DataSource(
+                              context: context,
+                              mahasiswa: getFilteredMahasiswas(),
+                              updateCallback: _postData,
+                              deleteCallback: _deleteData,
+                            ),
+                            rowsPerPage: 10,
                           ),
                   ],
                 ),
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
+}
+
+class DataSource extends DataTableSource {
+  final List<Mahasiswa> mahasiswa;
+  final BuildContext context;
+  final Function(Mahasiswa) updateCallback;
+  final Function(Mahasiswa) deleteCallback;
+
+  DataSource({
+    required this.context,
+    required this.mahasiswa,
+    required this.deleteCallback,
+    required this.updateCallback,
+  });
+
+  @override
+  DataRow getRow(int index) {
+    final no = index + 1;
+    final Data = mahasiswa[index];
+    return DataRow(cells: [
+      DataCell(Text(no.toString())),
+      DataCell(Container(
+            height: 80,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                fit: BoxFit.cover,
+                image: NetworkImage(                  
+                  serviceNetwork.foto + Data.foto.toString(),
+                ),
+              ),
+            ),
+        ),
+      ),
+      DataCell(Text(Data.namaLengkap.toString())),
+      DataCell(Text(Data.thMasuk.toString())),
+      DataCell(Text(Data.prodi.toString())),
+      DataCell(Text(Data.email.toString())),
+      DataCell(Text(Data.noTelp.toString())),
+      DataCell(Text(Data.username.toString())),
+      DataCell(
+        Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+                  child: GestureDetector(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 0),
+                      width: 30,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.update,
+                          color: Colors.orange,
+                          size: 30,
+                        ),
+                        onPressed: () {
+                          updateCallback(Data);
+                        },
+                        padding: EdgeInsets.all(0),
+                        color: Colors.orange[600],
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+                  child: GestureDetector(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 0),
+                      width: 30,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                          size: 30,
+                        ),
+                        onPressed: () {
+                          deleteCallback(Data);
+                        },
+                        padding: EdgeInsets.all(0),
+                        color: Colors.red[600],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ]);
+  }
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get rowCount => mahasiswa.length;
+
+  @override
+  int get selectedRowCount => 0;
 }
