@@ -108,7 +108,7 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
               .compareTo(a.username.toString().toLowerCase());
         }
       });
-    }else if (sortIndex == 3) {
+    } else if (sortIndex == 3) {
       dosen.sort((a, b) {
         if (isAscending) {
           return a.email
@@ -122,7 +122,7 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
               .compareTo(a.email.toString().toLowerCase());
         }
       });
-    }else if (sortIndex == 4) {
+    } else if (sortIndex == 4) {
       dosen.sort((a, b) {
         if (isAscending) {
           return a.level
@@ -179,9 +179,7 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
     });
     return dosen
         .where((dosen) =>
-            dosen.nip!
-                .toLowerCase()
-                .contains(cariInput.text.toLowerCase()) ||
+            dosen.nip!.toLowerCase().contains(cariInput.text.toLowerCase()) ||
             dosen.namaLengkap!
                 .toLowerCase()
                 .contains(cariInput.text.toLowerCase()) ||
@@ -272,8 +270,10 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
                         : DataTable(
                             sortColumnIndex: sortIndex,
                             sortAscending: isAscending,
+                            dataRowMaxHeight:
+                                double.infinity, // Code to be changed.
                             columns: [
-                              DataColumn( label: Text('Foto')),
+                              DataColumn(label: Text('Foto')),
                               DataColumn(onSort: onSort, label: Text('Nama')),
                               DataColumn(
                                   onSort: onSort, label: Text('Username')),
@@ -287,7 +287,7 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
                                         Padding(
                                           padding: const EdgeInsets.all(10.0),
                                           child: Container(
-                                            height: 600,
+                                            height: 100,
                                             decoration: BoxDecoration(
                                               shape: BoxShape.circle,
                                               image: DecorationImage(
@@ -361,6 +361,7 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
                                       ),
                                     ]))
                                 .toList(),
+                            dataRowMinHeight: 40,
                           ),
                   ],
                 ),

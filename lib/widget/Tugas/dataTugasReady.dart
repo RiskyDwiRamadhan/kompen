@@ -309,13 +309,10 @@ class _dataTugasReadyWidgetState extends State<dataTugasReadyWidget> {
                                       onSort: onSort, label: Text('Jumlah Kompen')),
                                   DataColumn(
                                       onSort: onSort, label: Text('Deskripsi')),
-                                  DataColumn(
-                                      onSort: onSort, label: Text('Aksi')),
                                 ],
                                 source: TugasDataSource(
                                   context: context,
                                   tugas: getFilteredTugass(),
-                                  deleteCallback: _deleteData,
                                 ),
                                 rowsPerPage: 10,
                               ),
@@ -332,12 +329,10 @@ class _dataTugasReadyWidgetState extends State<dataTugasReadyWidget> {
 class TugasDataSource extends DataTableSource {
   final List<Tugas> tugas;
   final BuildContext context;
-  final Function(Tugas) deleteCallback;
 
   TugasDataSource({
     required this.context,
     required this.tugas,
-    required this.deleteCallback,
   });
 
   @override
@@ -364,12 +359,6 @@ class TugasDataSource extends DataTableSource {
       DataCell(Text(tugasData.kuota.toString())),
       DataCell(Text(tugasData.jumlahKompen.toString())),
       DataCell(Text(tugasData.deskripsi.toString())),
-      DataCell(
-        IconButton(
-          icon: Icon(Icons.delete),
-          onPressed: () => deleteCallback(tugasData),
-        ),
-      ),
     ]);
   }
 

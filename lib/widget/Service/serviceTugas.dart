@@ -6,17 +6,17 @@ import 'package:kompen/widget/Model/modelTugas.dart';
 import 'dart:io';
 import 'package:async/async.dart';
 import 'package:path/path.dart' as path;
+import 'package:kompen/widget/Service/serviceNetwork.dart';
 
 class ServicesTugas {
-  static const ROOT = 'http://192.168.1.200/kompen/Tugas.php';
-  // static const ROOT = 'http://192.168.213.213/kompen/Tugas.php';
-  static const _CREATE_TABLE_ACTION = 'CREATE_TABLE';
+  static const ROOT = serviceNetwork.tugas;
   static const _GET_ALL_ACTION = 'get_all';
   static const _GET_READY_ACTION = 'get_ready';
-  static const _GET_NIP_ACTION = 'get_nip';
+  static const _GET_NIP_ACTION = 'where_nip';
   static const _GET_WHERE_ACTION = 'get_where';
   static const _ADD_ACTION = 'add_data';
   static const _UPDATE_ACTION = 'update';
+  static const _UPDATE_STATUS_ACTION = 'update_status';
   static const _DELETE_ACTION = 'Delete';
 
   // Menampilkan Semua Data
@@ -123,6 +123,26 @@ class ServicesTugas {
       request.fields['kuota'] = kuota;
       request.fields['jumlah_kompen'] = kompen;
       request.fields['deskripsi'] = deskripsi;
+
+      var response = await request.send();
+      if (response.statusCode > 2) {
+        return "success";
+      } else {
+        return "error";
+      }
+    } catch (e) {
+      return "error";
+    }
+  }
+  
+  // Update Status Tugas
+  static Future<String> updateStatusTugas(String idtugas) async {
+    try {
+      var uri = Uri.parse(ROOT);
+      final request = http.MultipartRequest("POST",uri);
+      
+      request.fields['action'] = _UPDATE_STATUS_ACTION;
+      request.fields['id_tugas'] = idtugas;
 
       var response = await request.send();
       if (response.statusCode > 2) {
