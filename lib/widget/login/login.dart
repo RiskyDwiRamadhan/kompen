@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:kompen/widget/Service/serviceUser.dart';
 import 'package:kompen/widget/dashboard/dashboard.dart';
 import 'package:kompen/widget/dashboard/dashboardD.dart';
 import 'package:kompen/widget/dashboard/dashboardM.dart';
+import 'package:kompen/widget/Model/modelUser.dart';
 import 'package:kompen/widget/login/register.dart';
 
 class LoginWidget extends StatefulWidget {
@@ -15,6 +17,7 @@ class LoginWidget extends StatefulWidget {
 }
 
 class _LoginWidgetState extends State<LoginWidget> {
+  List<User> dataUser = [];
   String? username, password, status, nTabel;
   final formKey = GlobalKey<FormState>();
 
@@ -22,104 +25,75 @@ class _LoginWidgetState extends State<LoginWidget> {
   TextEditingController passwordInput = new TextEditingController();
 
   void prosesLogin() async {
-    var dataUser;
     // pilihan DropDown Dosen dan Mahasiswa
     if (nTabel == "Dosen" || nTabel == "Admin") {
-      final response = await http.post(
-          // Uri.parse("http://192.168.1.200/kompen/login.php"),
-          Uri.parse("http://192.168.213.213/kompen/login.php"),
-          body: {
-            "username": usernameInput.text,
-            "password": passwordInput.text
-          });
-
-      dataUser = json.decode(response.body);
-
-      if (dataUser.length < 1) {
-        setState(() {
-          showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text("Konfirmasi Login"),
-                  content: Text("Data user tidak ada!!"),
-                  actions: [
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Text('OK'))
-                  ],
-                );
-              });
-          print("data user tidak ada");
-        });
-      } else {
-        setState(
-          () {
-            username = dataUser[0]["username"];
-            password = dataUser[0]["password"];
-            status = dataUser[0]["level"];
-          },
-        );
-        if (status == "admin") {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => DashboardWidget()),
-            (Route) => false,
-          );
-        } else if (status == "dosen") {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => DashboardDWidget()),
-            (Route) => false,
-          );
-        }
-      }
-      // pilihan Mahasiswa
-    } else {
-      final response = await http.post(
-          // Uri.parse("http://192.168.1.200/kompen/login.php"),
-          Uri.parse("http://192.168.213.213/kompen/loginM.php"),
-          body: {
-            "username": usernameInput.text,
-            "password": passwordInput.text
-          });
-
-      dataUser = json.decode(response.body);
-      if (dataUser.length < 1) {
-        setState(() {
-          showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text("Konfirmasi Login"),
-                  content: Text("Data user tidak ada!!"),
-                  actions: [
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Text('OK'))
-                  ],
-                );
-              });
-          print("data user tidak ada");
-        });
-      } else {
-        setState(
-          () {
-            username = dataUser[0]["username"];
-            password = dataUser[0]["password"];
-            status = dataUser[0]["level"];
-          },
-        );
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => DashboardMWidget()),
-          (Route) => false,
-        );
-      }
+      ServicesUser.getDosen(usernameInput.text, passwordInput.text).then(
+        (result) {
+          if (result.length < 1) {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text("Konfirmasi Login"),
+                    content: Text("Data user tidak ada!!"),
+                    actions: [
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('OK'))
+                    ],
+                  );
+                });
+          } else {
+            print("data ada" + result[0].status!);
+            if (result[0].status! == "Admin") {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => DashboardWidget()),
+                (Route) => false,
+              );
+            } else if (result[0].status! == "Dosen") {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => DashboardDWidget()),
+                (Route) => false,
+              );
+            }
+          }
+        },
+      );
+    }else{
+ ServicesUser.getMahasiswa(usernameInput.text, passwordInput.text).then(
+        (result) {
+          if (result.length < 1) {
+            showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text("Konfirmasi Login"),
+                    content: Text("Data user tidak ada!!"),
+                    actions: [
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Text('OK'))
+                    ],
+                  );
+                });
+          } else {
+            print("data ada" + result[0].status!);
+            if (result[0].status! == "Mahasiswa") {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => DashboardMWidget()),
+                (Route) => false,
+              );
+            }
+          }
+        },
+      );
     }
   }
 
@@ -352,30 +326,30 @@ class _LoginWidgetState extends State<LoginWidget> {
                               padding: EdgeInsets.symmetric(vertical: 25.0),
                               width: double.infinity,
                               child: ElevatedButton(
-                              onPressed: () {
-                                if (formKey.currentState!.validate()) {
-                                  prosesLogin();
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                elevation: 5.0,
-                                padding: EdgeInsets.all(15.0),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
+                                onPressed: () {
+                                  if (formKey.currentState!.validate()) {
+                                    prosesLogin();
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  elevation: 5.0,
+                                  padding: EdgeInsets.all(15.0),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                  ),
+                                  primary: Colors.blue[300],
                                 ),
-                                primary: Colors.blue[300],
-                              ),
-                              child: Text(
-                                'SignIn',
-                                style: TextStyle(
-                                  color: Color.fromARGB(255, 255, 255, 255),
-                                  letterSpacing: 1.5,
-                                  fontSize: 25.0,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'OpenSans',
+                                child: Text(
+                                  'SignIn',
+                                  style: TextStyle(
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    letterSpacing: 1.5,
+                                    fontSize: 25.0,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'OpenSans',
+                                  ),
                                 ),
                               ),
-                            ),
                             ),
                           ),
                         ),
