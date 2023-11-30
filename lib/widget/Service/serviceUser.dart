@@ -13,9 +13,8 @@ class ServicesUser {
   static const _CREATE_TABLE_ACTION = 'CREATE_TABLE';
   static const _GET_DOSEN_ACTION = 'get_dosen';
   static const _GET_MAHASISWA_ACTION = 'get_mahasiswa';
-  static const _ADD_ACTION = 'add_data';
-  static const _UPDATE_ACTION = 'update';
-  static const _DELETE_ACTION = 'Delete';
+  static const _UPDATE_DOSEN = 'update_dosen';
+  static const _UPDATE_MAHASISWA = 'update_mahasiswa';
 
   // Menampilkan Data Dosen
   static Future<List<User>> getDosen(String username, String password) async {
@@ -67,4 +66,40 @@ class ServicesUser {
     return Users;
   }
 
+  // Update Data User
+  static Future<String> updateUser(String idUser, String nama, String username,
+      String password, String email, String no_telp, File foto, String status) async {
+    try {
+      var uri = Uri.parse(ROOT);
+      final request = http.MultipartRequest("POST",uri);
+      if (status == "Mahasiswa") {
+      request.fields['action'] = _UPDATE_MAHASISWA;
+      }else{
+      request.fields['action'] = _UPDATE_DOSEN;
+      }
+      request.fields['idUser'] = idUser;
+      request.fields['nama'] = nama;
+      request.fields['username'] = username;
+      request.fields['password'] = password;
+      request.fields['email'] = email;
+      request.fields['no_telp'] = no_telp;
+      
+    if (foto != null) {
+      var stream = http.ByteStream(DelegatingStream.typed(foto.openRead()));
+      var length = await foto.length();
+      
+      request.files.add(http.MultipartFile("foto", stream, length,
+          filename: path.basename(foto.path)));
+    }
+
+      var response = await request.send();
+      if (response.statusCode == 200) {
+        return "success";
+      } else {
+        return "error";
+      }
+    } catch (e) {
+      return "error";
+    }
+  }
 }

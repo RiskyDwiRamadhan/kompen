@@ -2,12 +2,15 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:kompen/widget/Service/authProvider.dart';
 import 'package:kompen/widget/Service/serviceUser.dart';
 import 'package:kompen/widget/dashboard/dashboard.dart';
 import 'package:kompen/widget/dashboard/dashboardD.dart';
 import 'package:kompen/widget/dashboard/dashboardM.dart';
 import 'package:kompen/widget/Model/modelUser.dart';
 import 'package:kompen/widget/login/register.dart';
+import 'package:kompen/widget/users/profile.dart';
+import 'package:provider/provider.dart';
 
 class LoginWidget extends StatefulWidget {
   const LoginWidget({Key? key}) : super(key: key);
@@ -56,15 +59,16 @@ class _LoginWidgetState extends State<LoginWidget> {
             } else if (result[0].status! == "Dosen") {
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => DashboardDWidget()),
+                MaterialPageRoute(
+                    builder: (context) => ProfileWidget(user: result[0])),
                 (Route) => false,
               );
             }
           }
         },
       );
-    }else{
- ServicesUser.getMahasiswa(usernameInput.text, passwordInput.text).then(
+    } else {
+      ServicesUser.getMahasiswa(usernameInput.text, passwordInput.text).then(
         (result) {
           if (result.length < 1) {
             showDialog(
