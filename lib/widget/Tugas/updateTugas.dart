@@ -4,22 +4,22 @@ import 'package:flutter/services.dart';
 import 'package:flutter/scheduler.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
+import 'package:kompen/widget/Model/modelTugas.dart';
+import 'package:kompen/widget/Model/modelUser.dart';
 import 'package:kompen/widget/Service/serviceMahasiswa.dart';
 import 'package:kompen/widget/Service/serviceTugas.dart';
 import 'package:kompen/widget/Tugas/dataTugasDosen.dart';
+import 'package:kompen/widget/componen/navigatorDrawer.dart';
 import 'dart:convert';
 
 import 'package:kompen/widget/login/login.dart';
 
 class UpdateTugasWidget extends StatefulWidget {
-  final String? idtugas, judul_tugas, kategori, kuota, kompen, deskripsi;
+  final User user;
+  final Tugas tugas;
   const UpdateTugasWidget({Key? key, 
-    required this.idtugas,
-    required this.judul_tugas,
-    required this.kategori,
-    required this.kuota,
-    required this.kompen,
-    required this.deskripsi}) : super(key: key);
+    required this.user,
+    required this.tugas,}) : super(key: key);
 
   @override
   _UpdateTugasWidgetState createState() => _UpdateTugasWidgetState();
@@ -27,20 +27,24 @@ class UpdateTugasWidget extends StatefulWidget {
 
 class _UpdateTugasWidgetState extends State<UpdateTugasWidget> {
   final formKey = GlobalKey<FormState>();
-  String? nip = '12134112',kategori, idtugas;
+  String? nip = '',kategori, idtugas;
 
   TextEditingController judulInput = new TextEditingController();
   TextEditingController kuotaInput = new TextEditingController();
   TextEditingController kompenInput = new TextEditingController();
   TextEditingController deskripsiInput = new TextEditingController();
 
+  late User user;
+
   void _getData() async {
-    idtugas = widget.idtugas!.toString();
-    judulInput.text = widget.judul_tugas!.toString();
-    kategori = widget.kategori!.toString();
-    kuotaInput.text = widget.kuota!.toString();
-    kompenInput.text = widget.kompen!.toString();
-    deskripsiInput.text = widget.deskripsi!.toString();
+    user = widget.user;
+    nip = widget.user.idUser;
+    idtugas = widget.tugas.idTugas!.toString();
+    judulInput.text = widget.tugas.judulTugas!.toString();
+    kategori = widget.tugas.kategori!.toString();
+    kuotaInput.text = widget.tugas.kuota!.toString();
+    kompenInput.text = widget.tugas.jumlahKompen!.toString();
+    deskripsiInput.text = widget.tugas.deskripsi!.toString();
   }
 
   void prosesData() async {
@@ -66,7 +70,7 @@ class _UpdateTugasWidgetState extends State<UpdateTugasWidget> {
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => dataTugasDosenWidget()));
+                                builder: (context) => dataTugasDosenWidget(user: user,)));
                       },
                       child: Text('OK'))
                 ],
@@ -108,9 +112,11 @@ class _UpdateTugasWidgetState extends State<UpdateTugasWidget> {
     return GestureDetector(
       child: Scaffold(
         backgroundColor: Color.fromRGBO(255, 255, 255, 1),
+        drawer: NavigationDrawerWidget(
+          user: user,
+        ),
         appBar: AppBar(
           backgroundColor: Color.fromRGBO(16, 6, 148, 1),
-          automaticallyImplyLeading: false,
           title: Text(
             'Input Tugas',
             style: TextStyle(

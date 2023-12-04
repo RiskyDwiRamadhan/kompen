@@ -1,12 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:kompen/widget/Dosen/TambahDosen.dart';
+import 'package:kompen/widget/Dosen/tambahDosen.dart';
 import 'package:kompen/widget/Dosen/updateDosen.dart';
 import 'package:kompen/widget/Model/modelDosen.dart';
+import 'package:kompen/widget/Model/modelUser.dart';
 import 'package:kompen/widget/Service/serviceDosen.dart';
 import 'package:kompen/widget/Service/serviceNetwork.dart';
+import 'package:kompen/widget/componen/navigatorDrawer.dart';
 
 class dataDosenWidget extends StatefulWidget {
-  const dataDosenWidget({Key? key}) : super(key: key);
+  final User user;
+  const dataDosenWidget({Key? key, required this.user}) : super(key: key);
 
   @override
   State<dataDosenWidget> createState() => _dataDosenWidgetState();
@@ -20,19 +25,36 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
   String searchText = "";
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   TextEditingController cariInput = new TextEditingController();
+  late User user;
+  File? _image;
+  String id_user = "",
+      status = "",
+      nama = "",
+      noTelp = "",
+      password = "",
+      username = "",
+      email = "",
+      foto = "";
+
+  void _getUser() async {
+    user = widget.user;
+    id_user = user.idUser.toString();
+    nama = user.namaLengkap!.toString();
+    noTelp = user.noTelp!.toString();
+    password = user.password!.toString();
+    username = user.username!.toString();
+    email = user.email!.toString();
+    foto = user.foto!.toString();
+    status = user.status!.toString();
+  }
 
   _postData(Dosen dosen) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => UpdateDosenWidget(
-          nip: dosen.nip,
-          namaLengkap: dosen.namaLengkap,
-          username: dosen.username,
-          password: dosen.password,
-          email: dosen.email,
-          foto: dosen.foto,
-          level: dosen.level,
+          user: user,
+          dosen: dosen,
         ),
       ),
     );
@@ -204,6 +226,7 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
     super.initState();
     dosen = [];
     _getData();
+    _getUser();
   }
 
   @override
@@ -212,8 +235,14 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
       key: _scaffoldKey,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => TambahDosenWidget()));
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => TambahDosenWidget(
+                user: user,
+              ),
+            ),
+          );
         },
         backgroundColor: Color.fromRGBO(16, 6, 148, 1),
         elevation: 8,
@@ -223,9 +252,11 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
           size: 24,
         ),
       ),
+      drawer: NavigationDrawerWidget(
+        user: user,
+      ),
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(16, 6, 148, 1),
-        automaticallyImplyLeading: false,
         title: Text(
           'Data Dosen',
           style: TextStyle(

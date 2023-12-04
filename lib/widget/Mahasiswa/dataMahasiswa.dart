@@ -1,12 +1,20 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:kompen/widget/Mahasiswa/TambahMahasiswa.dart';
+import 'package:kompen/widget/Mahasiswa/tambahMahasiswa.dart';
 import 'package:kompen/widget/Mahasiswa/updateMahasiswa.dart';
 import 'package:kompen/widget/Model/modelMahasiswa.dart';
+import 'package:kompen/widget/Model/modelUser.dart';
 import 'package:kompen/widget/Service/serviceMahasiswa.dart';
 import 'package:kompen/widget/Service/serviceNetwork.dart';
+import 'package:kompen/widget/componen/navigatorDrawer.dart';
 
 class dataMahasiswaWidget extends StatefulWidget {
-  const dataMahasiswaWidget({Key? key}) : super(key: key);
+  final User user;
+  const dataMahasiswaWidget({
+    Key? key,
+    required this.user,
+  }) : super(key: key);
 
   @override
   State<dataMahasiswaWidget> createState() => _dataMahasiswaWidgetState();
@@ -21,20 +29,23 @@ class _dataMahasiswaWidgetState extends State<dataMahasiswaWidget> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   TextEditingController cariInput = new TextEditingController();
 
+  late User user;
+  File? _image;
+  String id_user = "", status = "";
+
+  void _getUser() async {
+    user = widget.user;
+    id_user = user.idUser.toString();
+    status = user.status!.toString();
+  }
+
   _postData(Mahasiswa mahasiswa) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => UpdateMahasiswaWidget(
-          nim: mahasiswa.nim,
-          namaLengkap: mahasiswa.namaLengkap,
-          no_telp: mahasiswa.noTelp,
-          th_masuk: mahasiswa.thMasuk,
-          username: mahasiswa.username,
-          password: mahasiswa.password,
-          email: mahasiswa.email,
-          foto: mahasiswa.foto,
-          prodi: mahasiswa.prodi,
+          user: user,
+          mahasiswa: mahasiswa,
         ),
       ),
     );
@@ -247,6 +258,7 @@ class _dataMahasiswaWidgetState extends State<dataMahasiswaWidget> {
     super.initState();
     mahasiswa = [];
     _getData();
+    _getUser();
   }
 
   @override
@@ -256,7 +268,7 @@ class _dataMahasiswaWidgetState extends State<dataMahasiswaWidget> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (context) => TambahMahasiswaWidget()));
+              MaterialPageRoute(builder: (context) => TambahMahasiswaWidget(user: user,)));
         },
         backgroundColor: Color.fromRGBO(16, 6, 148, 1),
         elevation: 8,
@@ -266,9 +278,11 @@ class _dataMahasiswaWidgetState extends State<dataMahasiswaWidget> {
           size: 24,
         ),
       ),
+      drawer: NavigationDrawerWidget(
+        user: user,
+      ),
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(16, 6, 148, 1),
-        automaticallyImplyLeading: false,
         title: Text(
           'Data Mahasiswa',
           style: TextStyle(
@@ -375,17 +389,18 @@ class DataSource extends DataTableSource {
     final Data = mahasiswa[index];
     return DataRow(cells: [
       DataCell(Text(no.toString())),
-      DataCell(Container(
-            height: 80,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: NetworkImage(                  
-                  serviceNetwork.foto + Data.foto.toString(),
-                ),
+      DataCell(
+        Container(
+          height: 80,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              image: NetworkImage(
+                serviceNetwork.foto + Data.foto.toString(),
               ),
             ),
+          ),
         ),
       ),
       DataCell(Text(Data.namaLengkap.toString())),

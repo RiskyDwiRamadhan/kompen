@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:kompen/widget/Service/authProvider.dart';
 import 'package:kompen/widget/Service/serviceUser.dart';
 import 'package:kompen/widget/dashboard/dashboard.dart';
 import 'package:kompen/widget/dashboard/dashboardD.dart';
@@ -10,7 +9,6 @@ import 'package:kompen/widget/dashboard/dashboardM.dart';
 import 'package:kompen/widget/Model/modelUser.dart';
 import 'package:kompen/widget/login/register.dart';
 import 'package:kompen/widget/users/profile.dart';
-import 'package:provider/provider.dart';
 
 class LoginWidget extends StatefulWidget {
   const LoginWidget({Key? key}) : super(key: key);
@@ -53,14 +51,14 @@ class _LoginWidgetState extends State<LoginWidget> {
             if (result[0].status! == "Admin") {
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => DashboardWidget()),
+                MaterialPageRoute(builder: (context) => DashboardWidget(user: result[0],)),
                 (Route) => false,
               );
             } else if (result[0].status! == "Dosen") {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ProfileWidget(user: result[0])),
+                    builder: (context) => DashboardDWidget(user: result[0])),
                 (Route) => false,
               );
             }
@@ -91,7 +89,7 @@ class _LoginWidgetState extends State<LoginWidget> {
             if (result[0].status! == "Mahasiswa") {
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => DashboardMWidget()),
+                MaterialPageRoute(builder: (context) => DashboardMWidget(user: result[0],)),
                 (Route) => false,
               );
             }

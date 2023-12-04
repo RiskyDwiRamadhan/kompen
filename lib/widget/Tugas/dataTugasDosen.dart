@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:kompen/widget/AmbilTugas/InputAmbilTugas.dart';
+import 'package:kompen/widget/Model/modelUser.dart';
 import 'package:kompen/widget/Service/serviceNetwork.dart';
 import 'package:kompen/widget/Tugas/inputTugas.dart';
 import 'package:kompen/widget/Tugas/updateTugas.dart';
@@ -8,9 +11,14 @@ import 'package:kompen/widget/Model/modelTugas.dart';
 import 'package:kompen/widget/Service/serviceTugas.dart';
 import 'package:kompen/widget/Service/serviceTugas.dart';
 import 'package:kompen/widget/Tugas/updateTugas.dart';
+import 'package:kompen/widget/componen/navigatorDrawer.dart';
 
 class dataTugasDosenWidget extends StatefulWidget {
-  const dataTugasDosenWidget({Key? key}) : super(key: key);
+  final User user;
+  const dataTugasDosenWidget({
+    Key? key,
+    required this.user,
+  }) : super(key: key);
 
   @override
   State<dataTugasDosenWidget> createState() => _dataTugasDosenWidgetState();
@@ -20,12 +28,17 @@ class _dataTugasDosenWidgetState extends State<dataTugasDosenWidget> {
   late List<Tugas> tugas;
 
   int sortIndex = 0;
-  String nip = "69439";
+  String nip = "51188";
   bool isAscending = true;
   bool isLoading = false; // Track the loading state
   String searchText = "";
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   TextEditingController cariInput = new TextEditingController();
+
+  late User user;
+  File? _image;
+
+  void _getUser() async {}
 
   _ambilTugas(Tugas tugas) {
     Navigator.push(
@@ -43,12 +56,9 @@ class _dataTugasDosenWidgetState extends State<dataTugasDosenWidget> {
       context,
       MaterialPageRoute(
         builder: (context) => UpdateTugasWidget(
-            idtugas: tugas.idTugas,
-            judul_tugas: tugas.judulTugas,
-            kategori: tugas.kategori,
-            kuota: tugas.kuota,
-            kompen: tugas.jumlahKompen,
-            deskripsi: tugas.deskripsi),
+          user: user,
+          tugas: tugas,
+        ),
       ),
     );
   }
@@ -225,6 +235,8 @@ class _dataTugasDosenWidgetState extends State<dataTugasDosenWidget> {
   _getData() async {
     setState(() {
       isLoading = true;
+      user = widget.user;
+      nip = widget.user.idUser!.toString();
     });
     ServicesTugas.getTDosens(nip).then(
       (result) {
@@ -283,6 +295,7 @@ class _dataTugasDosenWidgetState extends State<dataTugasDosenWidget> {
     super.initState();
     tugas = [];
     _getData();
+    _getUser();
   }
 
   @override
@@ -291,8 +304,12 @@ class _dataTugasDosenWidgetState extends State<dataTugasDosenWidget> {
       key: _scaffoldKey,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => TambahTugasWidget()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => TambahTugasWidget(
+                        user: user,
+                      )));
         },
         backgroundColor: Color.fromRGBO(16, 6, 148, 1),
         elevation: 8,
@@ -302,9 +319,11 @@ class _dataTugasDosenWidgetState extends State<dataTugasDosenWidget> {
           size: 24,
         ),
       ),
+      drawer: NavigationDrawerWidget(
+        user: user,
+      ),
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(16, 6, 148, 1),
-        automaticallyImplyLeading: false,
         title: Text(
           'Data Tugas',
           style: TextStyle(
@@ -366,8 +385,10 @@ class _dataTugasDosenWidgetState extends State<dataTugasDosenWidget> {
                                   onSort: onSort, label: Text('Pemberi Tugas')),
                               DataColumn(
                                   onSort: onSort, label: Text('Judul Tugas')),
-                              DataColumn(onSort: onSort, label: Text('Kategori')),
-                              DataColumn(onSort: onSort, label: Text('Tanggal')),
+                              DataColumn(
+                                  onSort: onSort, label: Text('Kategori')),
+                              DataColumn(
+                                  onSort: onSort, label: Text('Tanggal')),
                               DataColumn(onSort: onSort, label: Text('Kuota')),
                               DataColumn(
                                   onSort: onSort, label: Text('Jumlah Kompen')),
@@ -427,8 +448,7 @@ class TugasDataSource extends DataTableSource {
             image: DecorationImage(
               fit: BoxFit.cover,
               image: NetworkImage(
-                  serviceNetwork.foto + 
-                    tugasData.fotod.toString(),
+                serviceNetwork.foto + tugasData.fotod.toString(),
               ),
             ),
           ),

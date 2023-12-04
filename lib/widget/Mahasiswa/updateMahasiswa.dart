@@ -2,23 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kompen/widget/Model/modelMahasiswa.dart';
 import 'package:kompen/widget/Mahasiswa/dataMahasiswa.dart';
+import 'package:kompen/widget/Model/modelUser.dart';
 import 'package:kompen/widget/Service/serviceMahasiswa.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:kompen/widget/componen/navigatorDrawer.dart';
 import 'dart:io';
 import 'package:path/path.dart' as path;
 
 class UpdateMahasiswaWidget extends StatefulWidget {
-  final String? nim, namaLengkap, no_telp, th_masuk, username, password, email, foto, prodi;
+  final User user;
+  final Mahasiswa mahasiswa;
   const UpdateMahasiswaWidget({Key? key,
-    required this.nim,
-    required this.namaLengkap,
-    required this.no_telp,
-    required this.th_masuk,
-    required this.username,
-    required this.password,
-    required this.email,
-    required this.foto,
-    required this.prodi,}) : super(key: key);
+    required this.user,
+    required this.mahasiswa,}) : super(key: key);
 
   @override
   _UpdateMahasiswaWidgetState createState() => _UpdateMahasiswaWidgetState();
@@ -39,18 +35,20 @@ class _UpdateMahasiswaWidgetState extends State<UpdateMahasiswaWidget> {
   TextEditingController emailInput = new TextEditingController();
   TextEditingController fotoInput = new TextEditingController();
   File? _image;
+  late User user;
 
   void getData() async {
-    nimInput.text = widget.nim!.toString();
-    namaInput.text = widget.namaLengkap!.toString();
-    no_telpInput.text = widget.no_telp!.toString();
-    th_masukInput.text = widget.th_masuk!.toString();
-    passwordInput.text = widget.password!.toString();
-    usernameInput.text = widget.username!.toString();
-    emailInput.text = widget.email!.toString();
-    fotoInput.text = "upload/" +widget.foto!.toString();
-    prodi = widget.prodi!.toString();
-      _image = File("upload/" +widget.foto!.toString());
+    user = widget.user;
+    nimInput.text = widget.mahasiswa.nim!.toString();
+    namaInput.text = widget.mahasiswa.namaLengkap!.toString();
+    no_telpInput.text = widget.mahasiswa.noTelp!.toString();
+    th_masukInput.text = widget.mahasiswa.thMasuk!.toString();
+    passwordInput.text = widget.mahasiswa.password!.toString();
+    usernameInput.text = widget.mahasiswa.username!.toString();
+    emailInput.text = widget.mahasiswa.email!.toString();
+    fotoInput.text = "upload/" +widget.mahasiswa.foto!.toString();
+    prodi = widget.mahasiswa.prodi!.toString();
+      _image = File("upload/" +widget.mahasiswa.foto!.toString());
   }
   void _getImage() async {
     final pickedFile =
@@ -86,7 +84,7 @@ class _UpdateMahasiswaWidgetState extends State<UpdateMahasiswaWidget> {
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => dataMahasiswaWidget()));
+                                builder: (context) => dataMahasiswaWidget(user: user,)));
                       },
                       child: Text('OK'))
                 ],
@@ -128,9 +126,11 @@ class _UpdateMahasiswaWidgetState extends State<UpdateMahasiswaWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(255, 255, 255, 1),
+      drawer: NavigationDrawerWidget(
+        user: user,
+      ),
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(16, 6, 148, 1),
-        automaticallyImplyLeading: false,
         title: Text(
           'Update Mahasiswa',
           style: TextStyle(

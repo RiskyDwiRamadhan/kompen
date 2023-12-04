@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:kompen/widget/Model/modelUser.dart';
 import 'package:kompen/widget/Service/serviceUser.dart';
 import 'package:kompen/widget/Service/serviceNetwork.dart';
+import 'package:kompen/widget/componen/navigatorDrawer.dart';
 import 'package:path/path.dart' as path;
 
 class ProfileWidget extends StatefulWidget {
@@ -131,9 +132,11 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     return GestureDetector(
       child: Scaffold(
         backgroundColor: Color.fromRGBO(255, 255, 255, 1),
+        drawer: NavigationDrawerWidget(
+          user: user,
+        ),
         appBar: AppBar(
           backgroundColor: Color.fromRGBO(16, 6, 148, 1),
-          automaticallyImplyLeading: false,
           title: Text(
             'Profile',
             style: TextStyle(
@@ -185,7 +188,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                 padding: EdgeInsetsDirectional.fromSTEB(
                                     0, 30, 0, 10),
                                 child: Container(
-                                  height:200,
+                                  height: 200,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     image: DecorationImage(
@@ -479,7 +482,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                               vertical: 25.0),
                                           width: double.infinity,
                                           child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
                                               ElevatedButton(
                                                 onPressed: () {
@@ -511,7 +515,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                                 ),
                                               ),
                                               Padding(
-                                                padding: const EdgeInsets.only(left: 50.0),
+                                                padding: const EdgeInsets.only(
+                                                    left: 50.0),
                                                 child: ElevatedButton(
                                                   onPressed: () {
                                                     if (formKey.currentState!
@@ -519,10 +524,13 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                                       prosesData();
                                                     }
                                                   },
-                                                  style: ElevatedButton.styleFrom(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
                                                     elevation: 5.0,
-                                                    padding: EdgeInsets.all(10.0),
-                                                    shape: RoundedRectangleBorder(
+                                                    padding:
+                                                        EdgeInsets.all(10.0),
+                                                    shape:
+                                                        RoundedRectangleBorder(
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               30.0),
@@ -536,7 +544,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                                           255, 255, 255, 255),
                                                       letterSpacing: 1.5,
                                                       fontSize: 25.0,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       fontFamily: 'OpenSans',
                                                     ),
                                                   ),

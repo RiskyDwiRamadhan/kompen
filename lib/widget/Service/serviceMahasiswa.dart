@@ -39,7 +39,7 @@ class ServicesMahasiswa {
   }
 
   // Menampilkan Semua Data
-  static Future<List<Mahasiswa>> getMahasiswa(int nim) async {
+  static Future<List<Mahasiswa>> getMahasiswa(String nim) async {
     try {
       var map = Map<String, dynamic>();
       map['action'] = _GET_WHERE_ACTION;

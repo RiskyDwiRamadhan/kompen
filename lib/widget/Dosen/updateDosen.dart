@@ -5,21 +5,18 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:kompen/widget/Dosen/dataDosen.dart';
 import 'package:kompen/widget/Model/modelDosen.dart';
+import 'package:kompen/widget/Model/modelUser.dart';
 import 'package:kompen/widget/Service/serviceDosen.dart';
+import 'package:kompen/widget/componen/navigatorDrawer.dart';
 import 'package:path/path.dart' as path;
 
 class UpdateDosenWidget extends StatefulWidget {
-  // String? IdUser, nama;
-  final String? nip, namaLengkap, username, password, email, foto, level;
+  final User user;
+  final Dosen dosen;
   const UpdateDosenWidget({
     Key? key,
-    required this.nip,
-    required this.namaLengkap,
-    required this.username,
-    required this.password,
-    required this.email,
-    required this.foto,
-    required this.level,
+    required this.user,
+    required this.dosen,
   }) : super(key: key);
   @override
   _UpdateDosenWidgetState createState() => _UpdateDosenWidgetState();
@@ -38,15 +35,17 @@ class _UpdateDosenWidgetState extends State<UpdateDosenWidget> {
   TextEditingController emailInput = new TextEditingController();
   TextEditingController fotoInput = new TextEditingController();
   File? _image;
+  late User user;
 
   void getData() async {
-    nipInput.text = widget.nip!.toString();
-    namaInput.text = widget.namaLengkap!.toString();
-    passwordInput.text = this.widget.password!.toString();
-    usernameInput.text = widget.username!.toString();
-    emailInput.text = widget.email!.toString();
-    fotoInput.text = widget.foto!.toString();
-    status = widget.level!.toString();
+    user = widget.user;
+    nipInput.text = widget.dosen.nip!.toString();
+    namaInput.text = widget.dosen.namaLengkap!.toString();
+    passwordInput.text = widget.dosen.password!.toString();
+    usernameInput.text = widget.dosen.username!.toString();
+    emailInput.text = widget.dosen.email!.toString();
+    fotoInput.text = widget.dosen.foto!.toString();
+    status = widget.dosen.level!.toString();
   }
 
   void _getImage() async {
@@ -83,7 +82,7 @@ class _UpdateDosenWidgetState extends State<UpdateDosenWidget> {
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => dataDosenWidget()));
+                                builder: (context) => dataDosenWidget(user: user,)));
                       },
                       child: Text('OK'))
                 ],
@@ -124,11 +123,13 @@ class _UpdateDosenWidgetState extends State<UpdateDosenWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(255, 255, 255, 1),
+      drawer: NavigationDrawerWidget(
+          user: user,
+          ),
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(16, 6, 148, 1),
-        automaticallyImplyLeading: false,
         title: Text(
-          'Tambah Dosen',
+          'Update Dosen',
           style: TextStyle(
             fontFamily: 'Outfit',
             color: Colors.white,

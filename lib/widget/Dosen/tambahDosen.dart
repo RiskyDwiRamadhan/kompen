@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kompen/widget/Dosen/dataDosen.dart';
+import 'package:kompen/widget/Model/modelUser.dart';
 import 'package:kompen/widget/Service/serviceDosen.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:kompen/widget/componen/navigatorDrawer.dart';
 import 'dart:io';
 import 'package:path/path.dart' as path;
 
 class TambahDosenWidget extends StatefulWidget {
-  const TambahDosenWidget({Key? key}) : super(key: key);
-
+  final User user;
+  const TambahDosenWidget({
+    Key? key,
+    required this.user,
+  }) : super(key: key);
   @override
   _TambahDosenWidgetState createState() => _TambahDosenWidgetState();
 }
@@ -25,6 +30,12 @@ class _TambahDosenWidgetState extends State<TambahDosenWidget> {
   TextEditingController emailInput = new TextEditingController();
   TextEditingController fotoInput = new TextEditingController();
   File? _image;
+  late User user;
+
+  void _getUser() async {
+    user = widget.user;
+  }
+
 
   void _getImage() async {
     final pickedFile =
@@ -60,7 +71,7 @@ class _TambahDosenWidgetState extends State<TambahDosenWidget> {
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => dataDosenWidget()));
+                                builder: (context) => dataDosenWidget(user: user,)));
                       },
                       child: Text('OK'))
                 ],
@@ -96,15 +107,18 @@ class _TambahDosenWidgetState extends State<TambahDosenWidget> {
   void initState() {
     super.initState();
     _image;
+    _getUser();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(255, 255, 255, 1),
+      drawer: NavigationDrawerWidget(
+          user: user,
+          ),
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(16, 6, 148, 1),
-        automaticallyImplyLeading: false,
         title: Text(
           'Tambah Dosen',
           style: TextStyle(

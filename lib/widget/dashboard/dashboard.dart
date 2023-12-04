@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/services.dart';
@@ -5,11 +7,14 @@ import 'package:flutter/scheduler.dart';
 import 'dart:async';
 
 import 'package:http/http.dart' as http;
+import 'package:kompen/widget/Model/modelUser.dart';
+import 'package:kompen/widget/componen/navigatorDrawer.dart';
 import 'dart:convert';
 import 'package:kompen/widget/login/login.dart';
 
 class DashboardWidget extends StatefulWidget {
-  const DashboardWidget({Key? key}) : super(key: key);
+  final User user;
+  const DashboardWidget({Key? key, required this.user}) : super(key: key);
 
   @override
   _DashboardWidgetState createState() => _DashboardWidgetState();
@@ -20,6 +25,22 @@ class _DashboardWidgetState extends State<DashboardWidget> {
   String? nip, nim, kompen, alasan, tugas;
 
   TextEditingController nimInput = new TextEditingController();
+  late User user;
+  File? _image;
+  String id_user = "", status = "", nama = "", noTelp = "",
+         password = "", username = "", email = "", foto = "";
+
+  void _getData() async {
+    user = widget.user;
+    id_user = user.idUser.toString();
+    nama = user.namaLengkap!.toString();
+    noTelp = user.noTelp!.toString();
+    password = user.password!.toString();
+    username= user.username!.toString();
+    email = user.email!.toString();
+    foto = user.foto!.toString();
+    status = user.status!.toString();
+  }
 
   void prosesPencarian() async {
     final response = await http.post(
@@ -76,6 +97,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _getData();
   }
 
   @override
@@ -83,9 +105,11 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     return GestureDetector(
       child: Scaffold(
         backgroundColor: Color.fromRGBO(255, 255, 255, 1),
+      drawer: NavigationDrawerWidget(
+          user: user,
+          ),
         appBar: AppBar(
           backgroundColor: Color.fromRGBO(16, 6, 148, 1),
-          automaticallyImplyLeading: false,
           title: Text(
             'Dashboard',
             style: TextStyle(

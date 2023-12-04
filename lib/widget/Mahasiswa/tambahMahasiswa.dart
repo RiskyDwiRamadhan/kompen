@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:kompen/widget/Mahasiswa/dataMahasiswa.dart';
+import 'package:kompen/widget/Model/modelUser.dart';
 import 'package:kompen/widget/Service/serviceMahasiswa.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:kompen/widget/componen/navigatorDrawer.dart';
 import 'dart:io';
 import 'package:path/path.dart' as path;
 
 class TambahMahasiswaWidget extends StatefulWidget {
-  const TambahMahasiswaWidget({Key? key}) : super(key: key);
+  final User user;
+  const TambahMahasiswaWidget({
+    Key? key,
+    required this.user,
+  }) : super(key: key);
 
   @override
   _TambahMahasiswaWidgetState createState() => _TambahMahasiswaWidgetState();
@@ -27,6 +33,11 @@ class _TambahMahasiswaWidgetState extends State<TambahMahasiswaWidget> {
   TextEditingController emailInput = new TextEditingController();
   TextEditingController fotoInput = new TextEditingController();
   File? _image;
+  late User user;
+
+  void _getUser() async {
+    user = widget.user;
+  }
 
   void _getImage() async {
     final pickedFile =
@@ -39,8 +50,16 @@ class _TambahMahasiswaWidgetState extends State<TambahMahasiswaWidget> {
   }
 
   void prosesData() async {
-    ServicesMahasiswa.addMahasiswa(nimInput.text, namaInput.text, prodi.toString(), no_telpInput.text, usernameInput.text,
-            passwordInput.text, emailInput.text, _image!, th_masukInput.text)
+    ServicesMahasiswa.addMahasiswa(
+            nimInput.text,
+            namaInput.text,
+            prodi.toString(),
+            no_telpInput.text,
+            usernameInput.text,
+            passwordInput.text,
+            emailInput.text,
+            _image!,
+            th_masukInput.text)
         .then(
       (result) {
         if ('success' == result) {
@@ -62,7 +81,7 @@ class _TambahMahasiswaWidgetState extends State<TambahMahasiswaWidget> {
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => dataMahasiswaWidget()));
+                                builder: (context) => dataMahasiswaWidget(user: user,)));
                       },
                       child: Text('OK'))
                 ],
@@ -98,15 +117,18 @@ class _TambahMahasiswaWidgetState extends State<TambahMahasiswaWidget> {
   void initState() {
     super.initState();
     _image;
+    _getUser();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(255, 255, 255, 1),
+      drawer: NavigationDrawerWidget(
+        user: user,
+      ),
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(16, 6, 148, 1),
-        automaticallyImplyLeading: false,
         title: Text(
           'Tambah Mahasiswa',
           style: TextStyle(
@@ -271,9 +293,9 @@ class _TambahMahasiswaWidgetState extends State<TambahMahasiswaWidget> {
                               });
                             },
                             items: [
-                                "D4 Sistem Informasi Bisnis",
-                                "D4 Teknik Informatika",
-                                "D2 Pengembangan Piranti Lunak Situs"
+                              "D4 Sistem Informasi Bisnis",
+                              "D4 Teknik Informatika",
+                              "D2 Pengembangan Piranti Lunak Situs"
                             ]
                                 .map<DropdownMenuItem<String?>>(
                                   (e) => DropdownMenuItem(

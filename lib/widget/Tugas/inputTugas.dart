@@ -4,15 +4,21 @@ import 'package:flutter/services.dart';
 import 'package:flutter/scheduler.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
+import 'package:kompen/widget/Model/modelUser.dart';
 import 'package:kompen/widget/Service/serviceMahasiswa.dart';
 import 'package:kompen/widget/Service/serviceTugas.dart';
 import 'package:kompen/widget/Tugas/dataTugasDosen.dart';
+import 'package:kompen/widget/componen/navigatorDrawer.dart';
 import 'dart:convert';
 
 import 'package:kompen/widget/login/login.dart';
 
 class TambahTugasWidget extends StatefulWidget {
-  const TambahTugasWidget({Key? key}) : super(key: key);
+  final User user;
+  const TambahTugasWidget({
+    Key? key,
+    required this.user,
+  }) : super(key: key);
 
   @override
   _TambahTugasWidgetState createState() => _TambahTugasWidgetState();
@@ -20,16 +26,22 @@ class TambahTugasWidget extends StatefulWidget {
 
 class _TambahTugasWidgetState extends State<TambahTugasWidget> {
   final formKey = GlobalKey<FormState>();
-  String? nip = '69439',kategori;
+  String? nip = '', kategori;
 
   TextEditingController judulInput = new TextEditingController();
   TextEditingController kuotaInput = new TextEditingController();
   TextEditingController kompenInput = new TextEditingController();
   TextEditingController deskripsiInput = new TextEditingController();
+  late User user;
+
+  void _getUser() async {
+    user = widget.user;
+    nip = widget.user.idUser;
+  }
 
   void prosesData() async {
-   ServicesTugas.addTugas(nip!, judulInput.text, kategori.toString(), kuotaInput.text, kompenInput.text,
-            deskripsiInput.text)
+    ServicesTugas.addTugas(nip!, judulInput.text, kategori.toString(),
+            kuotaInput.text, kompenInput.text, deskripsiInput.text)
         .then(
       (result) {
         if ('success' == result) {
@@ -50,7 +62,9 @@ class _TambahTugasWidgetState extends State<TambahTugasWidget> {
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => dataTugasDosenWidget()));
+                                builder: (context) => dataTugasDosenWidget(
+                                      user: user,
+                                    )));
                       },
                       child: Text('OK'))
                 ],
@@ -85,6 +99,7 @@ class _TambahTugasWidgetState extends State<TambahTugasWidget> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _getUser();
   }
 
   @override
@@ -92,9 +107,11 @@ class _TambahTugasWidgetState extends State<TambahTugasWidget> {
     return GestureDetector(
       child: Scaffold(
         backgroundColor: Color.fromRGBO(255, 255, 255, 1),
+        drawer: NavigationDrawerWidget(
+          user: user,
+        ),
         appBar: AppBar(
           backgroundColor: Color.fromRGBO(16, 6, 148, 1),
-          automaticallyImplyLeading: false,
           title: Text(
             'Input Tugas',
             style: TextStyle(
@@ -139,27 +156,27 @@ class _TambahTugasWidgetState extends State<TambahTugasWidget> {
                               ),
                             ),
                           ),
-                        Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
-                          child: DropdownButton<String?>(
-                            value: kategori,
-                            onChanged: (value) {
-                              setState(() {
-                                kategori = value;
-                              });
-                            },
-                            items: ["Penugasan", "Pembelian"]
-                                .map<DropdownMenuItem<String?>>(
-                                  (e) => DropdownMenuItem(
-                                    child: Text(e.toString()),
-                                    value: e,
-                                  ),
-                                )
-                                .toList(),
-                            isExpanded: true,
-                            borderRadius: BorderRadius.circular(8),
+                          Padding(
+                            padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
+                            child: DropdownButton<String?>(
+                              value: kategori,
+                              onChanged: (value) {
+                                setState(() {
+                                  kategori = value;
+                                });
+                              },
+                              items: ["Penugasan", "Pembelian"]
+                                  .map<DropdownMenuItem<String?>>(
+                                    (e) => DropdownMenuItem(
+                                      child: Text(e.toString()),
+                                      value: e,
+                                    ),
+                                  )
+                                  .toList(),
+                              isExpanded: true,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
-                        ),
                           Padding(
                             padding:
                                 EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
