@@ -13,6 +13,7 @@ class ServicesUser {
   static const _CREATE_TABLE_ACTION = 'CREATE_TABLE';
   static const _GET_DOSEN_ACTION = 'get_dosen';
   static const _GET_MAHASISWA_ACTION = 'get_mahasiswa';
+  static const _GET_ALPA_ACTION = 'get_alpa';
   static const _UPDATE_DOSEN = 'update_dosen';
   static const _UPDATE_MAHASISWA = 'update_mahasiswa';
 
@@ -45,6 +46,27 @@ class ServicesUser {
       map['action'] = _GET_MAHASISWA_ACTION;
       map['username'] = username;
       map['password'] = password;
+
+      final response = await http.post(Uri.parse(ROOT), body: map);
+      print('getUser Response: ${response.body}');
+      if (response.statusCode == 200) {
+        print(response.body.length);
+        print("Data ada banyak");
+      return compute(parseData, response.body);
+      } else {
+        throw Exception('Can\'t get data');
+      }
+    } catch (e) {
+      return <User>[]; // return an empty list on exception/error
+    }
+  }
+
+  // Menampilkan Data Mahasiswa
+  static Future<List<User>> getAlpa(String nim) async {
+    try {
+      var map = Map<String, dynamic>();
+      map['action'] = _GET_ALPA_ACTION;
+      map['nim'] = nim;
 
       final response = await http.post(Uri.parse(ROOT), body: map);
       print('getUser Response: ${response.body}');

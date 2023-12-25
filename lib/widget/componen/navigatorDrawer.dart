@@ -15,6 +15,7 @@ import 'package:kompen/widget/componen/dataAmbilTugasWidget.dart';
 import 'package:kompen/widget/dashboard/dashboard.dart';
 import 'package:kompen/widget/dashboard/dashboardD.dart';
 import 'package:kompen/widget/dashboard/dashboardM.dart';
+import 'package:kompen/widget/test.dart';
 import 'package:kompen/widget/users/profile.dart';
 
 class NavigationDrawerWidget extends StatefulWidget {
@@ -74,6 +75,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
     } else {
       // Mahasiswa
       showUsersMenu = false;
+      showDaftarTugasMenu = false;
+      showSemuaHistoryTugasMenu = false;
     }
   }
 
@@ -158,25 +161,37 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                           onClicked: () => selectedItem(context, 2),
                         ),
                         Divider(color: Colors.white70),
-                        buildMenuItem(
-                          text: 'Daftar Tugas',
-                          icon: Icons.radio_button_checked_rounded,
-                          onClicked: () => selectedItem(context, 21),
+                        Visibility(
+                          visible: showDaftarTugasMenu,
+                          child: buildMenuItem(
+                            text: 'Daftar Tugas',
+                            icon: Icons.radio_button_checked_rounded,
+                            onClicked: () => selectedItem(context, 21),
+                          ),
                         ),
-                        buildMenuItem(
-                          text: 'Daftar Tugas Ready',
-                          icon: Icons.radio_button_checked_rounded,
-                          onClicked: () => selectedItem(context, 22),
+                        Visibility(
+                          visible: showTugasReadyMenu,
+                          child: buildMenuItem(
+                            text: 'Daftar Tugas Ready',
+                            icon: Icons.radio_button_checked_rounded,
+                            onClicked: () => selectedItem(context, 22),
+                          ),
                         ),
-                        buildMenuItem(
-                          text: 'Historyku',
-                          icon: Icons.update,
-                          onClicked: () => selectedItem(context, 23),
+                        Visibility(
+                          visible: showHistoryTugasMenu,
+                          child: buildMenuItem(
+                            text: 'Historyku',
+                            icon: Icons.update,
+                            onClicked: () => selectedItem(context, 23),
+                          ),
                         ),
-                        buildMenuItem(
-                          text: 'Semua History',
-                          icon: Icons.update,
-                          onClicked: () => selectedItem(context, 24),
+                        Visibility(
+                          visible: showSemuaHistoryTugasMenu,
+                          child: buildMenuItem(
+                            text: 'Semua History',
+                            icon: Icons.update,
+                            onClicked: () => selectedItem(context, 24),
+                          ),
                         ),
                         Divider(color: Colors.white70),
                       ],
@@ -265,7 +280,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
     );
   }
 
-  void selectedItem(BuildContext context, int index) {
+  void selectedItem(BuildContext context, int index) async {
     Navigator.of(context).pop();
 
     switch (index) {
@@ -310,7 +325,10 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
         // Alpaku
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => AlpakuWidget()),
+            MaterialPageRoute(
+                builder: (context) => AlpakuWidget(
+                      user: user,
+                    )),
             (route) => false);
         break;
       case 1:
@@ -342,41 +360,49 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
         // Data Mahasiswa
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => dataMahasiswaWidget(user: user,)),
+            MaterialPageRoute(
+                builder: (context) => dataMahasiswaWidget(
+                      user: user,
+                    )),
             (route) => false);
         break;
       case 2:
         if (tugasHeight == 90.0) {
-        } else {
-        }
+        } else {}
         break;
       case 21:
         // Tugas Dosen
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => dataTugasDosenWidget(user: user,)),
+            MaterialPageRoute(
+                builder: (context) => dataTugasDosenWidget(
+                      user: user,
+                    )),
             (route) => false);
         break;
       case 22:
         // Tugas Ready
         Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => dataTugasReadyWidget(user: user,)),
+            MaterialPageRoute(
+                builder: (context) => dataTugasReadyWidget(
+                      user: user,
+                    )),
             (route) => false);
         break;
       case 23:
         // Historyku
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => AlpakuWidget()),
-            (route) => false);
+        // Navigator.pushAndRemoveUntil(
+        //     context,
+        //     MaterialPageRoute(builder: (context) => AlpakuWidget()),
+        //     (route) => false);
         break;
       case 24:
         // Semua History
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => AlpakuWidget()),
-            (route) => false);
+        // Navigator.pushAndRemoveUntil(
+        //     context,
+        //     MaterialPageRoute(builder: (context) => AlpakuWidget()),
+        //     (route) => false);
         break;
       case 3:
         // LogOut

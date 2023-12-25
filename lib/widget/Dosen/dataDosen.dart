@@ -46,6 +46,7 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
     email = user.email!.toString();
     foto = user.foto!.toString();
     status = user.status!.toString();
+    _image = File(widget.user.foto!.toString());
   }
 
   _postData(Dosen dosen) {

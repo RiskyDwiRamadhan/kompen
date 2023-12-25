@@ -94,7 +94,7 @@ class _dataAmbilTugasWidgetState extends State<dataAmbilTugasWidget> {
                 ServicesAmbilTugas.deleteTugas(ambilTugas.idTselesai.toString())
                     .then(
                   (result) {
-                    if ('success' == result) {
+                    if ('Succes' == result) {
                       showDialog(
                         context: context,
                         builder: (context) {

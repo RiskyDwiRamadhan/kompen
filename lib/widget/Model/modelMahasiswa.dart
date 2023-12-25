@@ -1,48 +1,60 @@
 class Mahasiswa {
   String? nim;
   String? namaLengkap;
-  String? prodi;
-  String? noTelp;
   String? thMasuk;
+  String? prodi;
+  String? jalurmasuk;
+  String? email;
+  String? noTelp;
   String? username;
   String? password;
-  String? email;
   String? foto;
+  String? kompen;
+  String? terkompen;
 
   Mahasiswa(
       {this.nim,
       this.namaLengkap,
-      this.prodi,
-      this.noTelp,
       this.thMasuk,
+      this.prodi,
+      this.jalurmasuk,
+      this.email,
+      this.noTelp,
       this.username,
       this.password,
-      this.email,
-      this.foto});
+      this.foto,
+      this.kompen,
+      this.terkompen});
 
   Mahasiswa.fromJson(Map<String, dynamic> json) {
     nim = json['nim'];
     namaLengkap = json['nama_lengkap'];
-    prodi = json['prodi'];
-    noTelp = json['no_telp'];
     thMasuk = json['th_masuk'];
+    prodi = json['prodi'];
+    jalurmasuk = json['jalurmasuk'];
+    email = json['email'];
+    noTelp = json['no_telp'];
     username = json['username'];
     password = json['password'];
-    email = json['email'];
     foto = json['foto'];
+    kompen = json['kompen'];
+    terkompen = json['terkompen'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['nim'] = this.nim;
     data['nama_lengkap'] = this.namaLengkap;
-    data['prodi'] = this.prodi;
-    data['no_telp'] = this.noTelp;
     data['th_masuk'] = this.thMasuk;
+    data['prodi'] = this.prodi;
+    data['jalurmasuk'] = this.jalurmasuk;
+    data['email'] = this.email;
+    data['no_telp'] = this.noTelp;
     data['username'] = this.username;
     data['password'] = this.password;
-    data['email'] = this.email;
     data['foto'] = this.foto;
+    data['kompen'] = this.kompen;
+    data['terkompen'] = this.terkompen;
     return data;
   }
 }

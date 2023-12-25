@@ -12,6 +12,7 @@ class ServicesMahasiswa {
   static const ROOT = serviceNetwork.mahasiswa;
   static const _CREATE_TABLE_ACTION = 'CREATE_TABLE';
   static const _GET_ALL_ACTION = 'get_all';
+  static const _GET_ALPA_ACTION = 'alpa_mahasiswa';
   static const _GET_WHERE_ACTION = 'get_where';
   static const _ADD_ACTION = 'add_data';
   static const _UPDATE_ACTION = 'update';
@@ -59,6 +60,28 @@ class ServicesMahasiswa {
       return <Mahasiswa>[]; // return an empty list on exception/error
     }
   }
+
+  // Menampilkan Semua Data
+  static Future<List<Mahasiswa>> getAlpaMahasiswa(String nim) async {
+    try {
+      var map = Map<String, dynamic>();
+      map['action'] = _GET_ALPA_ACTION;
+      map['nim'] = nim;
+      final response = await http.post(Uri.parse(ROOT), body: map);
+      
+      print('getMahasiswas Response: ${response.body}');
+      if (response.statusCode == 200) {
+        print(response.body.length);
+        print("Data ada banyak");
+      return compute(parseData, response.body);
+      } else {
+        throw Exception('Can\'t get data');
+      }
+    } catch (e) {
+      return <Mahasiswa>[]; // return an empty list on exception/error
+    }
+  }
+
 
   static List<Mahasiswa> parseData(String responseBody) {
     var list = json.decode(responseBody) as List<dynamic>;

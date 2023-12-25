@@ -7,10 +7,7 @@ import 'package:kompen/widget/Service/serviceNetwork.dart';
 import 'package:kompen/widget/Tugas/inputTugas.dart';
 import 'package:kompen/widget/Tugas/updateTugas.dart';
 import 'package:kompen/widget/Model/modelTugas.dart';
-import 'package:kompen/widget/Model/modelTugas.dart';
 import 'package:kompen/widget/Service/serviceTugas.dart';
-import 'package:kompen/widget/Service/serviceTugas.dart';
-import 'package:kompen/widget/Tugas/updateTugas.dart';
 import 'package:kompen/widget/componen/navigatorDrawer.dart';
 
 class dataTugasDosenWidget extends StatefulWidget {
@@ -46,6 +43,7 @@ class _dataTugasDosenWidgetState extends State<dataTugasDosenWidget> {
       MaterialPageRoute(
         builder: (context) => InputAmbilTugasWidget(
           tugas: tugas,
+          user: user,
         ),
       ),
     );

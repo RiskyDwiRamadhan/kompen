@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:kompen/widget/AmbilTugas/InputAmbilTugas.dart';
 import 'package:kompen/widget/Model/modelTugas.dart';
+import 'package:kompen/widget/Model/modelUser.dart';
 import 'package:kompen/widget/Service/serviceAmbilTugas.dart';
+import 'package:kompen/widget/componen/navigatorDrawer.dart';
 
 class TambahMahasiswaKompenWidget extends StatefulWidget {
   final Tugas tugas;
-  const TambahMahasiswaKompenWidget({super.key, required this.tugas});
+  final User user;
+  const TambahMahasiswaKompenWidget({super.key, required this.tugas, required this.user});
 
   @override
   State<TambahMahasiswaKompenWidget> createState() =>
@@ -18,6 +22,7 @@ class _TambahMahasiswaKompenWidgetState
   final formKey = GlobalKey<FormState>();
   TextEditingController nimInput = new TextEditingController();
   TextEditingController kompenInput = new TextEditingController();
+  late User user;
 
   void prosesData() async {
     ServicesAmbilTugas.addTugas(id_tugas, nimInput.text, kompenInput.text).then(
@@ -34,7 +39,11 @@ class _TambahMahasiswaKompenWidgetState
                       onPressed: () {
                         nimInput.text = "";
                         kompenInput.text = "";
-                        Navigator.of(context).pop();
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => InputAmbilTugasWidget(tugas: tugas,user: user,)),
+                            (route) => false);
                       },
                       child: Text('OK'))
                 ],
@@ -69,17 +78,20 @@ class _TambahMahasiswaKompenWidgetState
   @override
   void initState() {
     super.initState();
+      user = widget.user;
     id_tugas = widget.tugas.idTugas!.toString();
-    kompenInput.text  = widget.tugas.jumlahKompen!.toString();
+    kompenInput.text = widget.tugas.jumlahKompen!.toString();
     tugas = widget.tugas;
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(255, 255, 255, 1),
+       drawer: NavigationDrawerWidget(
+          user: user,
+        ),
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(16, 6, 148, 1),
-        automaticallyImplyLeading: false,
         title: Text(
           'Tambah Mahasiswa',
           style: TextStyle(

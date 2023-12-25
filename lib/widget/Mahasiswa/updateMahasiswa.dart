@@ -46,9 +46,9 @@ class _UpdateMahasiswaWidgetState extends State<UpdateMahasiswaWidget> {
     passwordInput.text = widget.mahasiswa.password!.toString();
     usernameInput.text = widget.mahasiswa.username!.toString();
     emailInput.text = widget.mahasiswa.email!.toString();
-    fotoInput.text = "upload/" +widget.mahasiswa.foto!.toString();
+    fotoInput.text = widget.mahasiswa.foto!.toString();
     prodi = widget.mahasiswa.prodi!.toString();
-      _image = File("upload/" +widget.mahasiswa.foto!.toString());
+    _image = File(widget.mahasiswa.foto!.toString());
   }
   void _getImage() async {
     final pickedFile =

@@ -23,7 +23,7 @@ class DashboardMWidget extends StatefulWidget {
 
 class _DashboardMWidgetState extends State<DashboardMWidget> {
   Color _circleColor = Colors.blue; // Warna awal
-  int _alpa = 0, _kompen = 0;
+  int _alpa = 0, _kompen = 0, _terkompen = 0;
   late List<Alpaku> alpaku;
   late User user;
   File? _image;
@@ -53,6 +53,8 @@ class _DashboardMWidgetState extends State<DashboardMWidget> {
       setState(() {
         // alpa = int.parse( value[0].kompen!) - int.parse( value[0].terkompen!);
         prodi = value[0].prodi!;
+        _terkompen = int.parse(value[0].terkompen!) ;
+        _kompen = _kompen - _terkompen;
         _changeColor();
       });
     });
