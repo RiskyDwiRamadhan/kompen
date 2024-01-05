@@ -1,10 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:kompen/widget/Service/serviceUser.dart';
+import 'package:kompen/widget/dashboard/dashboard.dart';
+import 'package:kompen/widget/dashboard/dashboardD.dart';
+import 'package:kompen/widget/dashboard/dashboardM.dart';
+import 'package:kompen/widget/login/login.dart';
+import 'package:kompen/widget/test.dart';
 import 'dart:async';
 
-import 'package:kompen/widget/login/login.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreenWidget extends StatefulWidget {
   const SplashScreenWidget({Key? key}) : super(key: key);
@@ -13,8 +21,8 @@ class SplashScreenWidget extends StatefulWidget {
   _SplashScreenWidget createState() => _SplashScreenWidget();
 }
 
-class _SplashScreenWidget extends State<SplashScreenWidget> 
-with TickerProviderStateMixin{
+class _SplashScreenWidget extends State<SplashScreenWidget>
+    with TickerProviderStateMixin {
   @override
   void initState() {
     // TODO: implement initState
@@ -22,18 +30,75 @@ with TickerProviderStateMixin{
     openSplashScreen();
   }
 
+  String? username, password, status, nTabel;
   openSplashScreen() async {
     //bisa diganti beberapa detik sesuai keinginan
     var durasiSplash = const Duration(seconds: 5);
+    final sharedPref = await SharedPreferences.getInstance();
 
-    return Timer(durasiSplash, () {
-      //pindah ke halaman home
-      Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) {
-        return LoginWidget();
-      }));
+    return Timer(durasiSplash, () async {
+      if (sharedPref.containsKey('myData')) {
+        final myData = json.decode(sharedPref.getString('myData')!)
+            as Map<String, dynamic>;
+
+        nTabel = myData["nTabel"];
+        username = myData["username"];
+        password = myData["password"];
+        print("Auto Login");
+        print(nTabel);
+        print(username);
+        print(password);
+
+        if (nTabel == "Dosen" || nTabel == "Admin") {
+          ServicesUser.getDosen(username!, password!).then((result) {
+            if (result[0].status! == "Admin") {
+              ServicesUser.setdata(
+                  result[0].status!, result[0].username!, result[0].password!);
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => DashboardWidget(
+                          user: result[0],
+                        )),
+                (Route) => false,
+              );
+            } else if (result[0].status! == "Dosen") {
+              ServicesUser.setdata(
+                  result[0].status!, result[0].username!, result[0].password!);
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => DashboardDWidget(user: result[0])),
+                (Route) => false,
+              );
+            }
+          });
+        } else {
+          ServicesUser.getMahasiswa(username!, password!).then((result) {
+            ServicesUser.setdata(
+                result[0].status!, result[0].username!, result[0].password!);
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => DashboardMWidget(
+                        user: result[0],
+                      )),
+                (Route) => false,
+            );            
+          });
+        }
+      } else {
+        //pindah ke Login
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => LoginWidget()),
+                (Route) => false,
+              );
+      }
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -15,8 +15,8 @@ import 'package:kompen/widget/componen/dataAmbilTugasWidget.dart';
 import 'package:kompen/widget/dashboard/dashboard.dart';
 import 'package:kompen/widget/dashboard/dashboardD.dart';
 import 'package:kompen/widget/dashboard/dashboardM.dart';
-import 'package:kompen/widget/test.dart';
 import 'package:kompen/widget/users/profile.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NavigationDrawerWidget extends StatefulWidget {
   final User user;
@@ -328,6 +328,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
             MaterialPageRoute(
                 builder: (context) => AlpakuWidget(
                       user: user,
+                      id_mahasiswa: user.idUser!,
                     )),
             (route) => false);
         break;
@@ -406,6 +407,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
         break;
       case 3:
         // LogOut
+        final sharedPref = await SharedPreferences.getInstance();
+        sharedPref.clear();
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => SplashScreenWidget()),

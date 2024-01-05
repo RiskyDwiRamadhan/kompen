@@ -9,6 +9,7 @@ import 'package:kompen/widget/dashboard/dashboardM.dart';
 import 'package:kompen/widget/Model/modelUser.dart';
 import 'package:kompen/widget/login/register.dart';
 import 'package:kompen/widget/users/profile.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginWidget extends StatefulWidget {
   const LoginWidget({Key? key}) : super(key: key);
@@ -49,12 +50,20 @@ class _LoginWidgetState extends State<LoginWidget> {
           } else {
             print("data ada" + result[0].status!);
             if (result[0].status! == "Admin") {
+              ServicesUser.setdata(
+                  result[0].status!, result[0].username!, result[0].password!);
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => DashboardWidget(user: result[0],)),
+                MaterialPageRoute(
+                    builder: (context) => DashboardWidget(
+                          user: result[0],
+                        )),
                 (Route) => false,
               );
             } else if (result[0].status! == "Dosen") {
+              ServicesUser.setdata(
+                  result[0].status!, result[0].username!, result[0].password!);
+
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
@@ -87,9 +96,15 @@ class _LoginWidgetState extends State<LoginWidget> {
           } else {
             print("data ada" + result[0].status!);
             if (result[0].status! == "Mahasiswa") {
+              ServicesUser.setdata(
+                  result[0].status!, result[0].username!, result[0].password!);
+
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => DashboardMWidget(user: result[0],)),
+                MaterialPageRoute(
+                    builder: (context) => DashboardMWidget(
+                          user: result[0],
+                        )),
                 (Route) => false,
               );
             }
@@ -102,6 +117,7 @@ class _LoginWidgetState extends State<LoginWidget> {
   @override
   void initState() {
     super.initState();
+    // testautoLogin();
   }
 
   Widget _buildSignupBtn() {
@@ -191,7 +207,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                         Padding(
                           padding: EdgeInsetsDirectional.fromSTEB(8, 0, 0, 0),
                           child: Text(
-                            'Welcome Back',
+                            'Welcome Back TEST',
                             style: TextStyle(
                               fontFamily: 'Plus Jakarta Sans',
                               color: Color(0xFF101213),

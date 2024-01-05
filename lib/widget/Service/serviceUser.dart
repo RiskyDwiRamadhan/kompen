@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:async/async.dart';
 import 'package:kompen/widget/Service/serviceNetwork.dart';
 import 'package:path/path.dart' as path;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ServicesUser {
   static const ROOT = serviceNetwork.login;
@@ -124,4 +125,17 @@ class ServicesUser {
       return "error";
     }
   }
+  
+   static Future<void> setdata(String status, String username, String password) async {
+    final sharedPref = await SharedPreferences.getInstance();
+
+    final myDataPref = json.encode({
+      'nTabel': status,
+      'username': username,
+      'password': password,
+    });
+
+    sharedPref.setString('myData', myDataPref);
+  }
+
 }
