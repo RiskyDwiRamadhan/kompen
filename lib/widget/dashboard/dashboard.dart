@@ -7,7 +7,9 @@ import 'package:flutter/scheduler.dart';
 import 'dart:async';
 
 import 'package:http/http.dart' as http;
+import 'package:kompen/widget/Alpa/alpaku.dart';
 import 'package:kompen/widget/Model/modelUser.dart';
+import 'package:kompen/widget/Service/serviceAlpaku.dart';
 import 'package:kompen/widget/componen/navigatorDrawer.dart';
 import 'dart:convert';
 import 'package:kompen/widget/login/login.dart';
@@ -27,8 +29,14 @@ class _DashboardWidgetState extends State<DashboardWidget> {
   TextEditingController nimInput = new TextEditingController();
   late User user;
   File? _image;
-  String id_user = "", status = "", nama = "", noTelp = "",
-         password = "", username = "", email = "", foto = "";
+  String id_user = "",
+      status = "",
+      nama = "",
+      noTelp = "",
+      password = "",
+      username = "",
+      email = "",
+      foto = "";
 
   void _getData() async {
     user = widget.user;
@@ -36,61 +44,45 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     nama = user.namaLengkap!.toString();
     noTelp = user.noTelp!.toString();
     password = user.password!.toString();
-    username= user.username!.toString();
+    username = user.username!.toString();
     email = user.email!.toString();
     foto = user.foto!.toString();
     status = user.status!.toString();
   }
 
   void prosesPencarian() async {
-    final response = await http.post(
-        // Uri.parse("http://192.168.1.200/kompen/dataM.php"),
-        Uri.parse("http://192.168.213.213/kompen/dataM.php"),
-        body: {
-          "nim": nimInput.text,
-        });
-
-    var dataUser = json.decode(response.body);
-
-    if (dataUser == "Error") {
-      setState(() {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text("Konfirmasi Pencarian"),
-              content: Text("Data user tidak ada!!"),
-              actions: [
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text('OK'))
-              ],
-            );
-          },
-        );
-        print("data user sudah ada!!");
-      });
-    } else {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("Konfirmasi Register"),
-            content: Text("Data user berhasil ada!! Hallo"),
-            actions: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              )
-            ],
+    ServicesAlpaku.getAlpakuWhere(nimInput.text).then((value) {
+      if (value.length <= 0) {
+        setState(() {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text("Konfirmasi Pencarian"),
+                content: Text("Data user tidak ada!!"),
+                actions: [
+                  ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          nimInput.text = "";
+                        });
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('OK'))
+                ],
+              );
+            },
           );
-        },
-      );
-    }
+          print("data user sudah ada!!");
+        });
+      }else{        
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AlpakuWidget(user: user,id_mahasiswa: nimInput.text,)),
+                            (route) => false);
+      }
+    });
   }
 
   @override
@@ -105,9 +97,9 @@ class _DashboardWidgetState extends State<DashboardWidget> {
     return GestureDetector(
       child: Scaffold(
         backgroundColor: Color.fromRGBO(255, 255, 255, 1),
-      drawer: NavigationDrawerWidget(
+        drawer: NavigationDrawerWidget(
           user: user,
-          ),
+        ),
         appBar: AppBar(
           backgroundColor: Color.fromRGBO(16, 6, 148, 1),
           title: Text(
@@ -168,8 +160,6 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                               EdgeInsetsDirectional.fromSTEB(20, 0, 20, 10),
                           child: TextFormField(
                             controller: nimInput,
-                            autofocus: true,
-                            obscureText: false,
                             decoration: InputDecoration(
                               enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
