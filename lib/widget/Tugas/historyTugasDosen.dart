@@ -10,18 +10,18 @@ import 'package:kompen/widget/Model/modelTugas.dart';
 import 'package:kompen/widget/Service/serviceTugas.dart';
 import 'package:kompen/widget/componen/navigatorDrawer.dart';
 
-class dataTugasDosenWidget extends StatefulWidget {
+class historyTugasDosenWidget extends StatefulWidget {
   final User user;
-  const dataTugasDosenWidget({
+  const historyTugasDosenWidget({
     Key? key,
     required this.user,
   }) : super(key: key);
 
   @override
-  State<dataTugasDosenWidget> createState() => _dataTugasDosenWidgetState();
+  State<historyTugasDosenWidget> createState() => _historyTugasDosenWidgetState();
 }
 
-class _dataTugasDosenWidgetState extends State<dataTugasDosenWidget> {
+class _historyTugasDosenWidgetState extends State<historyTugasDosenWidget> {
   late List<Tugas> tugas;
 
   int sortIndex = 0;
@@ -34,120 +34,6 @@ class _dataTugasDosenWidgetState extends State<dataTugasDosenWidget> {
 
   late User user;
   File? _image;
-
-  void _getUser() async {}
-
-  _ambilTugas(Tugas tugas) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => InputAmbilTugasWidget(
-          tugas: tugas,
-          user: user,
-        ),
-      ),
-    );
-  }
-
-  _postData(Tugas tugas) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => UpdateTugasWidget(
-          user: user,
-          tugas: tugas,
-        ),
-      ),
-    );
-  }
-
-  _updateStatus(Tugas tugas) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text("Konfirmasi Data"),
-          content: Text("Apakah Anda Ingin Menutup Tugas ini ??"),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Tidak'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                ServicesTugas.updateStatusTugas(tugas.idTugas.toString()).then(
-                  (result) {
-                    if ('success' == result) {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text("Konfirmasi Data"),
-                            content: Text("Tugas telah ditutup!!"),
-                          );
-                        },
-                      );
-                    }
-                  },
-                );
-                setState(() {
-                  _getData();
-                });
-                Navigator.of(context).pop();
-              },
-              child: Text('Ya'),
-            )
-          ],
-        );
-      },
-    );
-  }
-
-  _deleteData(Tugas tugas) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text("Konfirmasi Data"),
-          content: Text("Apakah Anda Ingin Menghapus Data Ini ??"),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Tidak'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                ServicesTugas.deleteTugas(tugas.idTugas.toString()).then(
-                  (result) {
-                    if ('success' == result) {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text("Konfirmasi Data"),
-                            content: Text("Data user berhasil Dihapus!!"),
-                          );
-                        },
-                      );
-                    }
-                  },
-                );
-                setState(() {
-                  _getData();
-                });
-                Navigator.of(context).pop();
-              },
-              child: Text('Ya'),
-            )
-          ],
-        );
-      },
-    );
-  }
 
   sortData() {
     if (sortIndex == 1) {
@@ -236,7 +122,7 @@ class _dataTugasDosenWidgetState extends State<dataTugasDosenWidget> {
       user = widget.user;
       nip = widget.user.idUser!.toString();
     });
-    ServicesTugas.getTDosens(nip, 'Ready').then(
+    ServicesTugas.getTDosens(nip, "Completed").then(
       (result) {
         setState(() {
           isLoading = false;
@@ -293,7 +179,6 @@ class _dataTugasDosenWidgetState extends State<dataTugasDosenWidget> {
     super.initState();
     tugas = [];
     _getData();
-    _getUser();
   }
 
   @override
@@ -323,7 +208,7 @@ class _dataTugasDosenWidgetState extends State<dataTugasDosenWidget> {
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(16, 6, 148, 1),
         title: Text(
-          'Data Tugas',
+          'Data History Tugas',
           style: TextStyle(
             fontFamily: 'Outfit',
             color: Colors.white,
@@ -391,15 +276,10 @@ class _dataTugasDosenWidgetState extends State<dataTugasDosenWidget> {
                                   onSort: onSort, label: Text('Jumlah Kompen')),
                               DataColumn(
                                   onSort: onSort, label: Text('Deskripsi')),
-                              DataColumn(label: Text('Action')),
                             ],
                             source: TugasDataSource(
                               context: context,
                               tugas: getFilteredTugass(),
-                              updateCallback: _postData,
-                              updateStatusTugasCallback: _updateStatus,
-                              deleteCallback: _deleteData,
-                              ambilTugasCallback: _ambilTugas,
                             ),
                             rowsPerPage: 10,
                           ),
@@ -417,18 +297,10 @@ class _dataTugasDosenWidgetState extends State<dataTugasDosenWidget> {
 class TugasDataSource extends DataTableSource {
   final List<Tugas> tugas;
   final BuildContext context;
-  final Function(Tugas) updateCallback;
-  final Function(Tugas) updateStatusTugasCallback;
-  final Function(Tugas) deleteCallback;
-  final Function(Tugas) ambilTugasCallback;
 
   TugasDataSource({
     required this.context,
     required this.tugas,
-    required this.deleteCallback,
-    required this.updateCallback,
-    required this.updateStatusTugasCallback,
-    required this.ambilTugasCallback,
   });
 
   @override
@@ -444,106 +316,6 @@ class TugasDataSource extends DataTableSource {
       DataCell(Text(tugasData.kuota.toString())),
       DataCell(Text(tugasData.jumlahKompen.toString())),
       DataCell(Text(tugasData.deskripsi.toString())),
-      DataCell(
-        Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                  child: GestureDetector(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 0),
-                      width: 30,
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.update,
-                          color: Colors.orange,
-                          size: 30,
-                        ),
-                        onPressed: () {
-                          updateCallback(tugasData);
-                        },
-                        padding: EdgeInsets.all(0),
-                        color: Colors.orange[600],
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                  child: GestureDetector(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 0),
-                      width: 30,
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.delete,
-                          color: Colors.red,
-                          size: 30,
-                        ),
-                        onPressed: () {
-                          deleteCallback(tugasData);
-                        },
-                        padding: EdgeInsets.all(0),
-                        color: Colors.red[600],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                  child: GestureDetector(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 0),
-                      width: 30,
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.library_add,
-                          color: const Color.fromARGB(255, 75, 233, 80),
-                          size: 30,
-                        ),
-                        onPressed: () {
-                          ambilTugasCallback(tugasData);
-                        },
-                        padding: EdgeInsets.all(0),
-                        color: const Color.fromARGB(255, 75, 233, 80),
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                  child: GestureDetector(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 0),
-                      width: 30,
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.close,
-                          color: Colors.yellow,
-                          size: 30,
-                        ),
-                        onPressed: () {
-                          updateStatusTugasCallback(tugasData);
-                        },
-                        padding: EdgeInsets.all(0),
-                        color: Colors.yellow,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
     ]);
   }
 

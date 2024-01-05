@@ -9,8 +9,10 @@ import 'package:kompen/widget/Mahasiswa/dataMahasiswa.dart';
 import 'package:kompen/widget/Model/modelUser.dart';
 import 'package:kompen/widget/Service/serviceNetwork.dart';
 import 'package:kompen/widget/SplashScreen.dart';
+import 'package:kompen/widget/Tugas/allHistory.dart';
 import 'package:kompen/widget/Tugas/dataTugasDosen.dart';
 import 'package:kompen/widget/Tugas/dataTugasReady.dart';
+import 'package:kompen/widget/Tugas/historyTugasDosen.dart';
 import 'package:kompen/widget/componen/dataAmbilTugasWidget.dart';
 import 'package:kompen/widget/dashboard/dashboard.dart';
 import 'package:kompen/widget/dashboard/dashboardD.dart';
@@ -393,17 +395,23 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
         break;
       case 23:
         // Historyku
-        // Navigator.pushAndRemoveUntil(
-        //     context,
-        //     MaterialPageRoute(builder: (context) => AlpakuWidget()),
-        //     (route) => false);
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => historyTugasDosenWidget(
+                      user: user,
+                    )),
+            (route) => false);
         break;
       case 24:
         // Semua History
-        // Navigator.pushAndRemoveUntil(
-        //     context,
-        //     MaterialPageRoute(builder: (context) => AlpakuWidget()),
-        //     (route) => false);
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => allHistoryTugasDosenWidget(
+                      user: user,
+                    )),
+            (route) => false);
         break;
       case 3:
         // LogOut

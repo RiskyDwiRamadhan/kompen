@@ -13,6 +13,7 @@ class ServicesTugas {
   static const _GET_ALL_ACTION = 'get_all';
   static const _GET_READY_ACTION = 'get_ready';
   static const _GET_NIP_ACTION = 'where_nip';
+  static const _GET_ALL_HISTORY_ACTION = 'all_history';
   static const _GET_WHERE_ACTION = 'get_where';
   static const _ADD_ACTION = 'add_data';
   static const _UPDATE_ACTION = 'update';
@@ -58,13 +59,34 @@ class ServicesTugas {
   }
 
   // Menampilkan Data Sesuai NIP
-  static Future<List<Tugas>> getTDosens(String nip) async {
+  static Future<List<Tugas>> getTDosens(String nip, String status) async {
     try {
       var map = Map<String, dynamic>();
       map['action'] = _GET_NIP_ACTION;
       map['nip'] = nip;
+      map['status'] = status;
       final response = await http.post(Uri.parse(ROOT), body: map);
       print('getTugass Response: ${response.body}');
+      if (response.statusCode == 200) {
+        print(response.body.length);
+        print("Data ada banyak");
+      return compute(parseData, response.body);
+      } else {
+        throw Exception('Can\'t get data');
+      }
+    } catch (e) {
+      return <Tugas>[]; // return an empty list on exception/error
+    }
+  }
+
+  // Menampilkan Data Semua History Tugas
+  static Future<List<Tugas>> getHTDosens(String status) async {
+    try {
+      var map = Map<String, dynamic>();
+      map['action'] = _GET_ALL_HISTORY_ACTION;
+      map['status'] = status;
+      final response = await http.post(Uri.parse(ROOT), body: map);
+      print('getHistoryTugass Response: ${response.body}');
       if (response.statusCode == 200) {
         print(response.body.length);
         print("Data ada banyak");
