@@ -48,7 +48,7 @@ class _UpdateMahasiswaWidgetState extends State<UpdateMahasiswaWidget> {
     emailInput.text = widget.mahasiswa.email!.toString();
     fotoInput.text = widget.mahasiswa.foto!.toString();
     prodi = widget.mahasiswa.prodi!.toString();
-    _image = File(widget.mahasiswa.foto!.toString());
+    _image = File(widget.mahasiswa.foto!);
   }
   void _getImage() async {
     final pickedFile =
@@ -71,7 +71,7 @@ class _UpdateMahasiswaWidgetState extends State<UpdateMahasiswaWidget> {
             builder: (context) {
               return AlertDialog(
                 title: Text("Konfirmasi Data"),
-                content: Text("Data user berhasil ditambahkan!!"),
+                content: Text("Data user berhasil diubah!!"),
                 actions: [
                   ElevatedButton(
                       onPressed: () {
@@ -98,7 +98,7 @@ class _UpdateMahasiswaWidgetState extends State<UpdateMahasiswaWidget> {
               builder: (context) {
                 return AlertDialog(
                   title: Text("Konfirmasi Data"),
-                  content: Text("Data user sudah ada!!"),
+                  content: Text("Data user gagal diubah!!"),
                   actions: [
                     ElevatedButton(
                         onPressed: () {
@@ -177,8 +177,8 @@ class _UpdateMahasiswaWidgetState extends State<UpdateMahasiswaWidget> {
                           padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
                           child: TextFormField(
                             controller: nimInput,
+                            readOnly: true,
                             keyboardType: TextInputType.number,
-                            autofocus: true,
                             obscureText: false,
                             decoration: InputDecoration(
                               hintText: 'Masukkan NIM anda',

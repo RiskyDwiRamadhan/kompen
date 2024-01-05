@@ -9,7 +9,6 @@ class Mahasiswa {
   String? username;
   String? password;
   String? foto;
-  String? kompen;
   String? terkompen;
 
   Mahasiswa(
@@ -23,7 +22,6 @@ class Mahasiswa {
       this.username,
       this.password,
       this.foto,
-      this.kompen,
       this.terkompen});
 
   Mahasiswa.fromJson(Map<String, dynamic> json) {
@@ -37,7 +35,6 @@ class Mahasiswa {
     username = json['username'];
     password = json['password'];
     foto = json['foto'];
-    kompen = json['kompen'];
     terkompen = json['terkompen'];
   }
 
@@ -53,7 +50,6 @@ class Mahasiswa {
     data['username'] = this.username;
     data['password'] = this.password;
     data['foto'] = this.foto;
-    data['kompen'] = this.kompen;
     data['terkompen'] = this.terkompen;
     return data;
   }

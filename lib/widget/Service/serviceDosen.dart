@@ -95,13 +95,22 @@ class ServicesDosen {
       request.fields['status'] = status;
 
       
-    if (foto != null) {
-      var stream = http.ByteStream(DelegatingStream.typed(foto.openRead()));
-      var length = await foto.length();
-      
-      request.files.add(http.MultipartFile("foto", stream, length,
-          filename: path.basename(foto.path)));
-    }
+    
+      if (foto != null) {
+        print("$foto foto ada");
+
+        if (File(foto.path).existsSync()) {
+          print("$foto foto path ada");
+          var stream = http.ByteStream(DelegatingStream.typed(foto.openRead()));
+          var length = await foto.length();
+
+          request.files.add(http.MultipartFile("foto", stream, length,
+              filename: path.basename(foto.path)));
+        } else {
+          print("$foto foto path tidak ada");
+          request.fields['foto'] = foto.toString();
+        }
+      }
 
       var response = await request.send();
       if (response.statusCode > 2) {

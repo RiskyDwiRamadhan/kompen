@@ -30,7 +30,7 @@ class ServicesMahasiswa {
       if (response.statusCode == 200) {
         print(response.body.length);
         print("Data ada banyak");
-      return compute(parseData, response.body);
+        return compute(parseData, response.body);
       } else {
         throw Exception('Can\'t get data');
       }
@@ -52,7 +52,7 @@ class ServicesMahasiswa {
       if (response.statusCode == 200) {
         print(response.body.length);
         print("Data ada banyak");
-      return compute(parseData, response.body);
+        return compute(parseData, response.body);
       } else {
         throw Exception('Can\'t get data');
       }
@@ -68,12 +68,12 @@ class ServicesMahasiswa {
       map['action'] = _GET_ALPA_ACTION;
       map['nim'] = nim;
       final response = await http.post(Uri.parse(ROOT), body: map);
-      
+
       print('getMahasiswas Response: ${response.body}');
       if (response.statusCode == 200) {
         print(response.body.length);
         print("Data ada banyak");
-      return compute(parseData, response.body);
+        return compute(parseData, response.body);
       } else {
         throw Exception('Can\'t get data');
       }
@@ -82,20 +82,28 @@ class ServicesMahasiswa {
     }
   }
 
-
   static List<Mahasiswa> parseData(String responseBody) {
     var list = json.decode(responseBody) as List<dynamic>;
-    List<Mahasiswa> Mahasiswas = list.map((model) => Mahasiswa.fromJson(model)).toList();
+    List<Mahasiswa> Mahasiswas =
+        list.map((model) => Mahasiswa.fromJson(model)).toList();
     return Mahasiswas;
   }
 
   // Menambahkan data
-  static Future<String> addMahasiswa(String nim, String nama, String prodi,String no_telp, 
-                        String username,String password, String email, File foto, String th_masuk) async {
+  static Future<String> addMahasiswa(
+      String nim,
+      String nama,
+      String prodi,
+      String no_telp,
+      String username,
+      String password,
+      String email,
+      File foto,
+      String th_masuk) async {
     try {
       var uri = Uri.parse(ROOT);
-      final request = http.MultipartRequest("POST",uri);
-      
+      final request = http.MultipartRequest("POST", uri);
+
       request.fields['action'] = _ADD_ACTION;
       request.fields['nim'] = nim;
       request.fields['nama'] = nama;
@@ -106,14 +114,13 @@ class ServicesMahasiswa {
       request.fields['email'] = email;
       request.fields['th_masuk'] = th_masuk;
 
-      
-    if (foto != null) {
-      var stream = http.ByteStream(DelegatingStream.typed(foto.openRead()));
-      var length = await foto.length();
-      
-      request.files.add(http.MultipartFile("foto", stream, length,
-          filename: path.basename(foto.path)));
-    }
+      if (foto != null) {
+        var stream = http.ByteStream(DelegatingStream.typed(foto.openRead()));
+        var length = await foto.length();
+
+        request.files.add(http.MultipartFile("foto", stream, length,
+            filename: path.basename(foto.path)));
+      }
 
       var response = await request.send();
       if (response.statusCode > 2) {
@@ -125,14 +132,22 @@ class ServicesMahasiswa {
       return ("Error $e");
     }
   }
-  
+
   // Update Data
-  static Future<String> updateMahasiswa(String nim, String nama, String prodi,String no_telp, 
-                        String username,String password, String email, File foto, String th_masuk) async {
+  static Future<String> updateMahasiswa(
+      String nim,
+      String nama,
+      String prodi,
+      String no_telp,
+      String username,
+      String password,
+      String email,
+      File foto,
+      String th_masuk) async {
     try {
       var uri = Uri.parse(ROOT);
-      final request = http.MultipartRequest("POST",uri);
-      
+      final request = http.MultipartRequest("POST", uri);
+
       request.fields['action'] = _UPDATE_ACTION;
       request.fields['nim'] = nim;
       request.fields['nama'] = nama;
@@ -143,17 +158,24 @@ class ServicesMahasiswa {
       request.fields['email'] = email;
       request.fields['th_masuk'] = th_masuk;
 
-      
-    if (foto != null) {
-      var stream = http.ByteStream(DelegatingStream.typed(foto.openRead()));
-      var length = await foto.length();
-      
-      request.files.add(http.MultipartFile("foto", stream, length,
-          filename: path.basename(foto.path)));
-    }
+      if (foto != null) {
+        print("$foto foto ada");
 
+        if (File(foto.path).existsSync()) {
+          print("$foto foto path ada");
+          var stream = http.ByteStream(DelegatingStream.typed(foto.openRead()));
+          var length = await foto.length();
+
+          request.files.add(http.MultipartFile("foto", stream, length,
+              filename: path.basename(foto.path)));
+        } else {
+          print("$foto foto path tidak ada");
+          request.fields['foto'] = foto.toString();
+        }
+      }
+      print("$foto foto kosong");
       var response = await request.send();
-      if (response.statusCode > 2) {
+      if (response.statusCode == 200) {
         return "success";
       } else {
         return "error";
@@ -180,5 +202,4 @@ class ServicesMahasiswa {
       return "error"; // returning just an "error" string to keep this simple...
     }
   }
-
 }

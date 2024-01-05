@@ -45,6 +45,7 @@ class _UpdateDosenWidgetState extends State<UpdateDosenWidget> {
     usernameInput.text = widget.dosen.username!.toString();
     emailInput.text = widget.dosen.email!.toString();
     fotoInput.text = widget.dosen.foto!.toString();
+    _image = File(widget.dosen.foto!);
     status = widget.dosen.level!.toString();
   }
 
@@ -69,7 +70,7 @@ class _UpdateDosenWidgetState extends State<UpdateDosenWidget> {
             builder: (context) {
               return AlertDialog(
                 title: Text("Konfirmasi Data"),
-                content: Text("Data user berhasil dirubah!!"),
+                content: Text("Data user berhasil diubah!!"),
                 actions: [
                   ElevatedButton(
                       onPressed: () {
@@ -96,7 +97,7 @@ class _UpdateDosenWidgetState extends State<UpdateDosenWidget> {
               builder: (context) {
                 return AlertDialog(
                   title: Text("Konfirmasi Data"),
-                  content: Text("Data user gagal dirubah!!"),
+                  content: Text("Data user gagal diubah!!"),
                   actions: [
                     ElevatedButton(
                         onPressed: () {
@@ -174,8 +175,8 @@ class _UpdateDosenWidgetState extends State<UpdateDosenWidget> {
                           padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
                           child: TextFormField(
                             controller: nipInput,
+                            readOnly: true,
                             keyboardType: TextInputType.number,
-                            autofocus: true,
                             obscureText: false,
                             decoration: InputDecoration(
                               hintText: 'Masukkan NIP anda',
@@ -254,6 +255,13 @@ class _UpdateDosenWidgetState extends State<UpdateDosenWidget> {
                               enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
                                   color: Color.fromARGB(255, 136, 135, 135),
+                                  width: 2,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.blue,
                                   width: 2,
                                 ),
                                 borderRadius: BorderRadius.circular(10),
