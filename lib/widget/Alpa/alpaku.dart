@@ -12,7 +12,8 @@ import 'package:kompen/widget/componen/perkalian.dart';
 
 class AlpakuWidget extends StatefulWidget {
   final User user;
-  const AlpakuWidget({Key? key, required this.user}) : super(key: key);
+  final String id_mahasiswa;
+  const AlpakuWidget({Key? key, required this.user,  required this.id_mahasiswa,}) : super(key: key);
 
   @override
   _AlpakuWidgetState createState() => _AlpakuWidgetState();
@@ -60,7 +61,7 @@ class _AlpakuWidgetState extends State<AlpakuWidget> {
   void initState() {
     super.initState();
       user = widget.user;
-      nim = widget.user.idUser!;
+      nim = widget.id_mahasiswa!;
     _getAlpaku();
     _getMahasiswa();
   }

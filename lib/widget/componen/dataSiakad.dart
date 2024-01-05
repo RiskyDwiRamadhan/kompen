@@ -2,7 +2,9 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:kompen/widget/Model/modelAlpaku.dart';
+import 'package:kompen/widget/Model/modelDetailAlpa.dart';
 import 'package:kompen/widget/Model/modelMahasiswa.dart';
+import 'package:kompen/widget/Service/serviceAlpaku.dart';
 
 class DataSiakad extends StatefulWidget {
   @required
@@ -15,30 +17,74 @@ class DataSiakad extends StatefulWidget {
 }
 
 class _DataSiakadState extends State<DataSiakad> {
-
-_DetailAlpa() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog.adaptive(
-          title: Text("Konfirmasi Data"),
-          content: Text("Apakah Mahasiswa Sudah Melakukan Kompen ??"),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Tidak'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-              },
-              child: Text('Ya'),
-            )
-          ],
-        );
-      },
-    );
+  _DetailAlpa(String nim, String semester) {
+    ServicesAlpaku.getDetailAlpaku(nim, semester).then((value) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return SimpleDialog(
+            contentPadding: EdgeInsets.all(10),
+            title: Text("Detail Alpa"),
+            children: [
+              Align(
+                alignment: AlignmentDirectional(-1, 0),
+                child: Padding(
+                  padding: EdgeInsetsDirectional.fromSTEB(10, 10, 0, 0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Jam Alpa     = ${value[0].jamAlpa}',
+                      ),
+                      Text(
+                        'Menit Alpa   = ${value[0].menitAlpa}',
+                      ),
+                      Text(
+                        'Jam Sakit    = ${value[0].jamSakit}',
+                      ),
+                      Text(
+                        'Menit Sakit  = ${value[0].menitSakit}',
+                      ),
+                      Text(
+                        'Jam Ijin     = ${value[0].jamIjin}',
+                      ),
+                      Text(
+                        'Menit Ijin   = ${value[0].menitIjin}',
+                      ),
+                      Container(
+                        width: 100,
+                        alignment: Alignment.centerLeft,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();                            
+                          },
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                            primary: Colors.grey[700],
+                          ),
+                          child: Text(
+                            'Kembali',
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 255, 255, 255),
+                              fontSize: 10.0,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'OpenSans',
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          );
+        },
+      );
+    });
   }
 
   @override
@@ -174,7 +220,10 @@ _DetailAlpa() {
                                     child: Container(
                                       width: 150,
                                       child: ElevatedButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          _DetailAlpa(widget.alpaku[index].nim!,
+                                              widget.alpaku[index].semester!);
+                                        },
                                         style: ElevatedButton.styleFrom(
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
