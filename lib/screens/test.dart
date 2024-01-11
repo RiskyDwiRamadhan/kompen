@@ -1,381 +1,294 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:kompen/Service/serviceUser.dart';
-import 'package:kompen/screens/dashboard/dashboard.dart';
-import 'package:kompen/screens/dashboard/dashboardD.dart';
-import 'package:kompen/screens/dashboard/dashboardM.dart';
-import 'package:kompen/Model/modelUser.dart';
-import 'package:kompen/screens/login/register.dart';
-import 'package:kompen/screens/users/profile.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:kompen/Service/serviceAlpaku.dart';
+import 'package:kompen/Service/serviceMahasiswa.dart';
+import 'package:kompen/constants.dart';
+import 'package:kompen/screens/login/login.dart';
+import 'package:path/path.dart' as path;
 
-class LoginWidgetTest extends StatefulWidget {
-  const LoginWidgetTest({Key? key}) : super(key: key);
+import '../componen/componen.dart';
+import '../widgets/widgets.dart';
+
+class RegisterWidgetTest extends StatefulWidget {
+  const RegisterWidgetTest({Key? key}) : super(key: key);
 
   @override
-  _LoginWidgetTestState createState() => _LoginWidgetTestState();
+  _RegisterWidgetTestState createState() => _RegisterWidgetTestState();
 }
 
-class _LoginWidgetTestState extends State<LoginWidgetTest> {
-  List<User> dataUser = [];
-  String? username, password, status, nTabel;
+class _RegisterWidgetTestState extends State<RegisterWidgetTest> {
+  String? username, password, prodi;
+  bool isObscure = true;
+  File? _image;
   final formKey = GlobalKey<FormState>();
 
-  TextEditingController usernameInput = new TextEditingController();
+  TextEditingController nimInput = new TextEditingController();
+  TextEditingController namaInput = new TextEditingController();
+  TextEditingController thMasukInput = new TextEditingController();
   TextEditingController passwordInput = new TextEditingController();
+  TextEditingController usernameInput = new TextEditingController();
+  TextEditingController emailInput = new TextEditingController();
+  TextEditingController noTelpInput = new TextEditingController();
+  TextEditingController fotoInput = new TextEditingController();
 
-  void prosesLogin() async {
-    // pilihan DropDown Dosen dan Mahasiswa
-    if (nTabel == "Dosen" || nTabel == "Admin") {
-      ServicesUser.getDosen(usernameInput.text, passwordInput.text).then(
-        (result) {
-          if (result.length < 1) {
+  void _getImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      _image = File(pickedFile!.path);
+      fotoInput.text = path.basename(_image!.path);
+    });
+  }
+
+  void prosesData() async {
+    ServicesMahasiswa.addMahasiswa(
+            nimInput.text,
+            namaInput.text,
+            prodi.toString(),
+            noTelpInput.text,
+            usernameInput.text,
+            passwordInput.text,
+            emailInput.text,
+            _image!,
+            thMasukInput.text)
+        .then(
+      (result) {
+        if ('success' == result) {
+          ServicesAlpaku.addAlpaku(nimInput.text, '1').then(
+            (value) {
+              if (value == "Succes") {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text("Konfirmasi Data"),
+                      content: Text("Data user berhasil ditambahkan!!"),
+                      actions: [
+                        ElevatedButton(
+                            onPressed: () {
+                              nimInput.text = "";
+                              namaInput.text = "";
+                              passwordInput.text = "";
+                              usernameInput.text = "";
+                              fotoInput.text = "";
+                              prodi = "";
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginWidget()));
+                            },
+                            child: Text('OK'))
+                      ],
+                    );
+                  },
+                );
+              }
+            },
+          );
+        } else {
+          setState(() {
             showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: Text("Konfirmasi Login"),
-                    content: Text("Data user tidak ada!!"),
-                    actions: [
-                      ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text('OK'))
-                    ],
-                  );
-                });
-          } else {
-            print("data ada" + result[0].status!);
-            if (result[0].status! == "Admin") {
-              ServicesUser.setdata(
-                  result[0].status!, result[0].username!, result[0].password!);
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => DashboardWidget(
-                          user: result[0],
-                        )),
-                (Route) => false,
-              );
-            } else if (result[0].status! == "Dosen") {
-              ServicesUser.setdata(
-                  result[0].status!, result[0].username!, result[0].password!);
-
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => DashboardDWidget(user: result[0])),
-                (Route) => false,
-              );
-            }
-          }
-        },
-      );
-    } else {
-      ServicesUser.getMahasiswa(usernameInput.text, passwordInput.text).then(
-        (result) {
-          if (result.length < 1) {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: Text("Konfirmasi Login"),
-                    content: Text("Data user tidak ada!!"),
-                    actions: [
-                      ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text('OK'))
-                    ],
-                  );
-                });
-          } else {
-            print("data ada" + result[0].status!);
-            if (result[0].status! == "Mahasiswa") {
-              ServicesUser.setdata(
-                  result[0].status!, result[0].username!, result[0].password!);
-
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => DashboardMWidget(
-                          user: result[0],
-                        )),
-                (Route) => false,
-              );
-            }
-          }
-        },
-      );
-    }
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text("Konfirmasi Data"),
+                  content: Text("Data user sudah ada!!"),
+                  actions: [
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('OK'))
+                  ],
+                );
+              },
+            );
+            print("data user sudah ada!!");
+          });
+        }
+      },
+    );
   }
 
   @override
   void initState() {
     super.initState();
-    // testautoLogin();
-  }
-
-  Widget _buildSignupBtn() {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => RegisterWidget()));
-      },
-      child: RichText(
-        text: TextSpan(
-          children: [
-            TextSpan(
-              text: 'Don\'t have an Account? ',
-              style: TextStyle(
-                color: Color.fromARGB(101, 0, 0, 0),
-                fontSize: 18.0,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            TextSpan(
-              text: 'Sign Up Here',
-              style: TextStyle(
-                color: Colors.blue[800],
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF4B39EF), Color(0xFFEE8B60)],
-            stops: [0, 1],
-            begin: AlignmentDirectional(0, -1),
-            end: AlignmentDirectional(0, 1),
-          ),
-        ),
-        child: Form(
-          key: formKey,
+    Size size = MediaQuery.of(context).size;
+    return SafeArea(
+      child: Scaffold(
+        body: SizedBox(
+          width: size.width,
+          height: size.height,
           child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: Stack(
               children: [
+                const Upside(
+                  imgUrl: "assets/images/polinema_logo.png",
+                ),
+                const PageTitleBar(title: 'Create an account'),
                 Padding(
-                  padding: EdgeInsetsDirectional.fromSTEB(0, 130, 0, 10),
+                  padding: const EdgeInsets.only(top: 320.0),
                   child: Container(
-                    width: 150,
-                    height: 150,
-                    clipBehavior: Clip.antiAlias,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                    ),
-                    child: Container(
-                      width: 200,
-                      height: 200,
-                      clipBehavior: Clip.antiAlias,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          fit: BoxFit.contain,
-                          image: Image.asset(
-                            'assets/images/polinema_logo.png',
-                          ).image,
-                        ),
+                    width: double.infinity,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(50),
+                        topRight: Radius.circular(50),
                       ),
                     ),
-                  ),
-                ),
-                Align(
-                  alignment: AlignmentDirectional(0.00, 0.00),
-                  child: Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(32, 32, 32, 32),
                     child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(8, 0, 0, 0),
-                          child: Text(
-                            'Welcome Back TEST',
-                            style: TextStyle(
-                              fontFamily: 'Plus Jakarta Sans',
-                              color: Color(0xFF101213),
-                              fontSize: 36,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                        const SizedBox(
+                          height: 25,
                         ),
-                        Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(8, 12, 0, 24),
-                          child: Text(
-                            'Let\'s get started by filling out the form below.',
-                            style: TextStyle(
-                              fontFamily: 'Plus Jakarta Sans',
-                              color: Color(0xFF57636C),
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
-                          child: DropdownButton<String?>(
-                            value: nTabel,
-                            onChanged: (value) {
-                              setState(() {
-                                nTabel = value;
-                              });
-                            },
-                            items: ["Dosen", "Admin", "Mahasiswa"]
-                                .map<DropdownMenuItem<String?>>(
-                                  (e) => DropdownMenuItem(
-                                    child: Text(e.toString()),
-                                    value: e,
-                                  ),
-                                )
-                                .toList(),
-                            isExpanded: true,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
-                          child: TextFormField(
-                            controller: usernameInput,
-                            autofocus: true,
-                            obscureText: false,
-                            decoration: InputDecoration(
-                              labelText: 'Username',
-                              hintText: 'Username',
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(0x00000000),
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
+                        Form(
+                          key: formKey,
+                          child: Column(
+                            children: [
+                              RoundedInputField(
+                                controller: nimInput,
+                                hintText: "Masukkan NIM anda",
+                                validator: "NIM",
+                                icon: Icons.adjust_sharp,
+                                textInputType: TextInputType.number,
+                                textInputAction: TextInputAction.next,
                               ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(000000),
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
+                              RoundedInputField(
+                                controller: namaInput,
+                                hintText: "Masukkan Nama Lengkap anda",
+                                validator: "Nama Lengkap",
+                                icon: Icons.account_circle,
+                                textInputType: TextInputType.text,
+                                textInputAction: TextInputAction.next,
                               ),
-                              filled: true,
-                              fillColor: Colors.white,
-                            ),
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return "Username Masih Kosong";
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
-                          child: TextFormField(
-                            controller: passwordInput,
-                            autofocus: true,
-                            obscureText: false,
-                            decoration: InputDecoration(
-                              labelText: 'Password',
-                              hintText: 'Password',
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(0x00000000),
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
+                              RoundedInputField(
+                                controller: thMasukInput,
+                                hintText: "Masukkan Tahun Masuk anda",
+                                validator: "Tahun Masuk",
+                                icon: Icons.date_range_sharp,
+                                textInputType: TextInputType.text,
+                                textInputAction: TextInputAction.next,
                               ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(0x00000000),
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
+                              ElevatedButton(
+                                onPressed: _getImage,
+                                child: Text('Select Image'),
                               ),
-                              errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(0x00000000),
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
+                              RoundedInputField(
+                                controller: fotoInput,
+                                hintText: "Pilih File Foto Anda",
+                                validator: "Foto",
+                                icon: Icons.photo_camera_back_outlined,
+                                textInputType: TextInputType.text,
+                                textInputAction: TextInputAction.next,
                               ),
-                              focusedErrorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color(0x00000000),
-                                  width: 2,
+                              TextFieldContainer(
+                                child: DropdownButton<String?>(
+                                  value: prodi,
+                                  hint: Text("Program Studi"),
+                                  onChanged: (value) {
+                                    setState(() {
+                                      prodi = value;
+                                    });
+                                  },
+                                  items: [
+                                    "D4 Sistem Informasi Bisnis",
+                                    "D4 Teknik Informatika",
+                                    "D2 Pengembangan Piranti Lunak Situs"
+                                  ]
+                                      .map<DropdownMenuItem<String?>>(
+                                        (e) => DropdownMenuItem(
+                                          child: Text(e.toString()),
+                                          value: e,
+                                        ),
+                                      )
+                                      .toList(),
+                                  isExpanded: true,
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                                borderRadius: BorderRadius.circular(8),
                               ),
-                              filled: true,
-                              fillColor: Colors.white,
-                            ),
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return "Password Masih Kosong";
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
-                          child: GestureDetector(
-                            child: Container(
-                              padding: EdgeInsets.symmetric(vertical: 25.0),
-                              width: double.infinity,
-                              child: ElevatedButton(
+                              RoundedInputField(
+                                controller: emailInput,
+                                hintText: "Masukkan Email anda",
+                                validator: "Email",
+                                icon: Icons.email,
+                                textInputType: TextInputType.emailAddress,
+                                textInputAction: TextInputAction.next,
+                              ),
+                              RoundedInputField(
+                                controller: noTelpInput,
+                                hintText: "Masukkan Nomor Telepon anda",
+                                validator: "Nomor Telepon",
+                                icon: Icons.phone,
+                                textInputType: TextInputType.phone,
+                                textInputAction: TextInputAction.next,
+                              ),
+                              RoundedInputField(
+                                controller: usernameInput,
+                                hintText: "Masukkan Username anda",
+                                validator: "Username",
+                                icon: Icons.people,
+                                textInputType: TextInputType.text,
+                                textInputAction: TextInputAction.next,
+                              ),
+                              RoundedInputField(
+                                controller: passwordInput,
+                                hintText: "Masukkan Password anda",
+                                validator: "Password",
+                                icon: Icons.lock,
+                                textInputType: TextInputType.visiblePassword,
+                                textInputAction: TextInputAction.done,
+                                isObscure: isObscure,
+                                hasSuffix: true,
                                 onPressed: () {
+                                  setState(() {
+                                    isObscure = !isObscure;
+                                  });
+                                },
+                              ),
+                              RoundedButton(
+                                text: 'Sign Up',
+                                press: () {
                                   if (formKey.currentState!.validate()) {
-                                    prosesLogin();
+                                    prosesData();
                                   }
                                 },
-                                style: ElevatedButton.styleFrom(
-                                  elevation: 5.0,
-                                  padding: EdgeInsets.all(15.0),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30.0),
-                                  ),
-                                  primary: Colors.blue[300],
-                                ),
-                                child: Text(
-                                  'SignIn',
-                                  style: TextStyle(
-                                    color: Color.fromARGB(255, 255, 255, 255),
-                                    letterSpacing: 1.5,
-                                    fontSize: 25.0,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'OpenSans',
-                                  ),
-                                ),
+                                formKey: formKey,
                               ),
-                            ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              UnderPart(
+                                title: "Have an account?",
+                                navigatorText: "Sign In here",
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => LoginWidget()));
+                                },
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                            ],
                           ),
-                        ),
-                        _buildSignupBtn(),
+                        )
                       ],
                     ),
                   ),
-                ),
+                )
               ],
             ),
           ),

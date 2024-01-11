@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-
 import 'package:kompen/Model/modelAlpaku.dart';
 import 'package:kompen/Model/modelMahasiswa.dart';
 import 'package:kompen/Model/modelUser.dart';
@@ -14,7 +13,11 @@ import 'package:kompen/componen/navigatorDrawer.dart';
 class AlpakuWidget extends StatefulWidget {
   final User user;
   final String id_mahasiswa;
-  const AlpakuWidget({Key? key, required this.user,  required this.id_mahasiswa,}) : super(key: key);
+  const AlpakuWidget({
+    Key? key,
+    required this.user,
+    required this.id_mahasiswa,
+  }) : super(key: key);
 
   @override
   _AlpakuWidgetState createState() => _AlpakuWidgetState();
@@ -35,36 +38,45 @@ class _AlpakuWidgetState extends State<AlpakuWidget> {
       isLoading = true;
     });
     ServicesAlpaku.getAlpakuWhere(nim).then(
-      (result) {
-        setState(() {
-          listA = result;
-          isLoading = false;
-        });
+      (alpaku) {
+        ServicesMahasiswa.getAlpaMahasiswa(nim).then(
+          (mahasiswa) {
+            setState(() {
+              listA = alpaku;
+              listM = mahasiswa;
+              isLoading = false;
+            });
+          },
+        );
+        // setState(() {
+        //   listA = result;
+        //   isLoading = false;
+        // });
       },
     );
   }
 
-  _getMahasiswa() async {
-    setState(() {
-      isLoading = true;
-    });
-    ServicesMahasiswa.getAlpaMahasiswa(nim).then(
-      (result) {
-        setState(() {
-          listM = result;
-          isLoading = false;
-        });
-      },
-    );
-  }
+  // _getMahasiswa() async {
+  //   setState(() {
+  //     isLoading = true;
+  //   });
+  //   ServicesMahasiswa.getAlpaMahasiswa(nim).then(
+  //     (result) {
+  //       setState(() {
+  //         listM = result;
+  //         isLoading = false;
+  //       });
+  //     },
+  //   );
+  // }
 
   @override
   void initState() {
     super.initState();
-      user = widget.user;
-      nim = widget.id_mahasiswa!;
+    user = widget.user;
+    nim = widget.id_mahasiswa!;
     _getAlpaku();
-    _getMahasiswa();
+    // _getMahasiswa();
   }
 
   @override
@@ -102,7 +114,8 @@ class _AlpakuWidgetState extends State<AlpakuWidget> {
                     children: [
                       DataSiakad(listA, listM[0]),
                       Perkalian(
-                        alpaku: listA,mahasiswa: listM[0],
+                        alpaku: listA,
+                        mahasiswa: listM[0],
                       )
                     ],
                   ),

@@ -93,6 +93,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                   actions: [
                     ElevatedButton(
                         onPressed: () {
+                          _refresh();
                           Navigator.of(context).pop();
                         },
                         child: Text('OK'))

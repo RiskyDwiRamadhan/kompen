@@ -388,8 +388,7 @@ class _DataSiakadState extends State<DataSiakad> {
                     child: Padding(
                       padding: EdgeInsetsDirectional.fromSTEB(0, 0, 10, 0),
                       child: Text(
-                        'TEST',
-                        // mahasiswa.jalurmasuk!,
+                         widget.mahasiswa.jalurmasuk!,
                         style: TextStyle(
                           fontFamily: 'Readex Pro',
                           color: Colors.black,

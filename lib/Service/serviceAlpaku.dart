@@ -43,9 +43,7 @@ class ServicesAlpaku {
       map['action'] = _GET_WHERE_ACTION;
       map['nim'] = nim;
       final response = await http.post(Uri.parse(ROOT), body: map);
-      // final response = await http.get(Uri.parse('http://192.168.1.200/kompen/dataM.php'));
-      // final response = await http.get(Uri.parse('http://192.168.213.213/kompen/dataM.php'));
-      print('getMahasiswas Response: ${response.body}');
+      print('getAlpaku Response: ${response.body}');
       if (response.statusCode == 200) {
         print(response.body.length);
         print("Data ada banyak");
@@ -66,7 +64,7 @@ class ServicesAlpaku {
       map['nim'] = nim;
       map['semester'] = semester;
       final response = await http.post(Uri.parse(ROOT), body: map);
-      print('getMahasiswas Response: ${response.body}');
+      print('getDetailAlpaku Response: ${response.body}');
       if (response.statusCode == 200) {
         print(response.body.length);
         print("Data ada banyak");
@@ -76,6 +74,27 @@ class ServicesAlpaku {
       }
     } catch (e) {
       return <DetailAlpa>[]; // return an empty list on exception/error
+    }
+  }
+
+  // Menampilkan Data Sesuai Nim
+  static Future<List<Alpaku>> addAlpaku(String nim, String semester) async {
+     try {
+      var map = Map<String, dynamic>();
+      map['action'] = _ADD_ACTION;
+      map['nim'] = nim;
+      map['semester'] = semester;
+      final response = await http.post(Uri.parse(ROOT), body: map);
+      print('addAlpaku Response: ${response.body}');
+      if (response.statusCode == 200) {
+        print(response.body.length);
+        print("Data ada banyak");
+      return compute(parseData, response.body);
+      } else {
+        throw Exception('Can\'t get data');
+      }
+    } catch (e) {
+      return <Alpaku>[]; // return an empty list on exception/error
     }
   }
 

@@ -264,7 +264,7 @@ ServicesAlpaku.getAlpakuWhere(nim).then((value) {
                 style: TextStyle(
                   fontFamily: 'Readex Pro',
                   color: Colors.black,
-                  fontSize: 30,
+                  fontSize: 25,
                 ),
               ),
             ),

@@ -276,7 +276,7 @@ class _dataTugasReadyWidgetState extends State<dataTugasReadyWidget> {
                 child: Column(
                   children: [
                     isLoading
-                        ? CircularProgressIndicator()
+                        ? Center(child: CircularProgressIndicator())
                         : PaginatedDataTable(
                             sortColumnIndex: sortIndex,
                             sortAscending: isAscending,
