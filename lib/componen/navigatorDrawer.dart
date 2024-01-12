@@ -55,7 +55,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
       email = "",
       foto = "";
 
-  void _getData() async {
+  _getData() async {
     user = widget.user;
     id_user = user.idUser.toString();
     nama = user.namaLengkap!.toString();
@@ -80,6 +80,10 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
       showSemuaHistoryTugasMenu = false;
     }
   }
+  Future<void> _refreshData() async {
+    await _getData();
+    setState(() {});
+  }
 
   @override
   void initState() {
@@ -91,122 +95,125 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: Material(
-        color: Color.fromRGBO(50, 75, 205, 1),
-        child: ListView(
-          children: <Widget>[
-            buildProfile(urlImage: foto, name: nama, onClicked: () {}),
-            Container(
-              padding: padding,
-              child: Column(
-                children: [
-                  // const SizedBox(height: 12),
-                  Divider(color: Colors.white70),
-                  buildMenuItem(
-                    text: 'Dashboard',
-                    icon: Icons.dashboard,
-                    onClicked: () => selectedItem(context, 0),
-                  ),
-                  Visibility(
-                    visible: showAlpakuMenu,
-                    child: AnimatedContainer(
-                      duration: Duration(milliseconds: 300),
-                      child: buildMenuItem(
-                          text: 'Alpaku',
-                          icon: Icons.workspaces_outline,
-                          onClicked: () => selectedItem(context, 5)),
+      child: RefreshIndicator(
+        onRefresh: _refreshData,
+        child: Material(
+          color: Color.fromRGBO(50, 75, 205, 1),
+          child: ListView(
+            children: <Widget>[
+              buildProfile(urlImage: foto, name: nama, onClicked: () {}),
+              Container(
+                padding: padding,
+                child: Column(
+                  children: [
+                    // const SizedBox(height: 12),
+                    Divider(color: Colors.white70),
+                    buildMenuItem(
+                      text: 'Dashboard',
+                      icon: Icons.dashboard,
+                      onClicked: () => selectedItem(context, 0),
                     ),
-                  ),
-
-                  Visibility(
-                    visible: showUsersMenu,
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 500),
-                      height: userHeight,
+                    Visibility(
+                      visible: showAlpakuMenu,
+                      child: AnimatedContainer(
+                        duration: Duration(milliseconds: 300),
+                        child: buildMenuItem(
+                            text: 'Alpaku',
+                            icon: Icons.workspaces_outline,
+                            onClicked: () => selectedItem(context, 5)),
+                      ),
+                    ),
+      
+                    Visibility(
+                      visible: showUsersMenu,
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 500),
+                        height: userHeight,
+                        child: Column(
+                          children: [
+                            Divider(color: Colors.white70),
+                            buildMenuItem(
+                              text: 'Users',
+                              icon: Icons.people,
+                              onClicked: () => selectedItem(context, 1),
+                            ),
+                            Divider(color: Colors.white70),
+                            Visibility(
+                              visible: showDosenMenu,
+                              child: buildMenuItem(
+                                text: 'Admin/Dosen/Teknisi',
+                                icon: Icons.workspaces_outline,
+                                onClicked: () => selectedItem(context, 11),
+                              ),
+                            ),
+                            Visibility(
+                              visible: showMahasiswaMenu,
+                              child: buildMenuItem(
+                                text: 'Mahasiswa',
+                                icon: Icons.workspaces_outline,
+                                onClicked: () => selectedItem(context, 12),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(
                       child: Column(
                         children: [
                           Divider(color: Colors.white70),
                           buildMenuItem(
-                            text: 'Users',
-                            icon: Icons.people,
-                            onClicked: () => selectedItem(context, 1),
+                            text: 'Tugas',
+                            icon: Icons.library_books_outlined,
+                            onClicked: () => selectedItem(context, 2),
                           ),
                           Divider(color: Colors.white70),
                           Visibility(
-                            visible: showDosenMenu,
+                            visible: showDaftarTugasMenu,
                             child: buildMenuItem(
-                              text: 'Admin/Dosen/Teknisi',
-                              icon: Icons.workspaces_outline,
-                              onClicked: () => selectedItem(context, 11),
+                              text: 'Daftar Tugas',
+                              icon: Icons.radio_button_checked_rounded,
+                              onClicked: () => selectedItem(context, 21),
                             ),
                           ),
                           Visibility(
-                            visible: showMahasiswaMenu,
+                            visible: showTugasReadyMenu,
                             child: buildMenuItem(
-                              text: 'Mahasiswa',
-                              icon: Icons.workspaces_outline,
-                              onClicked: () => selectedItem(context, 12),
+                              text: 'Daftar Tugas Ready',
+                              icon: Icons.radio_button_checked_rounded,
+                              onClicked: () => selectedItem(context, 22),
                             ),
                           ),
+                          Visibility(
+                            visible: showHistoryTugasMenu,
+                            child: buildMenuItem(
+                              text: 'Historyku',
+                              icon: Icons.update,
+                              onClicked: () => selectedItem(context, 23),
+                            ),
+                          ),
+                          Visibility(
+                            visible: showSemuaHistoryTugasMenu,
+                            child: buildMenuItem(
+                              text: 'Semua History',
+                              icon: Icons.update,
+                              onClicked: () => selectedItem(context, 24),
+                            ),
+                          ),
+                          Divider(color: Colors.white70),
                         ],
                       ),
                     ),
-                  ),
-                  Container(
-                    child: Column(
-                      children: [
-                        Divider(color: Colors.white70),
-                        buildMenuItem(
-                          text: 'Tugas',
-                          icon: Icons.library_books_outlined,
-                          onClicked: () => selectedItem(context, 2),
-                        ),
-                        Divider(color: Colors.white70),
-                        Visibility(
-                          visible: showDaftarTugasMenu,
-                          child: buildMenuItem(
-                            text: 'Daftar Tugas',
-                            icon: Icons.radio_button_checked_rounded,
-                            onClicked: () => selectedItem(context, 21),
-                          ),
-                        ),
-                        Visibility(
-                          visible: showTugasReadyMenu,
-                          child: buildMenuItem(
-                            text: 'Daftar Tugas Ready',
-                            icon: Icons.radio_button_checked_rounded,
-                            onClicked: () => selectedItem(context, 22),
-                          ),
-                        ),
-                        Visibility(
-                          visible: showHistoryTugasMenu,
-                          child: buildMenuItem(
-                            text: 'Historyku',
-                            icon: Icons.update,
-                            onClicked: () => selectedItem(context, 23),
-                          ),
-                        ),
-                        Visibility(
-                          visible: showSemuaHistoryTugasMenu,
-                          child: buildMenuItem(
-                            text: 'Semua History',
-                            icon: Icons.update,
-                            onClicked: () => selectedItem(context, 24),
-                          ),
-                        ),
-                        Divider(color: Colors.white70),
-                      ],
+                    buildMenuItem(
+                      text: 'LogOut',
+                      icon: Icons.logout,
+                      onClicked: () => selectedItem(context, 3),
                     ),
-                  ),
-                  buildMenuItem(
-                    text: 'LogOut',
-                    icon: Icons.logout,
-                    onClicked: () => selectedItem(context, 3),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

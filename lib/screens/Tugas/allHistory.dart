@@ -225,7 +225,7 @@ class _allHistoryTugasDosenWidgetState extends State<allHistoryTugasDosenWidget>
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(200, 10, 0, 0),
+                padding: EdgeInsetsDirectional.fromSTEB(200, 10, 10, 0),
                 child: TextField(
                   controller: cariInput,
                   decoration: InputDecoration(

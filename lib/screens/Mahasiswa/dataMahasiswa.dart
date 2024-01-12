@@ -83,13 +83,10 @@ class _dataMahasiswaWidgetState extends State<dataMahasiswaWidget> {
                     }
                   },
                 );
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => dataMahasiswaWidget(
-                              user: user,
-                            )),
-                    (route) => false);
+                setState(() {
+                  _refreshData();
+                  Navigator.of(context).pop();
+                });
               },
               child: Text('Ya'),
             )
@@ -100,7 +97,7 @@ class _dataMahasiswaWidgetState extends State<dataMahasiswaWidget> {
   }
 
   sortData() {
-    if (sortIndex == 1) {
+    if (sortIndex == 2) {
       mahasiswa.sort((a, b) {
         if (isAscending) {
           return a.namaLengkap
@@ -114,7 +111,7 @@ class _dataMahasiswaWidgetState extends State<dataMahasiswaWidget> {
               .compareTo(a.namaLengkap.toString().toLowerCase());
         }
       });
-    } else if (sortIndex == 2) {
+    } else if (sortIndex == 3) {
       mahasiswa.sort((a, b) {
         if (isAscending) {
           return a.thMasuk
@@ -128,7 +125,7 @@ class _dataMahasiswaWidgetState extends State<dataMahasiswaWidget> {
               .compareTo(a.thMasuk.toString().toLowerCase());
         }
       });
-    } else if (sortIndex == 3) {
+    } else if (sortIndex == 4) {
       mahasiswa.sort((a, b) {
         if (isAscending) {
           return a.prodi
@@ -142,7 +139,7 @@ class _dataMahasiswaWidgetState extends State<dataMahasiswaWidget> {
               .compareTo(a.prodi.toString().toLowerCase());
         }
       });
-    } else if (sortIndex == 4) {
+    } else if (sortIndex == 5) {
       mahasiswa.sort((a, b) {
         if (isAscending) {
           return a.email
@@ -156,7 +153,7 @@ class _dataMahasiswaWidgetState extends State<dataMahasiswaWidget> {
               .compareTo(a.email.toString().toLowerCase());
         }
       });
-    } else if (sortIndex == 5) {
+    } else if (sortIndex == 6) {
       mahasiswa.sort((a, b) {
         if (isAscending) {
           return a.noTelp
@@ -170,7 +167,7 @@ class _dataMahasiswaWidgetState extends State<dataMahasiswaWidget> {
               .compareTo(a.noTelp.toString().toLowerCase());
         }
       });
-    } else if (sortIndex == 6) {
+    } else if (sortIndex == 7) {
       mahasiswa.sort((a, b) {
         if (isAscending) {
           return a.username
@@ -308,7 +305,7 @@ class _dataMahasiswaWidgetState extends State<dataMahasiswaWidget> {
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(200, 10, 0, 0),
+                padding: EdgeInsetsDirectional.fromSTEB(200, 10, 10, 0),
                 child: TextField(
                   controller: cariInput,
                   decoration: InputDecoration(

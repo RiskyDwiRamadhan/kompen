@@ -92,13 +92,10 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
                     }
                   },
                 );
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => dataDosenWidget(
-                              user: user,
-                            )),
-                    (route) => false);
+                setState(() {
+                  _refreshData();
+                  Navigator.of(context).pop();
+                });
               },
               child: Text('Ya'),
             )
@@ -279,13 +276,20 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(200, 10, 0, 0),
+                padding: EdgeInsetsDirectional.fromSTEB(200, 10, 10, 0),
                 child: TextField(
                   controller: cariInput,
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(5.0),
                     hintText: 'Pencarian Data',
                     enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Color.fromARGB(255, 136, 135, 135),
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                         color: Color.fromARGB(255, 136, 135, 135),
                         width: 2,

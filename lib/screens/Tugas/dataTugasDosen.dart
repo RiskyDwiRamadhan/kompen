@@ -136,9 +136,9 @@ class _dataTugasDosenWidgetState extends State<dataTugasDosenWidget> {
                   },
                 );
                 setState(() {
-                  _getData();
+                  _refreshData();
+                  Navigator.of(context).pop();
                 });
-                Navigator.of(context).pop();
               },
               child: Text('Ya'),
             )
@@ -339,7 +339,7 @@ class _dataTugasDosenWidgetState extends State<dataTugasDosenWidget> {
           child: Column(
             children: [
               Padding(
-                padding: EdgeInsetsDirectional.fromSTEB(200, 10, 0, 0),
+                padding: EdgeInsetsDirectional.fromSTEB(200, 10, 10, 0),
                 child: TextField(
                   controller: cariInput,
                   decoration: InputDecoration(

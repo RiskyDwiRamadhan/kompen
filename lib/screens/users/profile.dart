@@ -31,7 +31,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   File? _image;
   String id_user = "", status = "";
 
-  void _getData() async {
+  _getData() async {
     user = widget.user;
     id_user = user.idUser.toString();
     namaInput.text = user.namaLengkap!.toString();
@@ -75,7 +75,10 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                 actions: [
                   ElevatedButton(
                       onPressed: () {
-                        Navigator.of(context).pop();
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ProfileWidget(user: user,)));
                       },
                       child: Text('OK'))
                 ],
@@ -109,17 +112,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   }
 
   Future<void> _refresh() async {
-    if (status == "Mahasiswa") {
-      ServicesUser.getMahasiswa(usernameInput.text, passwordInput.text)
-          .then((value) {
-        user = value[0];
-      });
-    } else {
-      ServicesUser.getDosen(usernameInput.text, passwordInput.text)
-          .then((value) {
-        user = value[0];
-      });
-    }
+    await _getData();
+    setState(() {});
   }
 
   @override

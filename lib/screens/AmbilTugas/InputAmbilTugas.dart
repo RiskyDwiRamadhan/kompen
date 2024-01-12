@@ -282,14 +282,14 @@ class _InputAmbilTugasWidgetState extends State<InputAmbilTugasWidget> {
                                 Padding(
                                   padding: EdgeInsetsDirectional.fromSTEB(
                                       135, 0, 0, 0),
-                                  // child: Text(
-                                  //   Tanggal!,
-                                  //   textAlign: TextAlign.start,
-                                  //   style: TextStyle(
-                                  //         fontFamily: 'Readex Pro',
-                                  //         fontSize: 20,
-                                  //       ),
-                                  // ),
+                                  child: Text(
+                                    Tanggal!,
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                          fontFamily: 'Readex Pro',
+                                          fontSize: 20,
+                                        ),
+                                  ),
                                 ),
                               ],
                             ),

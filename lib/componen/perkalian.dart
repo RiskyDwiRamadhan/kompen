@@ -183,7 +183,7 @@ class _PerkalianState extends State<Perkalian> {
                                 alignment: AlignmentDirectional(1.00, 0.00),
                                 child: Padding(
                                   padding: EdgeInsetsDirectional.fromSTEB(
-                                      0, 0, 20, 0),
+                                      0, 0, 10, 0),
                                   child: Text(
                                     '${hasil}',
                                     style: TextStyle(

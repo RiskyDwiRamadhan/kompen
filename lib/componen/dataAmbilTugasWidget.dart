@@ -96,13 +96,13 @@ class _dataAmbilTugasWidgetState extends State<dataAmbilTugasWidget> {
                           );
                         },
                       );
-                      setState(() {
-                        _getData();
-                      });
                     }
                   },
                 );
-                Navigator.of(context).pop();
+                setState(() {
+                  _refreshData();
+                  Navigator.of(context).pop();
+                });
               },
               child: Text('Ya'),
             )
