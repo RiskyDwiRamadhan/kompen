@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:kompen/constants.dart';
 import 'package:kompen/screens/AmbilTugas/InputAmbilTugas.dart';
 import 'package:kompen/Model/modelUser.dart';
 import 'package:kompen/Service/serviceNetwork.dart';
@@ -36,7 +37,7 @@ class _historyTugasDosenWidgetState extends State<historyTugasDosenWidget> {
   File? _image;
 
   sortData() {
-    if (sortIndex == 1) {
+    if (sortIndex == 2) {
       tugas.sort((a, b) {
         if (isAscending) {
           return a.judulTugas
@@ -50,7 +51,7 @@ class _historyTugasDosenWidgetState extends State<historyTugasDosenWidget> {
               .compareTo(a.judulTugas.toString().toLowerCase());
         }
       });
-    } else if (sortIndex == 2) {
+    } else if (sortIndex == 3) {
       tugas.sort((a, b) {
         if (isAscending) {
           return a.kategori
@@ -64,7 +65,7 @@ class _historyTugasDosenWidgetState extends State<historyTugasDosenWidget> {
               .compareTo(a.kategori.toString().toLowerCase());
         }
       });
-    } else if (sortIndex == 3) {
+    } else if (sortIndex == 4) {
       tugas.sort((a, b) {
         if (isAscending) {
           return a.tgl
@@ -78,32 +79,24 @@ class _historyTugasDosenWidgetState extends State<historyTugasDosenWidget> {
               .compareTo(a.tgl.toString().toLowerCase());
         }
       });
-    } else if (sortIndex == 4) {
-      tugas.sort((a, b) {
-        if (isAscending) {
-          return a.kuota
-              .toString()
-              .toLowerCase()
-              .compareTo(b.kuota.toString().toLowerCase());
-        } else {
-          return b.kuota
-              .toString()
-              .toLowerCase()
-              .compareTo(a.kuota.toString().toLowerCase());
-        }
-      });
     } else if (sortIndex == 5) {
       tugas.sort((a, b) {
         if (isAscending) {
-          return a.jumlahKompen
-              .toString()
-              .toLowerCase()
-              .compareTo(b.jumlahKompen.toString().toLowerCase());
+          return int.parse(a.kuota!)
+              .compareTo(int.parse(b.kuota!));
         } else {
-          return b.jumlahKompen
-              .toString()
-              .toLowerCase()
-              .compareTo(a.jumlahKompen.toString().toLowerCase());
+          return int.parse(b.kuota!)
+              .compareTo(int.parse(a.kuota!));
+        }
+      });
+    } else if (sortIndex == 6) {
+      tugas.sort((a, b) {
+        if (isAscending) {
+          return int.parse(a.jumlahKompen!)
+              .compareTo(int.parse(b.jumlahKompen!));
+        } else {
+          return int.parse(b.jumlahKompen!)
+              .compareTo(int.parse(a.jumlahKompen!));
         }
       });
     }
@@ -185,28 +178,11 @@ class _historyTugasDosenWidgetState extends State<historyTugasDosenWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => TambahTugasWidget(
-                        user: user,
-                      )));
-        },
-        backgroundColor: Color.fromRGBO(16, 6, 148, 1),
-        elevation: 8,
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
-          size: 24,
-        ),
-      ),
       drawer: NavigationDrawerWidget(
         user: user,
       ),
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(16, 6, 148, 1),
+        backgroundColor: kPrimaryColor,
         title: Text(
           'Data History Tugas',
           style: TextStyle(
@@ -231,7 +207,7 @@ class _historyTugasDosenWidgetState extends State<historyTugasDosenWidget> {
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(5.0),
                     hintText: 'Pencarian Data',
-                    enabledBorder: OutlineInputBorder(
+                    border: OutlineInputBorder(
                       borderSide: BorderSide(
                         color: Color.fromARGB(255, 136, 135, 135),
                         width: 2,
@@ -263,8 +239,7 @@ class _historyTugasDosenWidgetState extends State<historyTugasDosenWidget> {
                             dataRowMinHeight: 60,
                             columns: [
                               DataColumn(label: Text('No')),
-                              DataColumn(
-                                  onSort: onSort, label: Text('Pemberi Tugas')),
+                              DataColumn(label: Text('Pemberi Tugas')),
                               DataColumn(
                                   onSort: onSort, label: Text('Judul Tugas')),
                               DataColumn(

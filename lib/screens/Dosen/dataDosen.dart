@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:kompen/constants.dart';
 import 'package:kompen/screens/Dosen/tambahDosen.dart';
 import 'package:kompen/screens/Dosen/updateDosen.dart';
 import 'package:kompen/Model/modelDosen.dart';
@@ -106,7 +107,7 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
   }
 
   sortData() {
-    if (sortIndex == 1) {
+    if (sortIndex == 2) {
       dosen.sort((a, b) {
         if (isAscending) {
           return a.namaLengkap
@@ -120,7 +121,7 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
               .compareTo(a.namaLengkap.toString().toLowerCase());
         }
       });
-    } else if (sortIndex == 2) {
+    } else if (sortIndex == 3) {
       dosen.sort((a, b) {
         if (isAscending) {
           return a.username
@@ -134,7 +135,7 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
               .compareTo(a.username.toString().toLowerCase());
         }
       });
-    } else if (sortIndex == 3) {
+    } else if (sortIndex == 4) {
       dosen.sort((a, b) {
         if (isAscending) {
           return a.email
@@ -148,7 +149,7 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
               .compareTo(a.email.toString().toLowerCase());
         }
       });
-    } else if (sortIndex == 4) {
+    } else if (sortIndex == 5) {
       dosen.sort((a, b) {
         if (isAscending) {
           return a.level
@@ -245,7 +246,7 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
             ),
           );
         },
-        backgroundColor: Color.fromRGBO(16, 6, 148, 1),
+        backgroundColor: kPrimaryColor,
         elevation: 8,
         child: Icon(
           Icons.add,
@@ -257,7 +258,7 @@ class _dataDosenWidgetState extends State<dataDosenWidget> {
         user: user,
       ),
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(16, 6, 148, 1),
+        backgroundColor: kPrimaryColor,
         title: Text(
           'Data Dosen',
           style: TextStyle(
