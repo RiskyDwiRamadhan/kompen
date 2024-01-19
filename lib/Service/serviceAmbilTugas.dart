@@ -12,6 +12,7 @@ class ServicesAmbilTugas {
   static const _GET_READY_ACTION = 'get_ready';
   static const _GET_NIP_ACTION = 'get_nip';
   static const _GET_WHERE_TUGAS = 'where_get_tugas';
+  static const _GET_HISTORY_MAHASISWA_ACTION = 'get_completed';
   static const _ADD_ACTION = 'add_data';
   static const _UPDATE_ACTION = 'update';
   static const _DELETE_ACTION = 'Delete';
@@ -35,6 +36,27 @@ class ServicesAmbilTugas {
       return <AmbilTugas>[]; // return an empty list on exception/error
     }
   }
+
+  // Menampilkan Data Semua History Tugas
+  static Future<List<AmbilTugas>> getHTMahasiswa(String nim) async {
+    try {
+      var map = Map<String, dynamic>();
+      map['action'] = _GET_HISTORY_MAHASISWA_ACTION;
+      map['nim'] = nim;
+      final response = await http.post(Uri.parse(ROOT), body: map);
+      print('getHistoryTugass Response: ${response.body}');
+      if (response.statusCode == 200) {
+        print(response.body.length);
+        print("Data ada banyak");
+      return compute(parseData, response.body);
+      } else {
+        throw Exception('Can\'t get data');
+      }
+    } catch (e) {
+      return <AmbilTugas>[]; // return an empty list on exception/error
+    }
+  }
+
 
   static List<AmbilTugas> parseData(String responseBody) {
     var list = json.decode(responseBody) as List<dynamic>;

@@ -1,15 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:kompen/Service/serviceUser.dart';
+import 'package:kompen/constants.dart';
 import 'package:kompen/screens/dashboard/dashboard.dart';
 import 'package:kompen/screens/dashboard/dashboardD.dart';
 import 'package:kompen/screens/dashboard/dashboardM.dart';
 import 'package:kompen/screens/login/login.dart';
-import 'package:kompen/screens/test.dart';
 import 'dart:async';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,52 +47,56 @@ class _SplashScreenWidget extends State<SplashScreenWidget>
         print(username);
         print(password);
 
-        if (nTabel == "Dosen" || nTabel == "Admin") {
-          ServicesUser.getDosen(username!, password!).then((result) {
-            if (result[0].status! == "Admin") {
-              ServicesUser.setdata(
-                  result[0].status!, result[0].username!, result[0].password!);
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => DashboardWidget(
-                          user: result[0],
-                        )),
-                (Route) => false,
-              );
-            } else if (result[0].status! == "Dosen") {
-              ServicesUser.setdata(
-                  result[0].status!, result[0].username!, result[0].password!);
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => DashboardDWidget(user: result[0])),
-                (Route) => false,
-              );
+        ServicesUser.getUser(
+          username!,
+          password!,
+          nTabel!,
+        ).then(
+          (result) {
+            if (result.length < 1) {
+              print("Data auto login salah!!");
+            } else {
+              if (result[0].status! == "Admin") {
+                ServicesUser.setdata(result[0].status!, result[0].username!,
+                    result[0].password!);
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => DashboardWidget(
+                            user: result[0],
+                          )),
+                  (Route) => false,
+                );
+              } else if (result[0].status! == "Dosen") {
+                ServicesUser.setdata(result[0].status!, result[0].username!,
+                    result[0].password!);
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => DashboardDWidget(user: result[0])),
+                  (Route) => false,
+                );
+              } else if (result[0].status! == "Mahasiswa") {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => DashboardMWidget(
+                            user: result[0],
+                          )),
+                  (Route) => false,
+                );
+              }
             }
-          });
+          },
+        );
         } else {
-          ServicesUser.getMahasiswa(username!, password!).then((result) {
-            ServicesUser.setdata(
-                result[0].status!, result[0].username!, result[0].password!);
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => DashboardMWidget(
-                        user: result[0],
-                      )),
-                (Route) => false,
-            );            
-          });
-        }
-      } else {
-        //pindah ke Login
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => LoginWidget()),
-                (Route) => false,
-              );
+          //pindah ke Login
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => LoginWidget()),
+                  (Route) => false,
+                );
       }
     });
   }
@@ -112,12 +114,7 @@ class _SplashScreenWidget extends State<SplashScreenWidget>
             width: double.infinity,
             height: 500,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFF4B39EF), Color(0xFFEE8B60)],
-                stops: [0, 1],
-                begin: AlignmentDirectional(-1, -1),
-                end: AlignmentDirectional(1, 1),
-              ),
+              color: kPrimaryColor,
             ),
             child: Container(
               width: 100,
