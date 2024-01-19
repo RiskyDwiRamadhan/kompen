@@ -9,6 +9,7 @@ import 'package:kompen/Model/modelUser.dart';
 import 'package:kompen/Service/serviceAlpaku.dart';
 import 'package:kompen/Service/serviceMahasiswa.dart';
 import 'package:kompen/componen/navigatorDrawer.dart';
+import 'package:kompen/constants.dart';
 import 'dart:async';
 
 import 'package:kompen/screens/login/login.dart';
@@ -111,7 +112,7 @@ ServicesAlpaku.getAlpakuWhere(nim).then((value) {
         user: user,
       ),
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(16, 6, 148, 1),
+        backgroundColor: kPrimaryColor,
         title: Align(
           alignment: AlignmentDirectional(0.00, 0.00),
           child: Text(

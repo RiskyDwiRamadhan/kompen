@@ -7,11 +7,13 @@ import 'package:http/http.dart' as http;
 import 'package:kompen/Model/modelUser.dart';
 import 'package:kompen/Service/serviceMahasiswa.dart';
 import 'package:kompen/Service/serviceTugas.dart';
+import 'package:kompen/constants.dart';
 import 'package:kompen/screens/Tugas/dataTugasDosen.dart';
 import 'package:kompen/componen/navigatorDrawer.dart';
 import 'dart:convert';
 
 import 'package:kompen/screens/login/login.dart';
+import 'package:kompen/widgets/widgets.dart';
 
 class TambahTugasWidget extends StatefulWidget {
   final User user;
@@ -111,7 +113,7 @@ class _TambahTugasWidgetState extends State<TambahTugasWidget> {
           user: user,
         ),
         appBar: AppBar(
-          backgroundColor: Color.fromRGBO(16, 6, 148, 1),
+          backgroundColor: kPrimaryColor,
           title: Text(
             'Input Tugas',
             style: TextStyle(
@@ -134,25 +136,34 @@ class _TambahTugasWidgetState extends State<TambahTugasWidget> {
                   padding: EdgeInsetsDirectional.fromSTEB(20, 50, 20, 20),
                   child: Container(
                     width: double.infinity,
-                    height: 600,
                     decoration: BoxDecoration(
-                      color: Color.fromRGBO(222, 222, 231, 1),
+                      color: const Color.fromARGB(255, 247, 247, 247),
+                      boxShadow: const [
+                        BoxShadow(
+                          blurRadius: 4,
+                          color: Color(0x33000000),
+                          offset: Offset(1, 2),
+                        )
+                      ],
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Padding(
                       padding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(16, 15, 0, 5),
-                            child: Text(
-                              'Kategori',
-                              style: TextStyle(
-                                fontFamily: 'Readex Pro',
-                                fontSize: 16,
+                          Align(
+                            alignment: AlignmentDirectional(-1, 0),
+                            child: Padding(
+                              padding:
+                                  EdgeInsetsDirectional.fromSTEB(16, 15, 0, 5),
+                              child: Text(
+                                'Kategori',
+                                style: TextStyle(
+                                  fontFamily: 'Readex Pro',
+                                  fontSize: 16,
+                                ),
                               ),
                             ),
                           ),
@@ -177,14 +188,17 @@ class _TambahTugasWidgetState extends State<TambahTugasWidget> {
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                          Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
-                            child: Text(
-                              'Judul Tugas',
-                              style: TextStyle(
-                                fontFamily: 'Readex Pro',
-                                fontSize: 16,
+                          Align(
+                            alignment: AlignmentDirectional(-1, 0),
+                            child: Padding(
+                              padding:
+                                  EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
+                              child: Text(
+                                'Judul Tugas',
+                                style: TextStyle(
+                                  fontFamily: 'Readex Pro',
+                                  fontSize: 16,
+                                ),
                               ),
                             ),
                           ),
@@ -195,16 +209,9 @@ class _TambahTugasWidgetState extends State<TambahTugasWidget> {
                               autofocus: true,
                               obscureText: false,
                               decoration: InputDecoration(
-                                enabledBorder: OutlineInputBorder(
+                                border: OutlineInputBorder(
                                   borderSide: BorderSide(
                                     color: Color.fromRGBO(194, 194, 202, 0.671),
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color.fromRGBO(3, 3, 3, 1),
                                     width: 2,
                                   ),
                                   borderRadius: BorderRadius.circular(8),
@@ -220,14 +227,17 @@ class _TambahTugasWidgetState extends State<TambahTugasWidget> {
                               },
                             ),
                           ),
-                          Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
-                            child: Text(
-                              'Kuota',
-                              style: TextStyle(
-                                fontFamily: 'Readex Pro',
-                                fontSize: 16,
+                          Align(
+                            alignment: AlignmentDirectional(-1, 0),
+                            child: Padding(
+                              padding:
+                                  EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
+                              child: Text(
+                                'Kuota',
+                                style: TextStyle(
+                                  fontFamily: 'Readex Pro',
+                                  fontSize: 16,
+                                ),
                               ),
                             ),
                           ),
@@ -238,16 +248,9 @@ class _TambahTugasWidgetState extends State<TambahTugasWidget> {
                               autofocus: true,
                               obscureText: false,
                               decoration: InputDecoration(
-                                enabledBorder: OutlineInputBorder(
+                                border: OutlineInputBorder(
                                   borderSide: BorderSide(
                                     color: Color.fromRGBO(194, 194, 202, 0.671),
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color.fromRGBO(3, 3, 3, 1),
                                     width: 2,
                                   ),
                                   borderRadius: BorderRadius.circular(8),
@@ -264,14 +267,17 @@ class _TambahTugasWidgetState extends State<TambahTugasWidget> {
                               },
                             ),
                           ),
-                          Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
-                            child: Text(
-                              'Jumlah Kompen',
-                              style: TextStyle(
-                                fontFamily: 'Readex Pro',
-                                fontSize: 16,
+                          Align(
+                            alignment: AlignmentDirectional(-1, 0),
+                            child: Padding(
+                              padding:
+                                  EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
+                              child: Text(
+                                'Jumlah Kompen',
+                                style: TextStyle(
+                                  fontFamily: 'Readex Pro',
+                                  fontSize: 16,
+                                ),
                               ),
                             ),
                           ),
@@ -282,16 +288,9 @@ class _TambahTugasWidgetState extends State<TambahTugasWidget> {
                               autofocus: true,
                               obscureText: false,
                               decoration: InputDecoration(
-                                enabledBorder: OutlineInputBorder(
+                                border: OutlineInputBorder(
                                   borderSide: BorderSide(
                                     color: Color.fromRGBO(194, 194, 202, 0.671),
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color.fromRGBO(3, 3, 3, 1),
                                     width: 2,
                                   ),
                                   borderRadius: BorderRadius.circular(8),
@@ -308,14 +307,17 @@ class _TambahTugasWidgetState extends State<TambahTugasWidget> {
                               },
                             ),
                           ),
-                          Padding(
-                            padding:
-                                EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
-                            child: Text(
-                              'Deskripsi',
-                              style: TextStyle(
-                                fontFamily: 'Readex Pro',
-                                fontSize: 16,
+                          Align(
+                            alignment: AlignmentDirectional(-1, 0),
+                            child: Padding(
+                              padding:
+                                  EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
+                              child: Text(
+                                'Deskripsi',
+                                style: TextStyle(
+                                  fontFamily: 'Readex Pro',
+                                  fontSize: 16,
+                                ),
                               ),
                             ),
                           ),
@@ -326,16 +328,9 @@ class _TambahTugasWidgetState extends State<TambahTugasWidget> {
                               autofocus: true,
                               obscureText: false,
                               decoration: InputDecoration(
-                                enabledBorder: OutlineInputBorder(
+                                border: OutlineInputBorder(
                                   borderSide: BorderSide(
                                     color: Color.fromRGBO(194, 194, 202, 0.671),
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color.fromRGBO(3, 3, 3, 1),
                                     width: 2,
                                   ),
                                   borderRadius: BorderRadius.circular(8),
@@ -351,16 +346,14 @@ class _TambahTugasWidgetState extends State<TambahTugasWidget> {
                               },
                             ),
                           ),
-                          Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 0),
-                            child: ElevatedButton(
-                              onPressed: () {
-                                if (formKey.currentState!.validate()) {
-                                  prosesData();
-                                }
-                              },
-                              child: Text('Save'),
-                            ),
+                          RoundedButton(
+                            text: 'Save',
+                            press: () {
+                              if (formKey.currentState!.validate()) {
+                                prosesData();
+                              }
+                            },
+                            formKey: formKey,
                           ),
                         ],
                       ),

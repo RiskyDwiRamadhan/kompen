@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:kompen/constants.dart';
 import 'package:kompen/screens/Mahasiswa/tambahMahasiswa.dart';
 import 'package:kompen/screens/Mahasiswa/updateMahasiswa.dart';
 import 'package:kompen/Model/modelMahasiswa.dart';
@@ -274,7 +275,7 @@ class _dataMahasiswaWidgetState extends State<dataMahasiswaWidget> {
                         user: user,
                       )));
         },
-        backgroundColor: Color.fromRGBO(16, 6, 148, 1),
+        backgroundColor: kPrimaryColor,
         elevation: 8,
         child: Icon(
           Icons.add,
@@ -286,7 +287,7 @@ class _dataMahasiswaWidgetState extends State<dataMahasiswaWidget> {
         user: user,
       ),
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(16, 6, 148, 1),
+        backgroundColor: kPrimaryColor,
         title: Text(
           'Data Mahasiswa',
           style: TextStyle(
@@ -311,7 +312,7 @@ class _dataMahasiswaWidgetState extends State<dataMahasiswaWidget> {
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(5.0),
                     hintText: 'Pencarian Data',
-                    enabledBorder: OutlineInputBorder(
+                    border: OutlineInputBorder(
                       borderSide: BorderSide(
                         color: Color.fromARGB(255, 136, 135, 135),
                         width: 2,

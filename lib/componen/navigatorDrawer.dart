@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/material.dart';
 import 'package:kompen/Model/modelUser.dart';
+import 'package:kompen/Service/serviceUser.dart';
+import 'package:kompen/constants.dart';
 import 'package:kompen/screens/Alpa/alpaku.dart';
 import 'package:kompen/screens/Dosen/dataDosen.dart';
 import 'package:kompen/screens/Mahasiswa/dataMahasiswa.dart';
@@ -12,6 +14,7 @@ import 'package:kompen/screens/Tugas/allHistory.dart';
 import 'package:kompen/screens/Tugas/dataTugasDosen.dart';
 import 'package:kompen/screens/Tugas/dataTugasReady.dart';
 import 'package:kompen/screens/Tugas/historyTugasDosen.dart';
+import 'package:kompen/screens/Tugas/historyTugasMahasiswa.dart';
 import 'package:kompen/screens/dashboard/dashboard.dart';
 import 'package:kompen/screens/dashboard/dashboardD.dart';
 import 'package:kompen/screens/dashboard/dashboardM.dart';
@@ -31,11 +34,11 @@ class NavigationDrawerWidget extends StatefulWidget {
 class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
   final padding = EdgeInsets.symmetric(horizontal: 20);
   double userHeight = 200.0; // Tinggi container awalgi container awal
-  double tugasHeight = 90.0; // Tinggi container awalgi container awal
+  double tugasHeight = 400.0; // Tinggi container awalgi container awal
 
   bool showUsersMenu = true;
   bool showMahasiswaMenu = true;
-  bool showDosenMenu = true;
+  bool showUserMenu = true;
 
   bool showAlpakuMenu = true;
   bool showTugasMenu = true;
@@ -43,6 +46,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
   bool showTugasReadyMenu = true;
   bool showHistoryTugasMenu = true;
   bool showSemuaHistoryTugasMenu = true;
+  bool showHistoryTugasMahasiswaMenu = true;
 
   late User user;
   File? _image;
@@ -55,31 +59,65 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
       email = "",
       foto = "";
 
-  _getData() async {
-    user = widget.user;
-    id_user = user.idUser.toString();
-    nama = user.namaLengkap!.toString();
-    noTelp = user.noTelp!.toString();
-    password = user.password!.toString();
-    username = user.username!.toString();
-    email = user.email!.toString();
-    foto = user.foto!.toString();
-    status = user.status!.toString();
+  Future _getData() async {
+    ServicesUser.getUser(
+      user.username!,
+      user.password!,
+      user.status!,
+    ).then(
+      (result) {
+        if (result.length < 1) {
+          print("Data Drawer salah!!");
+        } else {
+          setState(() {
+            print("Data user benar!!");
+            user = result[0];
+            id_user = user.idUser.toString();
+            nama = user.namaLengkap!.toString();
+            noTelp = user.noTelp!.toString();
+            password = user.password!.toString();
+            username = user.username!.toString();
+            email = user.email!.toString();
+            foto = user.foto!.toString();
+            status = user.status!.toString();
+            _whereStatus();
+          });
+        }
+      },
+    );
   }
 
-  void _whereStatus() async {
+  Future _whereStatus() async {
     if (status == "Admin") {
       showAlpakuMenu = false;
+      showHistoryTugasMahasiswaMenu = false;
     } else if (status == "Dosen") {
       showAlpakuMenu = false;
       showUsersMenu = false;
-    } else {
+      showHistoryTugasMahasiswaMenu = false;
+    } else if (status == "Mahasiswa") {
       // Mahasiswa
       showUsersMenu = false;
       showDaftarTugasMenu = false;
+      showHistoryTugasMenu = false;
       showSemuaHistoryTugasMenu = false;
     }
   }
+
+  _animasiMenu(double awal, double tutup, String height, String show) async {
+    if (userHeight == awal) {
+      setState(() {
+        userHeight = tutup;
+        showUserMenu = true;
+      });
+    } else {
+      setState(() {
+        userHeight = awal;
+        showUserMenu = false;
+      });
+    }
+  }
+
   Future<void> _refreshData() async {
     await _getData();
     setState(() {});
@@ -88,8 +126,8 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
   @override
   void initState() {
     super.initState();
+    user = widget.user;
     _getData();
-    _whereStatus();
   }
 
   @override
@@ -98,7 +136,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
       child: RefreshIndicator(
         onRefresh: _refreshData,
         child: Material(
-          color: Color.fromRGBO(50, 75, 205, 1),
+          color: kPrimaryColor,
           child: ListView(
             children: <Widget>[
               buildProfile(urlImage: foto, name: nama, onClicked: () {}),
@@ -123,7 +161,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                             onClicked: () => selectedItem(context, 5)),
                       ),
                     ),
-      
+
                     Visibility(
                       visible: showUsersMenu,
                       child: AnimatedContainer(
@@ -133,13 +171,24 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                           children: [
                             Divider(color: Colors.white70),
                             buildMenuItem(
-                              text: 'Users',
-                              icon: Icons.people,
-                              onClicked: () => selectedItem(context, 1),
-                            ),
+                                text: 'Users',
+                                icon: Icons.people,
+                                onClicked: () {
+                                  if (userHeight == 90) {
+                                    setState(() {
+                                      userHeight = 200;
+                                      showUserMenu = true;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      userHeight = 90;
+                                      showUserMenu = false;
+                                    });
+                                  }
+                                }),
                             Divider(color: Colors.white70),
                             Visibility(
-                              visible: showDosenMenu,
+                              visible: showUserMenu,
                               child: buildMenuItem(
                                 text: 'Admin/Dosen/Teknisi',
                                 icon: Icons.workspaces_outline,
@@ -147,7 +196,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                               ),
                             ),
                             Visibility(
-                              visible: showMahasiswaMenu,
+                              visible: showUserMenu,
                               child: buildMenuItem(
                                 text: 'Mahasiswa',
                                 icon: Icons.workspaces_outline,
@@ -158,15 +207,34 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                         ),
                       ),
                     ),
-                    Container(
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 500),
+                      // height: tugasHeight,
                       child: Column(
                         children: [
                           Divider(color: Colors.white70),
                           buildMenuItem(
-                            text: 'Tugas',
-                            icon: Icons.library_books_outlined,
-                            onClicked: () => selectedItem(context, 2),
-                          ),
+                              text: 'Tugas',
+                              icon: Icons.library_books_outlined,
+                              onClicked: () {
+                                // if (userHeight == 90) {
+                                //   setState(() {
+                                //     userHeight = 400;
+                                //     showDaftarTugasMenu = true;
+                                //     showTugasReadyMenu = true;
+                                //     showHistoryTugasMenu = true;
+                                //     showSemuaHistoryTugasMenu = true;
+                                //   });
+                                // } else {
+                                //   setState(() {
+                                //     userHeight = 90;
+                                //     showDaftarTugasMenu = false;
+                                //     showTugasReadyMenu = false;
+                                //     showHistoryTugasMenu = false;
+                                //     showSemuaHistoryTugasMenu = false;
+                                //   });
+                                // }
+                              }),
                           Divider(color: Colors.white70),
                           Visibility(
                             visible: showDaftarTugasMenu,
@@ -198,6 +266,14 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                               text: 'Semua History',
                               icon: Icons.update,
                               onClicked: () => selectedItem(context, 24),
+                            ),
+                          ),
+                          Visibility(
+                            visible: showHistoryTugasMahasiswaMenu,
+                            child: buildMenuItem(
+                              text: 'History Tugasku',
+                              icon: Icons.update,
+                              onClicked: () => selectedItem(context, 25),
                             ),
                           ),
                           Divider(color: Colors.white70),
@@ -252,7 +328,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      primary: Colors.blue,
+                      primary: Color.fromRGBO(27, 48, 158, 1),
                     ),
                     child: Text(
                       'Profile',
@@ -341,19 +417,19 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
             (route) => false);
         break;
       case 1:
-        if (userHeight == 90.0) {
-          setState(() {
-            userHeight = 200.0;
-            showDosenMenu = true;
-            showMahasiswaMenu = true;
-          });
-        } else {
-          setState(() {
-            userHeight = 90.0;
-            showDosenMenu = false;
-            showMahasiswaMenu = false;
-          });
-        }
+        // if (userHeight == 90.0) {
+        //   setState(() {
+        //     userHeight = 200.0;
+        //     showUserMenu = true;
+        //     showMahasiswaMenu = true;
+        //   });
+        // } else {
+        //   setState(() {
+        //     userHeight = 90.0;
+        //     showUserMenu = false;
+        //     showMahasiswaMenu = false;
+        //   });
+        // }
         break;
       case 11:
         // Data Dosen
@@ -415,6 +491,16 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
             context,
             MaterialPageRoute(
                 builder: (context) => allHistoryTugasDosenWidget(
+                      user: user,
+                    )),
+            (route) => false);
+        break;
+      case 25:
+        // Semua History
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => historyTugasMahasiswaWidget(
                       user: user,
                     )),
             (route) => false);

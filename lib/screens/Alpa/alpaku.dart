@@ -9,6 +9,7 @@ import 'package:kompen/Service/serviceMahasiswa.dart';
 import 'package:kompen/componen/dataSiakad.dart';
 import 'package:kompen/componen/perkalian.dart';
 import 'package:kompen/componen/navigatorDrawer.dart';
+import 'package:kompen/constants.dart';
 
 class AlpakuWidget extends StatefulWidget {
   final User user;
@@ -89,7 +90,7 @@ class _AlpakuWidgetState extends State<AlpakuWidget> {
           user: user,
         ),
         appBar: AppBar(
-          backgroundColor: Color.fromRGBO(16, 6, 148, 1),
+          backgroundColor: kPrimaryColor,
           title: Align(
             alignment: AlignmentDirectional(0.00, 0.00),
             child: Text(

@@ -7,12 +7,14 @@ import 'package:flutter/scheduler.dart';
 import 'dart:async';
 
 import 'package:http/http.dart' as http;
+import 'package:kompen/constants.dart';
 import 'package:kompen/screens/Alpa/alpaku.dart';
 import 'package:kompen/Model/modelUser.dart';
 import 'package:kompen/Service/serviceAlpaku.dart';
 import 'package:kompen/componen/navigatorDrawer.dart';
 import 'dart:convert';
 import 'package:kompen/screens/login/login.dart';
+import 'package:kompen/widgets/widgets.dart';
 
 class DashboardWidget extends StatefulWidget {
   final User user;
@@ -97,6 +99,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return GestureDetector(
       child: Scaffold(
         backgroundColor: Color.fromRGBO(255, 255, 255, 1),
@@ -104,7 +107,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
           user: user,
         ),
         appBar: AppBar(
-          backgroundColor: Color.fromRGBO(16, 6, 148, 1),
+          backgroundColor: kPrimaryColor,
           title: Text(
             'Dashboard',
             style: TextStyle(
@@ -126,10 +129,9 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                 Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(20, 20, 20, 20),
                   child: Container(
-                    width: double.infinity,
-                    height: 185,
+                    width: size.width,
                     decoration: BoxDecoration(
-                      color: Color.fromRGBO(222, 222, 231, 1),
+                      color: const Color.fromARGB(255, 247, 247, 247),
                       boxShadow: [
                         BoxShadow(
                           blurRadius: 8,
@@ -164,16 +166,9 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                           child: TextFormField(
                             controller: nimInput,
                             decoration: InputDecoration(
-                              enabledBorder: OutlineInputBorder(
+                              border: OutlineInputBorder(
                                 borderSide: BorderSide(
                                   color: Color.fromRGBO(194, 194, 202, 0.671),
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color.fromRGBO(3, 3, 3, 1),
                                   width: 2,
                                 ),
                                 borderRadius: BorderRadius.circular(8),
@@ -190,13 +185,14 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                             },
                           ),
                         ),
-                        ElevatedButton(
-                          onPressed: () {
+                        RoundedButton(
+                          text: 'Cari',
+                          press: () {
                             if (formKey.currentState!.validate()) {
                               prosesPencarian();
                             }
                           },
-                          child: Text('Cari'),
+                          formKey: formKey,
                         ),
                       ],
                     ),

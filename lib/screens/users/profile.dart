@@ -8,6 +8,7 @@ import 'package:kompen/Service/serviceUser.dart';
 import 'package:kompen/Service/serviceNetwork.dart';
 import 'package:kompen/componen/navigatorDrawer.dart';
 import 'package:path/path.dart' as path;
+import 'package:kompen/constants.dart';
 
 class ProfileWidget extends StatefulWidget {
   final User user;
@@ -30,17 +31,37 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   late User user;
   File? _image;
   String id_user = "", status = "";
+  bool isObscure = true;
 
   _getData() async {
-    user = widget.user;
-    id_user = user.idUser.toString();
-    namaInput.text = user.namaLengkap!.toString();
-    noTelpInput.text = user.noTelp!.toString();
-    passwordInput.text = user.password!.toString();
-    usernameInput.text = user.username!.toString();
-    emailInput.text = user.email!.toString();
-    fotoInput.text = user.foto!.toString();
-    status = user.status!.toString();
+    print("Data user benar!!");
+    print(user.username);
+    print(user.password);
+    print(user.status);
+    ServicesUser.getUser(
+      user.username!,
+      user.password!,
+      user.status!,
+    ).then(
+      (result) {
+        if (result.length < 1) {
+          print("Data user profile salah!!");
+        } else {
+          setState(() {
+            print("Data user benar!!");
+            user = result[0];
+            id_user = user.idUser.toString();
+            namaInput.text = user.namaLengkap!.toString();
+            noTelpInput.text = user.noTelp!.toString();
+            passwordInput.text = user.password!.toString();
+            usernameInput.text = user.username!.toString();
+            emailInput.text = user.email!.toString();
+            fotoInput.text = user.foto!.toString();
+            status = user.status!.toString();
+          });
+        }
+      },
+    );
   }
 
   void _getImage() async {
@@ -71,14 +92,12 @@ class _ProfileWidgetState extends State<ProfileWidget> {
             builder: (context) {
               return AlertDialog(
                 title: Text("Konfirmasi Data"),
-                content: Text("Data user berhasil ditambahkan!!"),
+                content: Text("Data user berhasil diupdate!!"),
                 actions: [
                   ElevatedButton(
                       onPressed: () {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ProfileWidget(user: user,)));
+                        _refresh();
+                        Navigator.of(context).pop();
                       },
                       child: Text('OK'))
                 ],
@@ -92,7 +111,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
               builder: (context) {
                 return AlertDialog(
                   title: Text("Konfirmasi Data"),
-                  content: Text("Data user sudah ada!!"),
+                  content: Text("Data user gagal diupdate!!"),
                   actions: [
                     ElevatedButton(
                         onPressed: () {
@@ -104,7 +123,6 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                 );
               },
             );
-            print("data user sudah ada!!");
           });
         }
       },
@@ -119,6 +137,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   @override
   void initState() {
     super.initState();
+    user = widget.user;
     _getData();
   }
 
@@ -131,7 +150,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           user: user,
         ),
         appBar: AppBar(
-          backgroundColor: Color.fromRGBO(16, 6, 148, 1),
+          backgroundColor: kPrimaryColor,
           title: Text(
             'Profile',
             style: TextStyle(
@@ -162,7 +181,6 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       ),
                       child: Container(
                         width: double.infinity,
-                        height: 980,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           boxShadow: const [
@@ -236,8 +254,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                           autofocus: true,
                                           obscureText: false,
                                           decoration: InputDecoration(
-                                            labelText: 'Masukkan Email Anda',
-                                            enabledBorder: OutlineInputBorder(
+                                            hintText: 'Masukkan Email Anda',
+                                            border: OutlineInputBorder(
                                               borderSide: BorderSide(
                                                 color: Color.fromARGB(
                                                     255, 136, 135, 135),
@@ -287,9 +305,9 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                         autofocus: true,
                                         obscureText: false,
                                         decoration: InputDecoration(
-                                          labelText:
+                                          hintText:
                                               'Masukkan Nomor Telepon Anda',
-                                          enabledBorder: OutlineInputBorder(
+                                          border: OutlineInputBorder(
                                             borderSide: BorderSide(
                                               color: Color.fromARGB(
                                                   255, 136, 135, 135),
@@ -338,8 +356,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                         autofocus: true,
                                         obscureText: false,
                                         decoration: InputDecoration(
-                                          labelText: 'Masukkan Username Anda',
-                                          enabledBorder: OutlineInputBorder(
+                                          hintText: 'Masukkan Username Anda',
+                                          border: OutlineInputBorder(
                                             borderSide: BorderSide(
                                               color: Color.fromARGB(
                                                   255, 136, 135, 135),
@@ -386,10 +404,21 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                       child: TextFormField(
                                         controller: passwordInput,
                                         autofocus: true,
-                                        obscureText: true,
+                                        obscureText: isObscure,
                                         decoration: InputDecoration(
-                                          labelText: 'Masukkan Password Anda',
-                                          enabledBorder: OutlineInputBorder(
+                                          hintText: 'Masukkan Password Anda',
+                                          suffixIcon: IconButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                isObscure = !isObscure;
+                                              });
+                                            },
+                                            color: kPrimaryColor,
+                                            icon: Icon(isObscure
+                                                ? Icons.visibility
+                                                : Icons.visibility_off),
+                                          ),
+                                          border: OutlineInputBorder(
                                             borderSide: BorderSide(
                                               color: Color.fromARGB(
                                                   255, 136, 135, 135),
@@ -440,13 +469,16 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                           ElevatedButton(
                                             onPressed: _getImage,
                                             child: Text('Select Image'),
+                                            style: ElevatedButton.styleFrom(
+                                              primary: kPrimaryColor,
+                                            ),
                                           ),
                                           TextFormField(
                                             controller: fotoInput,
                                             autofocus: true,
                                             obscureText: false,
                                             decoration: InputDecoration(
-                                              enabledBorder: OutlineInputBorder(
+                                              border: OutlineInputBorder(
                                                 borderSide: BorderSide(
                                                   color: Color.fromARGB(
                                                       255, 136, 135, 135),
@@ -530,7 +562,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                                           BorderRadius.circular(
                                                               30.0),
                                                     ),
-                                                    primary: Colors.blue[300],
+                                                    primary: kPrimaryColor,
                                                   ),
                                                   child: Text(
                                                     'Save',

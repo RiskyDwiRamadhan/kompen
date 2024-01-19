@@ -1,11 +1,12 @@
 class serviceNetwork{
   // Leptop
-   static const url ='http://192.168.1.200/kompen/';
+  //  static const url ='http://192.168.1.200/komspen/';
   
   // static const url ='http://192.168.213.213/kompen/';
   // static const url ='http://192.168.226.213/kompen/';
   // Hostpot
   // static const url ='http://192.168.108.213/kompen/';
+  static const url ='http://192.168.18.213/kompen/';
 
   
 

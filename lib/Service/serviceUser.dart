@@ -18,50 +18,6 @@ class ServicesUser {
   static const _UPDATE_DOSEN = 'update_dosen';
   static const _UPDATE_MAHASISWA = 'update_mahasiswa';
 
-  // Menampilkan Data Dosen
-  static Future<List<User>> getDosen(String username, String password) async {
-    try {
-      var map = Map<String, dynamic>();
-      map['action'] = _GET_DOSEN_ACTION;
-      map['username'] = username;
-      map['password'] = password;
-
-      final response = await http.post(Uri.parse(ROOT), body: map);
-      print('getUser Response: ${response.body}');
-      if (response.statusCode == 200) {
-        print(response.body.length);
-        print("Data ada banyak");
-      return compute(parseData, response.body);
-      } else {
-        throw Exception('Can\'t get data');
-      }
-    } catch (e) {
-      return <User>[]; // return an empty list on exception/error
-    }
-  }
-
-  // Menampilkan Data Mahasiswa
-  static Future<List<User>> getMahasiswa(String username, String password) async {
-    try {
-      var map = Map<String, dynamic>();
-      map['action'] = _GET_MAHASISWA_ACTION;
-      map['username'] = username;
-      map['password'] = password;
-
-      final response = await http.post(Uri.parse(ROOT), body: map);
-      print('getUser Response: ${response.body}');
-      if (response.statusCode == 200) {
-        print(response.body.length);
-        print("Data ada banyak");
-      return compute(parseData, response.body);
-      } else {
-        throw Exception('Can\'t get data');
-      }
-    } catch (e) {
-      return <User>[]; // return an empty list on exception/error
-    }
-  }
-
   // Menampilkan Data Mahasiswa
   static Future<List<User>> getAlpa(String nim) async {
     try {
@@ -74,7 +30,7 @@ class ServicesUser {
       if (response.statusCode == 200) {
         print(response.body.length);
         print("Data ada banyak");
-      return compute(parseData, response.body);
+        return compute(parseData, response.body);
       } else {
         throw Exception('Can\'t get data');
       }
@@ -89,16 +45,48 @@ class ServicesUser {
     return Users;
   }
 
+  // Get Data User
+  static  Future<List<User>> getUser(
+      String username, String password, String status) async {
+    try {
+      var map = Map<String, dynamic>();
+      var uri = Uri.parse(ROOT);
+      if (status == "Mahasiswa") {
+        map['action'] = _GET_MAHASISWA_ACTION;
+      } else {
+        map['action'] = _GET_DOSEN_ACTION;
+      }
+      map['username'] = username;
+      map['password'] = password;
+      final response = await http.post(Uri.parse(ROOT), body: map);
+
+      if (response.statusCode == 200) {
+        return compute(parseData, response.body);
+      } else {
+        throw Exception('Can\'t get data');
+      }
+    } catch (e) {
+      return <User>[]; // return an empty list on exception/error
+    }
+  }
+
   // Update Data User
-  static Future<String> updateUser(String idUser, String nama, String username,
-      String password, String email, String no_telp, File foto, String status) async {
+  static Future<String> updateUser(
+      String idUser,
+      String nama,
+      String username,
+      String password,
+      String email,
+      String no_telp,
+      File foto,
+      String status) async {
     try {
       var uri = Uri.parse(ROOT);
-      final request = http.MultipartRequest("POST",uri);
+      final request = http.MultipartRequest("POST", uri);
       if (status == "Mahasiswa") {
-      request.fields['action'] = _UPDATE_MAHASISWA;
-      }else{
-      request.fields['action'] = _UPDATE_DOSEN;
+        request.fields['action'] = _UPDATE_MAHASISWA;
+      } else {
+        request.fields['action'] = _UPDATE_DOSEN;
       }
       request.fields['idUser'] = idUser;
       request.fields['nama'] = nama;
@@ -106,14 +94,14 @@ class ServicesUser {
       request.fields['password'] = password;
       request.fields['email'] = email;
       request.fields['no_telp'] = no_telp;
-      
-    if (foto != null) {
-      var stream = http.ByteStream(DelegatingStream.typed(foto.openRead()));
-      var length = await foto.length();
-      
-      request.files.add(http.MultipartFile("foto", stream, length,
-          filename: path.basename(foto.path)));
-    }
+
+      if (foto != null) {
+        var stream = http.ByteStream(DelegatingStream.typed(foto.openRead()));
+        var length = await foto.length();
+
+        request.files.add(http.MultipartFile("foto", stream, length,
+            filename: path.basename(foto.path)));
+      }
 
       var response = await request.send();
       if (response.statusCode == 200) {
@@ -125,8 +113,9 @@ class ServicesUser {
       return "error";
     }
   }
-  
-   static Future<void> setdata(String status, String username, String password) async {
+
+  static Future<void> setdata(
+      String status, String username, String password) async {
     final sharedPref = await SharedPreferences.getInstance();
 
     final myDataPref = json.encode({
@@ -137,5 +126,4 @@ class ServicesUser {
 
     sharedPref.setString('myData', myDataPref);
   }
-
 }

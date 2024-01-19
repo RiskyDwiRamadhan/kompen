@@ -239,7 +239,7 @@ class _dataAmbilTugasWidgetState extends State<dataAmbilTugasWidget> {
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(5.0),
                   hintText: 'Pencarian Data',
-                  enabledBorder: OutlineInputBorder(
+                  border: OutlineInputBorder(
                     borderSide: BorderSide(
                       color: Color.fromARGB(255, 136, 135, 135),
                       width: 2,

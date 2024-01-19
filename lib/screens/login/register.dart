@@ -182,9 +182,15 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                 textInputType: TextInputType.number,
                                 textInputAction: TextInputAction.next,
                               ),
-                              ElevatedButton(
-                                onPressed: _getImage,
-                                child: Text('Select Image'),
+                              Align(
+                                alignment: AlignmentDirectional(-1, 0),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 45.0),
+                                  child: ElevatedButton(
+                                    onPressed: _getImage,
+                                    child: Text('Select Image'),
+                                  ),
+                                ),
                               ),
                               RoundedInputField(
                                 controller: fotoInput,

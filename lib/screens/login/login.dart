@@ -27,31 +27,18 @@ class _LoginWidgetState extends State<LoginWidget> {
   TextEditingController passwordInput = new TextEditingController();
 
   void prosesLogin() async {
-    // pilihan DropDown Dosen dan Mahasiswa
-    if (nTabel == "Dosen" || nTabel == "Admin") {
-      ServicesUser.getDosen(usernameInput.text, passwordInput.text).then(
-        (result) {
-          if (result.length < 1) {
-            print("GAGAL");
-            print(usernameInput.text);
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: Text("Konfirmasi Login"),
-                    content:
-                        Text("Data user {$usernameInput.text} tidak ada!!"),
-                    actions: [
-                      ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text('OK'))
-                    ],
-                  );
-                });
-          } else {
-            print("data ada" + result[0].status!);
+    ServicesUser.getUser(
+      usernameInput.text,
+      passwordInput.text,
+      nTabel!,
+    ).then(
+      (result) {
+        if (result.length < 1) {
+          print("Data login salah!!");
+        } else {
+          setState(() {
+            print("Data login benar!!");
+
             if (result[0].status! == "Admin") {
               ServicesUser.setdata(
                   result[0].status!, result[0].username!, result[0].password!);
@@ -66,45 +53,13 @@ class _LoginWidgetState extends State<LoginWidget> {
             } else if (result[0].status! == "Dosen") {
               ServicesUser.setdata(
                   result[0].status!, result[0].username!, result[0].password!);
-
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
                     builder: (context) => DashboardDWidget(user: result[0])),
                 (Route) => false,
               );
-            }
-          }
-        },
-      );
-    } else {
-      ServicesUser.getMahasiswa(usernameInput.text, passwordInput.text).then(
-        (result) {
-          if (result.length < 1) {
-            print("GAGAL M");
-            print(usernameInput.text);
-            print(passwordInput.text);
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: Text("Konfirmasi Login"),
-                    content: Text("Data user tidak ada!!"),
-                    actions: [
-                      ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text('OK'))
-                    ],
-                  );
-                });
-          } else {
-            print("data ada" + result[0].status!);
-            if (result[0].status! == "Mahasiswa") {
-              ServicesUser.setdata(
-                  result[0].status!, result[0].username!, result[0].password!);
-
+            } else {
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
@@ -114,10 +69,10 @@ class _LoginWidgetState extends State<LoginWidget> {
                 (Route) => false,
               );
             }
-          }
-        },
-      );
-    }
+          });
+        }
+      },
+    );
   }
 
   @override
@@ -220,9 +175,11 @@ class _LoginWidgetState extends State<LoginWidget> {
                                 title: "Don't have an account?",
                                 navigatorText: "Sign Up here",
                                 onTap: () {
-                                  Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) => const RegisterWidget())
-                                  );
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const RegisterWidget()));
                                 },
                               ),
                               const SizedBox(
@@ -238,7 +195,23 @@ class _LoginWidgetState extends State<LoginWidget> {
                                       fontSize: 13),
                                 ),
                                 onTap: () {
-                                  
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        // title: Text("Informasi Box"),
+                                        content: Text(
+                                            "Jika password lupa silahkan menghubungi pak Kadek Suarjuna Selaku Admin Kompen"),
+                                        actions: [
+                                          ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              child: Text('OK'))
+                                        ],
+                                      );
+                                    },
+                                  );
                                 },
                               ),
                               const SizedBox(

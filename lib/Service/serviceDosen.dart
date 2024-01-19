@@ -23,8 +23,7 @@ class ServicesDosen {
       var map = Map<String, dynamic>();
       map['action'] = _GET_ALL_ACTION;
       final response = await http.post(Uri.parse(ROOT), body: map);
-      // final response = await http.get(Uri.parse('http://192.168.1.200/kompen/dataM.php'));
-      // final response = await http.get(Uri.parse('http://192.168.213.213/kompen/dataM.php'));
+      
       print('getDosens Response: ${response.body}');
       if (response.statusCode == 200) {
         print(response.body.length);

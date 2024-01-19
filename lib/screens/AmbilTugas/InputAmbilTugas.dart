@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:kompen/constants.dart';
 import 'package:kompen/screens/AmbilTugas/tambahMahasiswaKompen.dart';
 import 'package:kompen/Model/modelTugas.dart';
 import 'package:kompen/Model/modelUser.dart';
@@ -54,7 +55,7 @@ class _InputAmbilTugasWidgetState extends State<InputAmbilTugasWidget> {
           user: user,
         ),
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(16, 6, 148, 1),
+        backgroundColor: kPrimaryColor,
           title: Text(
             'Ambil Tugas',
             style: TextStyle(
@@ -92,8 +93,7 @@ class _InputAmbilTugasWidgetState extends State<InputAmbilTugasWidget> {
                   Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
                     child: Container(
-                      width: double.infinity,
-                      height: 400,
+                      width: double.infinity,                      
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
