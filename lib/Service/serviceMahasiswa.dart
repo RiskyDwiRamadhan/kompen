@@ -98,6 +98,7 @@ class ServicesMahasiswa {
       String username,
       String password,
       String email,
+      String jMasuk,
       File foto,
       String th_masuk) async {
     try {
@@ -112,6 +113,7 @@ class ServicesMahasiswa {
       request.fields['username'] = username;
       request.fields['password'] = password;
       request.fields['email'] = email;
+      request.fields['jalurmasuk'] = jMasuk;
       request.fields['th_masuk'] = th_masuk;
 
       if (foto != null) {
@@ -142,6 +144,7 @@ class ServicesMahasiswa {
       String username,
       String password,
       String email,
+      String jMasuk,
       File foto,
       String th_masuk) async {
     try {
@@ -156,6 +159,7 @@ class ServicesMahasiswa {
       request.fields['username'] = username;
       request.fields['password'] = password;
       request.fields['email'] = email;
+      request.fields['jalurmasuk'] = jMasuk;
       request.fields['th_masuk'] = th_masuk;
 
       if (foto != null) {

@@ -1,298 +1,176 @@
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:kompen/Service/serviceAlpaku.dart';
-import 'package:kompen/Service/serviceMahasiswa.dart';
+import 'package:kompen/Service/serviceUser.dart';
 import 'package:kompen/constants.dart';
+import 'package:kompen/Service/serviceDosen.dart';
+import 'package:kompen/Model/modelDosen.dart';
+import 'package:kompen/screens/dashboard/dashboard.dart';
+import 'package:kompen/screens/dashboard/dashboardD.dart';
+import 'package:kompen/screens/dashboard/dashboardM.dart';
 import 'package:kompen/screens/login/login.dart';
-import 'package:path/path.dart' as path;
+import 'dart:async';
 
-import '../componen/componen.dart';
-import '../widgets/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class RegisterWidgetTest extends StatefulWidget {
-  const RegisterWidgetTest({Key? key}) : super(key: key);
+class TestWidget extends StatefulWidget {
+  const TestWidget({Key? key}) : super(key: key);
 
   @override
-  _RegisterWidgetTestState createState() => _RegisterWidgetTestState();
+  _TestWidget createState() => _TestWidget();
 }
 
-class _RegisterWidgetTestState extends State<RegisterWidgetTest> {
-  String? username, password, prodi;
-  bool isObscure = true;
-  File? _image;
-  final formKey = GlobalKey<FormState>();
+class _TestWidget extends State<TestWidget>
+    with TickerProviderStateMixin {
 
-  TextEditingController nimInput = new TextEditingController();
-  TextEditingController namaInput = new TextEditingController();
-  TextEditingController thMasukInput = new TextEditingController();
-  TextEditingController passwordInput = new TextEditingController();
-  TextEditingController usernameInput = new TextEditingController();
-  TextEditingController emailInput = new TextEditingController();
-  TextEditingController noTelpInput = new TextEditingController();
-  TextEditingController fotoInput = new TextEditingController();
-
-  void _getImage() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-
-    setState(() {
-      _image = File(pickedFile!.path);
-      fotoInput.text = path.basename(_image!.path);
-    });
+      
+  late List<Dosen> dosen;
+  bool isLoading = false; // Track the loading state
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // openTest();
+    _getData();
   }
 
-  void prosesData() async {
-    ServicesMahasiswa.addMahasiswa(
-            nimInput.text,
-            namaInput.text,
-            prodi.toString(),
-            noTelpInput.text,
-            usernameInput.text,
-            passwordInput.text,
-            emailInput.text,
-            _image!,
-            thMasukInput.text)
-        .then(
+  _getData() async {
+    setState(() {
+      isLoading = true;
+    });
+    ServicesDosen.getDosens().then(
       (result) {
-        if ('success' == result) {
-          ServicesAlpaku.addAlpaku(nimInput.text, '1').then(
-            (value) {
-              if (value == "Succes") {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: Text("Konfirmasi Data"),
-                      content: Text("Data user berhasil ditambahkan!!"),
-                      actions: [
-                        ElevatedButton(
-                            onPressed: () {
-                              nimInput.text = "";
-                              namaInput.text = "";
-                              passwordInput.text = "";
-                              usernameInput.text = "";
-                              fotoInput.text = "";
-                              prodi = "";
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => LoginWidget()));
-                            },
-                            child: Text('OK'))
-                      ],
-                    );
-                  },
-                );
-              }
-            },
-          );
-        } else {
-          setState(() {
-            showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: Text("Konfirmasi Data"),
-                  content: Text("Data user sudah ada!!"),
-                  actions: [
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Text('OK'))
-                  ],
-                );
-              },
-            );
-            print("data user sudah ada!!");
-          });
-        }
+        setState(() {
+          dosen = result;
+          isLoading = false;
+        });
       },
     );
   }
+  String? username, password, status, nTabel;
+  openTest() async {
+    //bisa diganti beberapa detik sesuai keinginan
+    var durasiSplash = const Duration(seconds: 5);
+    final sharedPref = await SharedPreferences.getInstance();
 
-  @override
-  void initState() {
-    super.initState();
+    return Timer(durasiSplash, () async {
+      if (sharedPref.containsKey('myData')) {
+        final myData = json.decode(sharedPref.getString('myData')!)
+            as Map<String, dynamic>;
+
+        nTabel = myData["nTabel"];
+        username = myData["username"];
+        password = myData["password"];
+        print("Auto Login");
+        print(nTabel);
+        print(username);
+        print(password);
+
+        ServicesUser.getUser(
+          username!,
+          password!,
+          nTabel!,
+        ).then(
+          (result) {
+            if (result.length < 1) {
+              print("Data auto login salah!!");
+            } else {
+              if (result[0].status! == "Admin") {
+                ServicesUser.setdata(result[0].status!, result[0].username!,
+                    result[0].password!);
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => DashboardWidget(
+                            user: result[0],
+                          )),
+                  (Route) => false,
+                );
+              } else if (result[0].status! == "Dosen") {
+                ServicesUser.setdata(result[0].status!, result[0].username!,
+                    result[0].password!);
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => DashboardDWidget(user: result[0])),
+                  (Route) => false,
+                );
+              } else if (result[0].status! == "Mahasiswa") {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => DashboardMWidget(
+                            user: result[0],
+                          )),
+                  (Route) => false,
+                );
+              }
+            }
+          },
+        );
+        } else {
+          //pindah ke Login
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => LoginWidget()),
+                  (Route) => false,
+                );
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
-    return SafeArea(
-      child: Scaffold(
-        body: SizedBox(
-          width: size.width,
-          height: size.height,
-          child: SingleChildScrollView(
-            child: Stack(
-              children: [
-                const Upside(
-                  imgUrl: "assets/images/polinema_logo.png",
+    return Scaffold(
+      backgroundColor: Color.fromARGB(255, 36, 35, 35),
+      body: Column(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+              child: Container(
+            width: double.infinity,
+            height: 500,
+            decoration: BoxDecoration(
+              color: kPrimaryColor,
+            ),
+            child: Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0x00FFFFFF), Colors.white],
+                  stops: [0, 1],
+                  begin: AlignmentDirectional(0, -1),
+                  end: AlignmentDirectional(0, 1),
                 ),
-                const PageTitleBar(title: 'Create an account'),
-                Padding(
-                  padding: const EdgeInsets.only(top: 320.0),
-                  child: Container(
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(50),
-                        topRight: Radius.circular(50),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 200,
+                    height: 200,
+                    clipBehavior: Clip.antiAlias,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        fit: BoxFit.contain,
+                        image: Image.asset(
+                          'assets/images/polinema_logo.png',
+                        ).image,
                       ),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const SizedBox(
-                          height: 25,
-                        ),
-                        Form(
-                          key: formKey,
-                          child: Column(
-                            children: [
-                              RoundedInputField(
-                                controller: nimInput,
-                                hintText: "Masukkan NIM anda",
-                                validator: "NIM",
-                                icon: Icons.adjust_sharp,
-                                textInputType: TextInputType.number,
-                                textInputAction: TextInputAction.next,
-                              ),
-                              RoundedInputField(
-                                controller: namaInput,
-                                hintText: "Masukkan Nama Lengkap anda",
-                                validator: "Nama Lengkap",
-                                icon: Icons.account_circle,
-                                textInputType: TextInputType.text,
-                                textInputAction: TextInputAction.next,
-                              ),
-                              RoundedInputField(
-                                controller: thMasukInput,
-                                hintText: "Masukkan Tahun Masuk anda",
-                                validator: "Tahun Masuk",
-                                icon: Icons.date_range_sharp,
-                                textInputType: TextInputType.text,
-                                textInputAction: TextInputAction.next,
-                              ),
-                              ElevatedButton(
-                                onPressed: _getImage,
-                                child: Text('Select Image'),
-                              ),
-                              RoundedInputField(
-                                controller: fotoInput,
-                                hintText: "Pilih File Foto Anda",
-                                validator: "Foto",
-                                icon: Icons.photo_camera_back_outlined,
-                                textInputType: TextInputType.text,
-                                textInputAction: TextInputAction.next,
-                              ),
-                              TextFieldContainer(
-                                child: DropdownButton<String?>(
-                                  value: prodi,
-                                  hint: Text("Program Studi"),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      prodi = value;
-                                    });
-                                  },
-                                  items: [
-                                    "D4 Sistem Informasi Bisnis",
-                                    "D4 Teknik Informatika",
-                                    "D2 Pengembangan Piranti Lunak Situs"
-                                  ]
-                                      .map<DropdownMenuItem<String?>>(
-                                        (e) => DropdownMenuItem(
-                                          child: Text(e.toString()),
-                                          value: e,
-                                        ),
-                                      )
-                                      .toList(),
-                                  isExpanded: true,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                              RoundedInputField(
-                                controller: emailInput,
-                                hintText: "Masukkan Email anda",
-                                validator: "Email",
-                                icon: Icons.email,
-                                textInputType: TextInputType.emailAddress,
-                                textInputAction: TextInputAction.next,
-                              ),
-                              RoundedInputField(
-                                controller: noTelpInput,
-                                hintText: "Masukkan Nomor Telepon anda",
-                                validator: "Nomor Telepon",
-                                icon: Icons.phone,
-                                textInputType: TextInputType.phone,
-                                textInputAction: TextInputAction.next,
-                              ),
-                              RoundedInputField(
-                                controller: usernameInput,
-                                hintText: "Masukkan Username anda",
-                                validator: "Username",
-                                icon: Icons.people,
-                                textInputType: TextInputType.text,
-                                textInputAction: TextInputAction.next,
-                              ),
-                              RoundedInputField(
-                                controller: passwordInput,
-                                hintText: "Masukkan Password anda",
-                                validator: "Password",
-                                icon: Icons.lock,
-                                textInputType: TextInputType.visiblePassword,
-                                textInputAction: TextInputAction.done,
-                                isObscure: isObscure,
-                                hasSuffix: true,
-                                onPressed: () {
-                                  setState(() {
-                                    isObscure = !isObscure;
-                                  });
-                                },
-                              ),
-                              RoundedButton(
-                                text: 'Sign Up',
-                                press: () {
-                                  if (formKey.currentState!.validate()) {
-                                    prosesData();
-                                  }
-                                },
-                                formKey: formKey,
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              UnderPart(
-                                title: "Have an account?",
-                                navigatorText: "Sign In here",
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => LoginWidget()));
-                                },
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
                   ),
-                )
-              ],
+                ],
+              ),
             ),
-          ),
-        ),
+          )
+              // ).animateOnPageLoad(animationsMap['containerOnPageLoadAnimation']!),
+              ),
+        ],
       ),
     );
   }

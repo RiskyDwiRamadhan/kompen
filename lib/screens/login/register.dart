@@ -31,6 +31,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
   TextEditingController thMasukInput = new TextEditingController();
   TextEditingController passwordInput = new TextEditingController();
   TextEditingController usernameInput = new TextEditingController();
+  TextEditingController jMasukInput = new TextEditingController();
   TextEditingController emailInput = new TextEditingController();
   TextEditingController noTelpInput = new TextEditingController();
   TextEditingController fotoInput = new TextEditingController();
@@ -54,6 +55,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
             usernameInput.text,
             passwordInput.text,
             emailInput.text,
+            jMasukInput.text,
             _image!,
             thMasukInput.text)
         .then(
@@ -198,6 +200,13 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                 validator: "Foto",
                                 icon: Icons.photo_camera_back_outlined,
                                 textInputType: TextInputType.text,
+                                textInputAction: TextInputAction.next,
+                              ),
+                              RoundedInputField(
+                                controller: jMasukInput,
+                                hintText: "Masukkan Jalur Masuk anda",
+                                validator: "Jalur Masuk",
+                                textInputType: TextInputType.emailAddress,
                                 textInputAction: TextInputAction.next,
                               ),
                               TextFieldContainer(

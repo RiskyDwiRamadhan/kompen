@@ -4,6 +4,7 @@ class Dosen {
   String? username;
   String? email;
   String? password;
+  String? no_telp;
   String? foto;
   String? level;
 
@@ -13,6 +14,7 @@ class Dosen {
       this.username,
       this.password,
       this.email,
+      this.no_telp,
       this.foto,
       this.level});
 
@@ -22,6 +24,7 @@ class Dosen {
     username = json['username'];
     password = json['password'];
     email = json['email'];
+    no_telp = json['no_telp'];
     foto = json['foto'];
     level = json['level'];
   }
@@ -33,6 +36,7 @@ class Dosen {
     data['username'] = this.username;
     data['password'] = this.password;
     data['email'] = this.email;
+    data['no_telp'] = this.no_telp;
     data['foto'] = this.foto;
     data['level'] = this.level;
     return data;

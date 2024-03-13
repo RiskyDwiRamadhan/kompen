@@ -10,7 +10,9 @@ import 'package:kompen/componen/navigatorDrawer.dart';
 class InputAmbilTugasWidget extends StatefulWidget {
   final Tugas tugas;
   final User user;
-  const InputAmbilTugasWidget({Key? key, required this.tugas, required this.user}) : super(key: key);
+  const InputAmbilTugasWidget(
+      {Key? key, required this.tugas, required this.user})
+      : super(key: key);
 
   @override
   _InputAmbilTugasWidgetState createState() => _InputAmbilTugasWidgetState();
@@ -23,7 +25,7 @@ class _InputAmbilTugasWidgetState extends State<InputAmbilTugasWidget> {
   late String? judul_tugas, tipe, kuota, kompen, Tanggal, deskripsi, id_tugas;
 
   _getDataTugas() async {
-      user = widget.user;
+    user = widget.user;
     tugas = widget.tugas;
     id_tugas = widget.tugas.idTugas;
     judul_tugas = widget.tugas.judulTugas;
@@ -42,7 +44,7 @@ class _InputAmbilTugasWidgetState extends State<InputAmbilTugasWidget> {
   @override
   void initState() {
     super.initState();
-     _getDataTugas();
+    _getDataTugas();
   }
 
   @override
@@ -50,39 +52,44 @@ class _InputAmbilTugasWidgetState extends State<InputAmbilTugasWidget> {
     return GestureDetector(
       child: Scaffold(
         key: scaffoldKey,
-      backgroundColor: Color.fromRGBO(255, 255, 255, 1),
-       drawer: NavigationDrawerWidget(
+        backgroundColor: Color.fromRGBO(255, 255, 255, 1),
+        drawer: NavigationDrawerWidget(
           user: user,
         ),
-      appBar: AppBar(
-        backgroundColor: kPrimaryColor,
+        appBar: AppBar(
+          backgroundColor: kPrimaryColor,
           title: Text(
             'Ambil Tugas',
             style: TextStyle(
-                  fontFamily: 'Outfit',
-                  color: Colors.white,
-                  fontSize: 22,
-                ),
+              fontFamily: 'Outfit',
+              color: Colors.white,
+              fontSize: 22,
+            ),
           ),
           actions: [],
           centerTitle: false,
           elevation: 2,
         ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => TambahMahasiswaKompenWidget(tugas: tugas,user: user,)));
-        },
-        backgroundColor: Color.fromRGBO(16, 6, 148, 1),
-        elevation: 8,
-        child: Icon(
-          Icons.add,
-          color: Colors.white,
-          size: 24,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => TambahMahasiswaKompenWidget(
+                          tugas: tugas,
+                          user: user,
+                        )));
+          },
+          backgroundColor: Color.fromRGBO(16, 6, 148, 1),
+          elevation: 8,
+          child: Icon(
+            Icons.add,
+            color: Colors.white,
+            size: 24,
+          ),
         ),
-      ),
         body: RefreshIndicator(
-        onRefresh: _refreshData,
+          onRefresh: _refreshData,
           child: SafeArea(
             top: true,
             child: SingleChildScrollView(
@@ -93,7 +100,7 @@ class _InputAmbilTugasWidgetState extends State<InputAmbilTugasWidget> {
                   Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(10, 10, 10, 10),
                     child: Container(
-                      width: double.infinity,                      
+                      width: double.infinity,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
@@ -105,7 +112,8 @@ class _InputAmbilTugasWidgetState extends State<InputAmbilTugasWidget> {
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 10),
+                            padding:
+                                EdgeInsetsDirectional.fromSTEB(0, 0, 0, 10),
                             child: Container(
                               width: double.infinity,
                               height: 73,
@@ -121,23 +129,24 @@ class _InputAmbilTugasWidgetState extends State<InputAmbilTugasWidget> {
                               child: Align(
                                 alignment: AlignmentDirectional(-1.00, 0.00),
                                 child: Padding(
-                                  padding:
-                                      EdgeInsetsDirectional.fromSTEB(10, 0, 0, 0),
+                                  padding: EdgeInsetsDirectional.fromSTEB(
+                                      10, 0, 0, 0),
                                   child: Text(
                                     'Data Tugas',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                          fontFamily: 'Readex Pro',
-                                          color: Colors.white,
-                                          fontSize: 24,
-                                        ),
+                                      fontFamily: 'Readex Pro',
+                                      color: Colors.white,
+                                      fontSize: 24,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(10, 0, 0, 10),
+                            padding:
+                                EdgeInsetsDirectional.fromSTEB(10, 0, 0, 10),
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -145,53 +154,26 @@ class _InputAmbilTugasWidgetState extends State<InputAmbilTugasWidget> {
                                 Text(
                                   'Judul Tugas',
                                   style: TextStyle(
-                                        fontFamily: 'Readex Pro',
-                                        fontSize: 20,
-                                      ),
-                                ),
-                                Padding(
-                                  padding:
-                                      EdgeInsetsDirectional.fromSTEB(92, 0, 0, 0),
-                                  child: Text(
-                                    judul_tugas!,
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(
-                                          fontFamily: 'Readex Pro',
-                                          fontSize: 20,
-                                        ),
+                                    fontFamily: 'Readex Pro',
+                                    fontSize: 20,
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                          Divider(
-                            thickness: 1,
-                            color: Colors.black,
-                          ),
-                          Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(10, 0, 0, 10),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Tipe Tugas',
-                                  style: TextStyle(
+                                Container(
+                                  constraints: BoxConstraints(
+                                    maxWidth: 247,
+                                  ),
+                                  decoration: BoxDecoration(),
+                                  child: Padding(
+                                    padding: EdgeInsetsDirectional.fromSTEB(
+                                        92, 0, 5, 0),
+                                    child: Text(
+                                      judul_tugas!,
+                                      textAlign: TextAlign.start,
+                                      maxLines: 1,
+                                      style: TextStyle(
                                         fontFamily: 'Readex Pro',
                                         fontSize: 20,
                                       ),
-                                ),
-                                Flexible(
-                                  child: Padding(
-                                    padding: EdgeInsetsDirectional.fromSTEB(
-                                        105, 0, 0, 0),
-                                    child: Text(
-                                      tipe!,
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                            fontFamily: 'Readex Pro',
-                                            fontSize: 20,
-                                          ),
                                     ),
                                   ),
                                 ),
@@ -203,7 +185,43 @@ class _InputAmbilTugasWidgetState extends State<InputAmbilTugasWidget> {
                             color: Colors.black,
                           ),
                           Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(10, 0, 0, 10),
+                            padding:
+                                EdgeInsetsDirectional.fromSTEB(10, 0, 0, 10),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Tipe Tugas',
+                                  style: TextStyle(
+                                    fontFamily: 'Readex Pro',
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                Flexible(
+                                  child: Padding(
+                                    padding: EdgeInsetsDirectional.fromSTEB(
+                                        105, 0, 0, 0),
+                                    child: Text(
+                                      tipe!,
+                                      textAlign: TextAlign.start,
+                                      style: TextStyle(
+                                        fontFamily: 'Readex Pro',
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Divider(
+                            thickness: 1,
+                            color: Colors.black,
+                          ),
+                          Padding(
+                            padding:
+                                EdgeInsetsDirectional.fromSTEB(10, 0, 0, 10),
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -211,9 +229,9 @@ class _InputAmbilTugasWidgetState extends State<InputAmbilTugasWidget> {
                                 Text(
                                   'Kuota ',
                                   style: TextStyle(
-                                        fontFamily: 'Readex Pro',
-                                        fontSize: 20,
-                                      ),
+                                    fontFamily: 'Readex Pro',
+                                    fontSize: 20,
+                                  ),
                                 ),
                                 Padding(
                                   padding: EdgeInsetsDirectional.fromSTEB(
@@ -222,9 +240,9 @@ class _InputAmbilTugasWidgetState extends State<InputAmbilTugasWidget> {
                                     kuota!,
                                     textAlign: TextAlign.start,
                                     style: TextStyle(
-                                          fontFamily: 'Readex Pro',
-                                          fontSize: 20,
-                                        ),
+                                      fontFamily: 'Readex Pro',
+                                      fontSize: 20,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -235,7 +253,8 @@ class _InputAmbilTugasWidgetState extends State<InputAmbilTugasWidget> {
                             color: Colors.black,
                           ),
                           Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(10, 0, 0, 10),
+                            padding:
+                                EdgeInsetsDirectional.fromSTEB(10, 0, 0, 10),
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -243,9 +262,9 @@ class _InputAmbilTugasWidgetState extends State<InputAmbilTugasWidget> {
                                 Text(
                                   'Jumlah Kompen ',
                                   style: TextStyle(
-                                        fontFamily: 'Readex Pro',
-                                        fontSize: 20,
-                                      ),
+                                    fontFamily: 'Readex Pro',
+                                    fontSize: 20,
+                                  ),
                                 ),
                                 Padding(
                                   padding: EdgeInsetsDirectional.fromSTEB(
@@ -254,9 +273,9 @@ class _InputAmbilTugasWidgetState extends State<InputAmbilTugasWidget> {
                                     kompen!,
                                     textAlign: TextAlign.start,
                                     style: TextStyle(
-                                          fontFamily: 'Readex Pro',
-                                          fontSize: 20,
-                                        ),
+                                      fontFamily: 'Readex Pro',
+                                      fontSize: 20,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -267,7 +286,8 @@ class _InputAmbilTugasWidgetState extends State<InputAmbilTugasWidget> {
                             color: Colors.black,
                           ),
                           Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(10, 0, 0, 10),
+                            padding:
+                                EdgeInsetsDirectional.fromSTEB(10, 0, 0, 10),
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -275,20 +295,27 @@ class _InputAmbilTugasWidgetState extends State<InputAmbilTugasWidget> {
                                 Text(
                                   'Tanggal',
                                   style: TextStyle(
+                                    fontFamily: 'Readex Pro',
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                Container(
+                                  constraints: BoxConstraints(
+                                    maxWidth: 290,
+                                  ),
+                                  decoration: BoxDecoration(),
+                                  child: Padding(
+                                    padding: EdgeInsetsDirectional.fromSTEB(
+                                        135, 0, 5, 0),
+                                    child: Text(
+                                      Tanggal!,
+                                      textAlign: TextAlign.start,
+                                      maxLines: 1,
+                                      style: TextStyle(
                                         fontFamily: 'Readex Pro',
                                         fontSize: 20,
                                       ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsetsDirectional.fromSTEB(
-                                      135, 0, 0, 0),
-                                  child: Text(
-                                    Tanggal!,
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(
-                                          fontFamily: 'Readex Pro',
-                                          fontSize: 20,
-                                        ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -299,7 +326,8 @@ class _InputAmbilTugasWidgetState extends State<InputAmbilTugasWidget> {
                             color: Colors.black,
                           ),
                           Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(10, 0, 0, 10),
+                            padding:
+                                EdgeInsetsDirectional.fromSTEB(10, 0, 0, 10),
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -307,20 +335,31 @@ class _InputAmbilTugasWidgetState extends State<InputAmbilTugasWidget> {
                                 Text(
                                   'Deskripsi',
                                   style: TextStyle(
-                                        fontFamily: 'Readex Pro',
-                                        fontSize: 20,
-                                      ),
+                                    fontFamily: 'Readex Pro',
+                                    fontSize: 20,
+                                  ),
                                 ),
                                 Padding(
                                   padding: EdgeInsetsDirectional.fromSTEB(
-                                      120, 0, 0, 0),
-                                  child: Text(
-                                    deskripsi!,
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(
+                                      0, 0, 5, 5),
+                                  child: Container(
+                                    constraints: BoxConstraints(
+                                      maxWidth: 270,
+                                    ),
+                                    decoration: BoxDecoration(),
+                                    child: Padding(
+                                      padding: EdgeInsetsDirectional.fromSTEB(
+                                          120, 0, 5, 0),
+                                      child: Text(
+                                        deskripsi!,
+                                        textAlign: TextAlign.start,
+                                        maxLines: 4,
+                                        style: TextStyle(
                                           fontFamily: 'Readex Pro',
                                           fontSize: 20,
                                         ),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],

@@ -33,6 +33,7 @@ class _TambahMahasiswaWidgetState extends State<TambahMahasiswaWidget> {
   TextEditingController passwordInput = new TextEditingController();
   TextEditingController usernameInput = new TextEditingController();
   TextEditingController emailInput = new TextEditingController();
+  TextEditingController jMasukInput = new TextEditingController();
   TextEditingController fotoInput = new TextEditingController();
   File? _image;
   late User user;
@@ -61,6 +62,7 @@ class _TambahMahasiswaWidgetState extends State<TambahMahasiswaWidget> {
             usernameInput.text,
             passwordInput.text,
             emailInput.text,
+            jMasukInput.text,
             _image!,
             th_masukInput.text)
         .then(
@@ -328,6 +330,45 @@ class _TambahMahasiswaWidgetState extends State<TambahMahasiswaWidget> {
                               .toList(),
                           isExpanded: true,
                           borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      Align(
+                        alignment: AlignmentDirectional(-1, 0),
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
+                          child: Text(
+                            'Jalur Masuk',
+                            style: TextStyle(
+                              fontFamily: 'Readex Pro',
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
+                        child: TextFormField(
+                          controller: jMasukInput,
+                          autofocus: true,
+                          obscureText: false,
+                          decoration: InputDecoration(
+                            hintText: 'Masukkan Email anda',
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color.fromARGB(255, 136, 135, 135),
+                                width: 2,
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "Jalur Masuk Masih Kosong";
+                            }
+                            return null;
+                          },
                         ),
                       ),
                       Align(

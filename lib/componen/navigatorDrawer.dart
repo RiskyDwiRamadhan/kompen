@@ -33,6 +33,7 @@ class NavigationDrawerWidget extends StatefulWidget {
 
 class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
   final padding = EdgeInsets.symmetric(horizontal: 20);
+  bool isLoading = false;
   double userHeight = 200.0; // Tinggi container awalgi container awal
   double tugasHeight = 400.0; // Tinggi container awalgi container awal
 
@@ -60,6 +61,9 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
       foto = "";
 
   Future _getData() async {
+    setState(() {
+      isLoading = true;
+    });
     ServicesUser.getUser(
       user.username!,
       user.password!,
@@ -70,6 +74,7 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
           print("Data Drawer salah!!");
         } else {
           setState(() {
+            isLoading = false;
             print("Data user benar!!");
             user = result[0];
             id_user = user.idUser.toString();
@@ -132,167 +137,153 @@ class _NavigationDrawerWidgetState extends State<NavigationDrawerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Drawer(
-      child: RefreshIndicator(
-        onRefresh: _refreshData,
-        child: Material(
-          color: kPrimaryColor,
-          child: ListView(
-            children: <Widget>[
-              buildProfile(urlImage: foto, name: nama, onClicked: () {}),
-              Container(
-                padding: padding,
-                child: Column(
-                  children: [
-                    // const SizedBox(height: 12),
-                    Divider(color: Colors.white70),
-                    buildMenuItem(
-                      text: 'Dashboard',
-                      icon: Icons.dashboard,
-                      onClicked: () => selectedItem(context, 0),
-                    ),
-                    Visibility(
-                      visible: showAlpakuMenu,
-                      child: AnimatedContainer(
-                        duration: Duration(milliseconds: 300),
-                        child: buildMenuItem(
-                            text: 'Alpaku',
-                            icon: Icons.workspaces_outline,
-                            onClicked: () => selectedItem(context, 5)),
-                      ),
-                    ),
-
-                    Visibility(
-                      visible: showUsersMenu,
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 500),
-                        height: userHeight,
-                        child: Column(
-                          children: [
-                            Divider(color: Colors.white70),
-                            buildMenuItem(
-                                text: 'Users',
-                                icon: Icons.people,
-                                onClicked: () {
-                                  if (userHeight == 90) {
-                                    setState(() {
-                                      userHeight = 200;
-                                      showUserMenu = true;
-                                    });
-                                  } else {
-                                    setState(() {
-                                      userHeight = 90;
-                                      showUserMenu = false;
-                                    });
-                                  }
-                                }),
-                            Divider(color: Colors.white70),
-                            Visibility(
-                              visible: showUserMenu,
-                              child: buildMenuItem(
-                                text: 'Admin/Dosen/Teknisi',
-                                icon: Icons.workspaces_outline,
-                                onClicked: () => selectedItem(context, 11),
-                              ),
-                            ),
-                            Visibility(
-                              visible: showUserMenu,
-                              child: buildMenuItem(
-                                text: 'Mahasiswa',
-                                icon: Icons.workspaces_outline,
-                                onClicked: () => selectedItem(context, 12),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 500),
-                      // height: tugasHeight,
+    return isLoading
+        ? Center(child: CircularProgressIndicator())
+        : Drawer(
+            child: RefreshIndicator(
+              onRefresh: _refreshData,
+              child: Material(
+                color: kPrimaryColor,
+                child: ListView(
+                  children: <Widget>[
+                    buildProfile(urlImage: foto, name: nama, onClicked: () {}),
+                    Container(
+                      padding: padding,
                       child: Column(
                         children: [
+                          // const SizedBox(height: 12),
                           Divider(color: Colors.white70),
                           buildMenuItem(
-                              text: 'Tugas',
-                              icon: Icons.library_books_outlined,
-                              onClicked: () {
-                                // if (userHeight == 90) {
-                                //   setState(() {
-                                //     userHeight = 400;
-                                //     showDaftarTugasMenu = true;
-                                //     showTugasReadyMenu = true;
-                                //     showHistoryTugasMenu = true;
-                                //     showSemuaHistoryTugasMenu = true;
-                                //   });
-                                // } else {
-                                //   setState(() {
-                                //     userHeight = 90;
-                                //     showDaftarTugasMenu = false;
-                                //     showTugasReadyMenu = false;
-                                //     showHistoryTugasMenu = false;
-                                //     showSemuaHistoryTugasMenu = false;
-                                //   });
-                                // }
-                              }),
-                          Divider(color: Colors.white70),
-                          Visibility(
-                            visible: showDaftarTugasMenu,
-                            child: buildMenuItem(
-                              text: 'Daftar Tugas',
-                              icon: Icons.radio_button_checked_rounded,
-                              onClicked: () => selectedItem(context, 21),
-                            ),
+                            text: 'Dashboard',
+                            icon: Icons.dashboard,
+                            onClicked: () => selectedItem(context, 0),
                           ),
                           Visibility(
-                            visible: showTugasReadyMenu,
-                            child: buildMenuItem(
-                              text: 'Daftar Tugas Ready',
-                              icon: Icons.radio_button_checked_rounded,
-                              onClicked: () => selectedItem(context, 22),
+                            visible: showAlpakuMenu,
+                            child: AnimatedContainer(
+                              duration: Duration(milliseconds: 300),
+                              child: buildMenuItem(
+                                  text: 'Alpaku',
+                                  icon: Icons.workspaces_outline,
+                                  onClicked: () => selectedItem(context, 5)),
                             ),
                           ),
+
                           Visibility(
-                            visible: showHistoryTugasMenu,
-                            child: buildMenuItem(
-                              text: 'Historyku',
-                              icon: Icons.update,
-                              onClicked: () => selectedItem(context, 23),
+                            visible: showUsersMenu,
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 500),
+                              height: userHeight,
+                              child: Column(
+                                children: [
+                                  Divider(color: Colors.white70),
+                                  buildMenuItem(
+                                      text: 'Users',
+                                      icon: Icons.people,
+                                      onClicked: () {
+                                        if (userHeight == 90) {
+                                          setState(() {
+                                            userHeight = 200;
+                                            showUserMenu = true;
+                                          });
+                                        } else {
+                                          setState(() {
+                                            userHeight = 90;
+                                            showUserMenu = false;
+                                          });
+                                        }
+                                      }),
+                                  Divider(color: Colors.white70),
+                                  Visibility(
+                                    visible: showUserMenu,
+                                    child: buildMenuItem(
+                                      text: 'Admin/Dosen/Teknisi',
+                                      icon: Icons.workspaces_outline,
+                                      onClicked: () =>
+                                          selectedItem(context, 11),
+                                    ),
+                                  ),
+                                  Visibility(
+                                    visible: showUserMenu,
+                                    child: buildMenuItem(
+                                      text: 'Mahasiswa',
+                                      icon: Icons.workspaces_outline,
+                                      onClicked: () =>
+                                          selectedItem(context, 12),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                          Visibility(
-                            visible: showSemuaHistoryTugasMenu,
-                            child: buildMenuItem(
-                              text: 'Semua History',
-                              icon: Icons.update,
-                              onClicked: () => selectedItem(context, 24),
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 500),
+                            // height: tugasHeight,
+                            child: Column(
+                              children: [
+                                Divider(color: Colors.white70),
+                                buildMenuItem(
+                                    text: 'Tugas',
+                                    icon: Icons.library_books_outlined,
+                                    onClicked: () {}),
+                                Divider(color: Colors.white70),
+                                Visibility(
+                                  visible: showDaftarTugasMenu,
+                                  child: buildMenuItem(
+                                    text: 'Daftar Tugas',
+                                    icon: Icons.radio_button_checked_rounded,
+                                    onClicked: () => selectedItem(context, 21),
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: showTugasReadyMenu,
+                                  child: buildMenuItem(
+                                    text: 'Daftar Tugas Ready',
+                                    icon: Icons.radio_button_checked_rounded,
+                                    onClicked: () => selectedItem(context, 22),
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: showHistoryTugasMenu,
+                                  child: buildMenuItem(
+                                    text: 'Historyku',
+                                    icon: Icons.update,
+                                    onClicked: () => selectedItem(context, 23),
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: showSemuaHistoryTugasMenu,
+                                  child: buildMenuItem(
+                                    text: 'Semua History',
+                                    icon: Icons.update,
+                                    onClicked: () => selectedItem(context, 24),
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: showHistoryTugasMahasiswaMenu,
+                                  child: buildMenuItem(
+                                    text: 'History Tugasku',
+                                    icon: Icons.update,
+                                    onClicked: () => selectedItem(context, 25),
+                                  ),
+                                ),
+                                Divider(color: Colors.white70),
+                              ],
                             ),
                           ),
-                          Visibility(
-                            visible: showHistoryTugasMahasiswaMenu,
-                            child: buildMenuItem(
-                              text: 'History Tugasku',
-                              icon: Icons.update,
-                              onClicked: () => selectedItem(context, 25),
-                            ),
+                          buildMenuItem(
+                            text: 'LogOut',
+                            icon: Icons.logout,
+                            onClicked: () => selectedItem(context, 3),
                           ),
-                          Divider(color: Colors.white70),
                         ],
                       ),
-                    ),
-                    buildMenuItem(
-                      text: 'LogOut',
-                      icon: Icons.logout,
-                      onClicked: () => selectedItem(context, 3),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          );
   }
 
   Widget buildProfile({

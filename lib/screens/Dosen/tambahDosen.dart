@@ -28,6 +28,7 @@ class _TambahDosenWidgetState extends State<TambahDosenWidget> {
   TextEditingController nipInput = new TextEditingController();
   TextEditingController namaInput = new TextEditingController();
   TextEditingController passwordInput = new TextEditingController();
+  TextEditingController no_telpInput = new TextEditingController();
   TextEditingController usernameInput = new TextEditingController();
   TextEditingController emailInput = new TextEditingController();
   TextEditingController fotoInput = new TextEditingController();
@@ -299,6 +300,13 @@ class _TambahDosenWidgetState extends State<TambahDosenWidget> {
                           obscureText: isObscure,
                           decoration: InputDecoration(
                             hintText: 'Masukkan Password Anda',
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color.fromARGB(255, 136, 135, 135),
+                                width: 2,
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                             suffixIcon: IconButton(
                               onPressed: () {
                                 setState(() {
@@ -316,6 +324,47 @@ class _TambahDosenWidgetState extends State<TambahDosenWidget> {
                           validator: (value) {
                             if (value!.isEmpty) {
                               return "Password Masih Kosong";
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      Align(
+                        alignment: AlignmentDirectional(-1, 0),
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
+                          child: Text(
+                            'Nomor Telepon',
+                            style: TextStyle(
+                              fontFamily: 'Readex Pro',
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
+                        child: TextFormField(
+                          controller: no_telpInput,
+                          maxLength: 12,
+                          keyboardType: TextInputType.number,
+                          autofocus: true,
+                          obscureText: false,
+                          decoration: InputDecoration(
+                            hintText: 'Masukkan Nomor Telepon anda',
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color.fromARGB(255, 136, 135, 135),
+                                width: 2,
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "Nomor Telepon Masih Kosong";
                             }
                             return null;
                           },

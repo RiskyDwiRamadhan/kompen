@@ -32,6 +32,7 @@ class _UpdateDosenWidgetState extends State<UpdateDosenWidget> {
 
   TextEditingController nipInput = new TextEditingController();
   TextEditingController namaInput = new TextEditingController();
+  TextEditingController no_telpInput = new TextEditingController();
   TextEditingController passwordInput = new TextEditingController();
   TextEditingController usernameInput = new TextEditingController();
   TextEditingController emailInput = new TextEditingController();
@@ -46,6 +47,7 @@ class _UpdateDosenWidgetState extends State<UpdateDosenWidget> {
     namaInput.text = widget.dosen.namaLengkap!.toString();
     passwordInput.text = widget.dosen.password!.toString();
     usernameInput.text = widget.dosen.username!.toString();
+    no_telpInput.text = widget.dosen.no_telp!.toString();
     emailInput.text = widget.dosen.email!.toString();
     fotoInput.text = widget.dosen.foto!.toString();
     _image = File(widget.dosen.foto!);
@@ -311,6 +313,13 @@ class _UpdateDosenWidgetState extends State<UpdateDosenWidget> {
                           obscureText: isObscure,
                           decoration: InputDecoration(
                             hintText: 'Masukkan Password Anda',
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color.fromARGB(255, 136, 135, 135),
+                                width: 2,
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
                             suffixIcon: IconButton(
                               onPressed: () {
                                 setState(() {
@@ -328,6 +337,47 @@ class _UpdateDosenWidgetState extends State<UpdateDosenWidget> {
                           validator: (value) {
                             if (value!.isEmpty) {
                               return "Password Masih Kosong";
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      Align(
+                        alignment: AlignmentDirectional(-1, 0),
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
+                          child: Text(
+                            'Nomor Telepon',
+                            style: TextStyle(
+                              fontFamily: 'Readex Pro',
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
+                        child: TextFormField(
+                          controller: no_telpInput,
+                          maxLength: 12,
+                          keyboardType: TextInputType.number,
+                          autofocus: true,
+                          obscureText: false,
+                          decoration: InputDecoration(
+                            hintText: 'Masukkan Nomor Telepon anda',
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color.fromARGB(255, 136, 135, 135),
+                                width: 2,
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "Nomor Telepon Masih Kosong";
                             }
                             return null;
                           },

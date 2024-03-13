@@ -38,6 +38,7 @@ class _UpdateMahasiswaWidgetState extends State<UpdateMahasiswaWidget> {
   TextEditingController usernameInput = new TextEditingController();
   TextEditingController emailInput = new TextEditingController();
   TextEditingController fotoInput = new TextEditingController();
+  TextEditingController jMasukInput = new TextEditingController();
   File? _image;
   late User user;
   bool isObscure = true;
@@ -51,6 +52,7 @@ class _UpdateMahasiswaWidgetState extends State<UpdateMahasiswaWidget> {
     passwordInput.text = widget.mahasiswa.password!.toString();
     usernameInput.text = widget.mahasiswa.username!.toString();
     emailInput.text = widget.mahasiswa.email!.toString();
+    jMasukInput.text = widget.mahasiswa.jalurmasuk!.toString();
     fotoInput.text = widget.mahasiswa.foto!.toString();
     prodi = widget.mahasiswa.prodi!.toString();
     _image = File(widget.mahasiswa.foto!);
@@ -75,6 +77,7 @@ class _UpdateMahasiswaWidgetState extends State<UpdateMahasiswaWidget> {
             usernameInput.text,
             passwordInput.text,
             emailInput.text,
+            jMasukInput.text,
             _image!,
             th_masukInput.text)
         .then(
@@ -348,6 +351,45 @@ class _UpdateMahasiswaWidgetState extends State<UpdateMahasiswaWidget> {
                         child: Padding(
                           padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
                           child: Text(
+                            'Jalur Masuk',
+                            style: TextStyle(
+                              fontFamily: 'Readex Pro',
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsetsDirectional.fromSTEB(8, 0, 8, 8),
+                        child: TextFormField(
+                          controller: jMasukInput,
+                          autofocus: true,
+                          obscureText: false,
+                          decoration: InputDecoration(
+                            hintText: 'Masukkan Email anda',
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color.fromARGB(255, 136, 135, 135),
+                                width: 2,
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "Jalur Masuk Masih Kosong";
+                            }
+                            return null;
+                          },
+                        ),
+                      ),
+                      Align(
+                        alignment: AlignmentDirectional(-1, 0),
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(16, 0, 0, 5),
+                          child: Text(
                             'Email',
                             style: TextStyle(
                               fontFamily: 'Readex Pro',
@@ -566,7 +608,7 @@ class _UpdateMahasiswaWidgetState extends State<UpdateMahasiswaWidget> {
                       Padding(
                         padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 8),
                         child: RoundedButton(
-                          text: 'Save',
+                          text: 'Update',
                           press: () {
                             if (formKey.currentState!.validate()) {
                               prosesData();

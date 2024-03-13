@@ -59,7 +59,8 @@ class ServicesUser {
       map['username'] = username;
       map['password'] = password;
       final response = await http.post(Uri.parse(ROOT), body: map);
-
+      print("Data Login");
+      print(response.body);
       if (response.statusCode == 200) {
         return compute(parseData, response.body);
       } else {
