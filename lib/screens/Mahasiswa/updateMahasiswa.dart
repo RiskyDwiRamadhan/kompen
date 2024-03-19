@@ -323,12 +323,18 @@ class _UpdateMahasiswaWidgetState extends State<UpdateMahasiswaWidget> {
                       ),
                       Padding(
                         padding: EdgeInsetsDirectional.fromSTEB(16, 0, 8, 8),
-                        child: DropdownButton<String?>(
+                        child: DropdownButtonFormField<String?>(
                           value: prodi,
                           onChanged: (value) {
                             setState(() {
                               prodi = value;
                             });
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Pilih Prodi';
+                            }
+                            return null;
                           },
                           items: [
                             "D4 Sistem Informasi Bisnis",
@@ -343,7 +349,18 @@ class _UpdateMahasiswaWidgetState extends State<UpdateMahasiswaWidget> {
                               )
                               .toList(),
                           isExpanded: true,
-                          borderRadius: BorderRadius.circular(8),
+                          decoration: InputDecoration(
+                            hintText: 'Pilih Prodi anda',
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color.fromARGB(255, 136, 135, 135),
+                                width: 2,
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                          ),
                         ),
                       ),
                       Align(

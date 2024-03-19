@@ -52,7 +52,7 @@ class _TambahDosenWidgetState extends State<TambahDosenWidget> {
 
   void prosesData() async {
     ServicesDosen.addDosen(nipInput.text, namaInput.text, usernameInput.text,
-            passwordInput.text, emailInput.text, _image!, status.toString())
+            passwordInput.text, emailInput.text, no_telpInput.text, _image!, status.toString())
         .then(
       (result) {
         if ('success' == result) {
@@ -70,6 +70,8 @@ class _TambahDosenWidgetState extends State<TambahDosenWidget> {
                         passwordInput.text = "";
                         usernameInput.text = "";
                         fotoInput.text = "";
+                        emailInput.text = "";
+                        no_telpInput.text = "";
                         status = "";
                         Navigator.pushReplacement(
                             context,
@@ -475,12 +477,18 @@ class _TambahDosenWidgetState extends State<TambahDosenWidget> {
                       ),
                       Padding(
                         padding: EdgeInsetsDirectional.fromSTEB(16, 0, 8, 8),
-                        child: DropdownButton<String?>(
+                        child: DropdownButtonFormField<String?>(
                           value: status,
                           onChanged: (value) {
                             setState(() {
                               status = value;
                             });
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Pilih Level';
+                            }
+                            return null;
                           },
                           items: [
                             "Admin",
@@ -494,7 +502,18 @@ class _TambahDosenWidgetState extends State<TambahDosenWidget> {
                               )
                               .toList(),
                           isExpanded: true,
-                          borderRadius: BorderRadius.circular(8),
+                          decoration: InputDecoration(
+                            hintText: 'Pilih Level anda',
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color.fromARGB(255, 136, 135, 135),
+                                width: 2,
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                          ),
                         ),
                       ),
                       Padding(
