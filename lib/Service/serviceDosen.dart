@@ -45,7 +45,7 @@ class ServicesDosen {
 
   // Menambahkan data
   static Future<String> addDosen(String nip, String nama, String username,
-      String password, String email, File foto, String status) async {
+      String password, String email, String no_telp, File foto, String status) async {
     try {
       var uri = Uri.parse(ROOT);
       final request = http.MultipartRequest("POST",uri);
@@ -56,6 +56,7 @@ class ServicesDosen {
       request.fields['username'] = username;
       request.fields['password'] = password;
       request.fields['email'] = email;
+      request.fields['no_telp'] = no_telp;
       request.fields['status'] = status;
 
       
@@ -80,7 +81,7 @@ class ServicesDosen {
   
   // Update Data
   static Future<String> updateDosen(String nip, String nama, String username,
-      String password, String email, File foto, String status) async {
+      String password, String email, String no_telp, File foto, String status) async {
     try {
       var uri = Uri.parse(ROOT);
       final request = http.MultipartRequest("POST",uri);
@@ -91,6 +92,7 @@ class ServicesDosen {
       request.fields['username'] = username;
       request.fields['password'] = password;
       request.fields['email'] = email;
+      request.fields['no_telp'] = no_telp;
       request.fields['status'] = status;
 
       

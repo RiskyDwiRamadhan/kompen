@@ -5,6 +5,7 @@ import 'package:http/http.dart'
 import 'dart:io';
 import 'package:async/async.dart';
 import 'package:kompen/Model/modelMahasiswa.dart';
+import 'package:kompen/Service/serviceAlpaku.dart';
 import 'package:kompen/Service/serviceNetwork.dart';
 import 'package:path/path.dart' as path;
 
@@ -126,6 +127,7 @@ class ServicesMahasiswa {
 
       var response = await request.send();
       if (response.statusCode > 2) {
+        ServicesAlpaku.addAlpaku(nim, '1');
         return "success";
       } else {
         return "error";
