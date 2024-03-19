@@ -165,10 +165,11 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                               EdgeInsetsDirectional.fromSTEB(20, 0, 20, 10),
                           child: TextFormField(
                             controller: nimInput,
+                            maxLength: 10,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Color.fromRGBO(194, 194, 202, 0.671),
+                                  color: Color.fromRGBO(46, 46, 153, 0.671),
                                   width: 2,
                                 ),
                                 borderRadius: BorderRadius.circular(8),

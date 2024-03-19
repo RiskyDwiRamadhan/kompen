@@ -106,12 +106,12 @@ class _AlpakuWidgetState extends State<AlpakuWidget> {
           centerTitle: true,
           elevation: 4,
         ),
-        body: SafeArea(
-          top: true,
-          child: SingleChildScrollView(
-            child: isLoading
-                ? Center(child: CircularProgressIndicator())
-                : Column(
+        body: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : SafeArea(
+                top: true,
+                child: SingleChildScrollView(
+                  child: Column(
                     children: [
                       DataSiakad(listA, listM[0]),
                       Perkalian(
@@ -120,8 +120,8 @@ class _AlpakuWidgetState extends State<AlpakuWidget> {
                       )
                     ],
                   ),
-          ),
-        ),
+                ),
+              ),
       ),
     );
   }

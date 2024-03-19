@@ -35,10 +35,10 @@ class _PerkalianState extends State<Perkalian> {
     ServicesAlpaku.getAlpakuWhere(nim).then((value) {
       int index1 = 0;
       setState(() {
-        kali = value.length;
+        kali = value.length ;
       });
       print("Perkalian");
-      for (var i = value.length - 1; i >= 0; i--) {
+      for (var i = value.length; i > 0; i--) {
         setState(() {
           int data = value[i].perkalian[index1] * int.parse(value[i].jmlAlpa!);
           print(
@@ -147,10 +147,12 @@ class _PerkalianState extends State<Perkalian> {
               shrinkWrap: true,
               itemCount: widget.alpaku.length,
               itemBuilder: (context, index) {
-                kali--;
                 print('KALI ${kali}');
                 hasil = widget.alpaku[index].perkalian[kali]! *
                     int.parse(widget.alpaku[index].jmlAlpa!);
+                if (kali > 0) {
+                  kali--;
+                }
                 return Column(
                   children: <Widget>[
                     Column(
