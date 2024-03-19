@@ -118,13 +118,32 @@ class _LoginWidgetState extends State<LoginWidget> {
                           child: Column(
                             children: [
                               TextFieldContainer(
-                                child: DropdownButton<String?>(
+                                child: DropdownButtonFormField<String?>(
                                   value: nTabel,
                                   onChanged: (value) {
                                     setState(() {
                                       nTabel = value;
                                     });
                                   },
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Pilih Prodi';
+                                    }
+                                    return null;
+                                  },
+                                  decoration: InputDecoration(
+                                    hintText: 'Masukkan Email anda',
+                                    border: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color:
+                                            Color.fromARGB(255, 136, 135, 135),
+                                        width: 2,
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                  ),
                                   items: ["Dosen", "Admin", "Mahasiswa"]
                                       .map<DropdownMenuItem<String?>>(
                                         (e) => DropdownMenuItem(
