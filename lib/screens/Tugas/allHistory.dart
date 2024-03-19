@@ -19,10 +19,12 @@ class allHistoryTugasDosenWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<allHistoryTugasDosenWidget> createState() => _allHistoryTugasDosenWidgetState();
+  State<allHistoryTugasDosenWidget> createState() =>
+      _allHistoryTugasDosenWidgetState();
 }
 
-class _allHistoryTugasDosenWidgetState extends State<allHistoryTugasDosenWidget> {
+class _allHistoryTugasDosenWidgetState
+    extends State<allHistoryTugasDosenWidget> {
   late List<Tugas> tugas;
 
   int sortIndex = 0;
@@ -303,7 +305,18 @@ class TugasDataSource extends DataTableSource {
       DataCell(Text(tugasData.tgl.toString())),
       DataCell(Text(tugasData.kuota.toString())),
       DataCell(Text(tugasData.jumlahKompen.toString())),
-      DataCell(Text(tugasData.deskripsi.toString())),
+      DataCell(
+        Container(
+          constraints: BoxConstraints(
+            maxWidth: 200,
+          ),
+          child: Text(
+            tugasData.deskripsi.toString(),
+            maxLines: 4,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ),
     ]);
   }
 

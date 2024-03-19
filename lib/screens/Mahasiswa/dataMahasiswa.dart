@@ -242,6 +242,9 @@ class _dataMahasiswaWidgetState extends State<dataMahasiswaWidget> {
                 .contains(cariInput.text.toLowerCase()) ||
             mahasiswa.noTelp!
                 .toLowerCase()
+                .contains(cariInput.text.toLowerCase())||
+            mahasiswa.username!
+                .toLowerCase()
                 .contains(cariInput.text.toLowerCase()) ||
             mahasiswa.prodi!
                 .toLowerCase()

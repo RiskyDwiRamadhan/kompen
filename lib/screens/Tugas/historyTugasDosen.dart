@@ -290,7 +290,17 @@ class TugasDataSource extends DataTableSource {
       DataCell(Text(tugasData.tgl.toString())),
       DataCell(Text(tugasData.kuota.toString())),
       DataCell(Text(tugasData.jumlahKompen.toString())),
-      DataCell(Text(tugasData.deskripsi.toString())),
+      DataCell(
+        Container(
+          constraints: BoxConstraints(
+            maxWidth: 200,
+          ),
+          child: Text(tugasData.deskripsi.toString(),
+            maxLines: 4,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ),
     ]);
   }
 

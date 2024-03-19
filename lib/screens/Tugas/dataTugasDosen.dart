@@ -195,11 +195,9 @@ class _dataTugasDosenWidgetState extends State<dataTugasDosenWidget> {
     } else if (sortIndex == 5) {
       tugas.sort((a, b) {
         if (isAscending) {
-          return int.parse(a.kuota!)
-              .compareTo(int.parse(b.kuota!));
+          return int.parse(a.kuota!).compareTo(int.parse(b.kuota!));
         } else {
-          return int.parse(b.kuota!)
-              .compareTo(int.parse(a.kuota!));
+          return int.parse(b.kuota!).compareTo(int.parse(a.kuota!));
         }
       });
     } else if (sortIndex == 6) {
@@ -433,7 +431,18 @@ class TugasDataSource extends DataTableSource {
       DataCell(Text(tugasData.tgl.toString())),
       DataCell(Text(tugasData.kuota.toString())),
       DataCell(Text(tugasData.jumlahKompen.toString())),
-      DataCell(Text(tugasData.deskripsi.toString())),
+      DataCell(
+        Container(
+          constraints: BoxConstraints(
+            maxWidth: 200,
+          ),
+          child: Text(
+            tugasData.deskripsi.toString(),
+            maxLines: 4,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ),
       DataCell(
         Column(
           children: [
